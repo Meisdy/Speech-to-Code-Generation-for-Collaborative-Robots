@@ -1,2 +1,7 @@
-/api_key_gemini.txt
 /.venv
+/.idea/copilot.data.migration.agent.xml
+/.idea/copilot.data.migration.ask.xml
+/.idea/copilot.data.migration.ask2agent.xml
+/.idea/copilot.data.migration.edit.xml
+/testrecording.mp3
+/api_key_gemini.txt
