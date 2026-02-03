@@ -1,0 +1,36 @@
+{
+  "mode": "live",
+  "robot": "franka",
+  "commands": [
+    {
+      "action": "move",
+      "motion_type": "moveJ",
+      "target": {
+        "type": "named_pose",
+        "name": "Home"
+      }
+    },
+    {
+      "action": "gripper",
+      "command": "open"
+    },
+    {
+      "action": "gripper",
+      "command": "close"
+    },
+    {
+      "action": "wait",
+      "duration_s": 1.0
+    },
+    {
+      "action": "teach",
+      "pose_name": "NewPose",
+      "overwrite": false
+    },
+    {
+      "action": "delete_pose",
+      "pose_name": "Home"
+    }
+  ],
+  "message": "Generated a sequence containing all available command types defined in the ruleset and command schema. Note: 'Home' is the only pre-existing pose found in the records."
+}
