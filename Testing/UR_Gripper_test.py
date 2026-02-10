@@ -3,36 +3,55 @@ import time
 
 ROBOT_IP = "169.254.70.80"
 
+
+def send_command(sock, cmd):
+    sock.send(cmd.encode())
+    return sock.recv(1024).decode().strip()
+
+
+def wait_for_program_start(sock):
+    """Wait until program actually starts playing"""
+    while True:
+        response = send_command(sock, "programState\n")
+        if "PLAYING" in response:
+            return
+        time.sleep(0.05)
+
+
+def wait_for_program_finish(sock):
+    """Wait until program stops"""
+    while True:
+        response = send_command(sock, "programState\n")
+        if "STOPPED" in response:
+            return
+        time.sleep(0.1)
+
+
 print("Starting gripper test...")
 
 try:
-    print("Opening new connection...")
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.connect((ROBOT_IP, 29999))
     sock.recv(1024)
 
-    print("Loading program to open Gripper...")
-    sock.send(b"load /programs/open_UG2_Gripper.urp\n")
-    response = sock.recv(1024).decode()
-    print(f"Load response: {response}")
-    print("Playing program...")
-    sock.send(b"play\n")
-    response = sock.recv(1024).decode()
-    print(f"Play response: {response}")
+    # OPEN
+    print("1. OPEN Gripper")
+    send_command(sock, "load /programs/open_UG2_Gripper.urp\n")
+    send_command(sock, "play\n")
+    wait_for_program_start(sock)
+    wait_for_program_finish(sock)
+    print("  Done")
 
-    time.sleep(3)
-
-    print("Loading program to Close Gripper...")
-    sock.send(b"load /programs/close_UG2_Gripper.urp\n")
-    response = sock.recv(1024).decode()
-    print(f"Load response: {response}")
-    print("Playing program...")
-    sock.send(b"play\n")
-    response = sock.recv(1024).decode()
-    print(f"Play response: {response}")
+    # CLOSE
+    print("2. CLOSE Gripper")
+    send_command(sock, "load /programs/close_UG2_Gripper.urp\n")
+    send_command(sock, "play\n")
+    wait_for_program_start(sock)
+    wait_for_program_finish(sock)
+    print("  Done")
 
     sock.close()
-    print("Done!")
+    print("\nComplete!")
 
 except Exception as e:
     print(f"ERROR: {e}")
