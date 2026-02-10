@@ -5,6 +5,17 @@ import numpy as np
 import threading
 import config
 
+"""
+To do:
+- Add logging statements for debugging and performance monitoring
+- Implement error handling for audio capture and transcription?
+- Consider adding a timeout for recording to prevent infinite loops
+- Explore GPU acceleration with fp16 if performance is an issue
+- Add real push-to-talk support with a physical button or keyboard listener instead of blocking input()
+- Consider adding a method to save audio files for debugging if LOGGING_SAVE_AUDIO is True
+- Add support for different microphones or audio interfaces if needed
+"""
+
 
 class SpeechRecognizer:
     def __init__(self):
@@ -18,7 +29,8 @@ class SpeechRecognizer:
 
     def listen(self):
         """
-        Record audio from main device microphone using push-to-talk (Enter key).
+        Record audio from main device microphone using "push-to-talk" (Enter key).
+        Currently, it is not real push to talk, but close enough.
 
         Flow:
             1. User presses Enter to start recording
@@ -57,10 +69,9 @@ class SpeechRecognizer:
         thread.start()
 
         input()  # Wait for Enter to stop recording
-        stop_event.set()
-        thread.join()
-
-        stream.close()
+        stop_event.set() # Signal recording thread to stop
+        thread.join() # Wait for thread to finish
+        stream.close() # Clean up audio stream
 
         # Convert raw bytes to normalized float32 array
         if frames:
@@ -91,7 +102,7 @@ class SpeechRecognizer:
             "confidence": round(confidence, 2)
         }
 
-    # Updated test code
+# Testing method to run ASR module independently
 if __name__ == "__main__":
     asr = SpeechRecognizer()
 
