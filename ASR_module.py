@@ -102,6 +102,34 @@ class SpeechRecognizer:
             "confidence": round(confidence, 2)
         }
 
+
+    # Cleanup methods to ensure we don't leave audio resources hanging around. Autocalled or manually called when needed.
+    def close(self) -> None:
+        """Clean up audio resources safely."""
+        try:
+            if hasattr(self, 'audio_interpreter') and self.audio_interpreter:
+                self.audio_interpreter.terminate()
+                self.audio_interpreter = None
+        except Exception as e:
+            print(f"Warning: Error closing PyAudio: {e}")
+
+    def __del__(self):
+        """Ensure resources are cleaned up on deletion."""
+        try:
+            self.close()
+        except Exception:
+            pass  # Silently ignore errors in destructor
+
+    def __enter__(self):
+        """Context manager support."""
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        """Context manager cleanup."""
+        self.close()
+        return False
+
+
 # Testing method to run ASR module independently
 if __name__ == "__main__":
     asr = SpeechRecognizer()
