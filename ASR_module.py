@@ -19,15 +19,79 @@ To do:
 
 class SpeechRecognizer:
     def __init__(self):
-        # Add a logging statement to confirm initialization here later
         self.model = whisper.load_model(config.ASR_MODEL_SIZE)
         self.language = config.ASR_LANGUAGE
         self.threshold = config.ASR_CONFIDENCE_THRESHOLD
         self.sample_rate = config.ASR_SAMPLE_RATE
         self.audio_interpreter = pyaudio.PyAudio()
-        self.use_fp16 = config.ASR_FP16 # check out GPU support later, if needed
+        self.use_fp16 = config.ASR_FP16
 
-    def listen(self):
+        # Recording state
+        self.stream = None
+        self.frames = []
+        self.stop_event = None
+        self.record_thread = None
+
+    def start_listening(self):
+        """Start recording audio in background thread."""
+        self.frames = []
+        self.stop_event = threading.Event()
+
+        self.stream = self.audio_interpreter.open(
+            format=pyaudio.paInt16,
+            channels=1,
+            rate=self.sample_rate,
+            input=True,
+            frames_per_buffer=1024
+        )
+
+        def record():
+            while not self.stop_event.is_set():
+                data = self.stream.read(1024, exception_on_overflow=False)
+                self.frames.append(data)
+
+        self.record_thread = threading.Thread(target=record)
+        self.record_thread.start()
+
+    def stop_listening(self):
+        """Stop recording and return audio data."""
+        if self.stop_event:
+            self.stop_event.set()
+        if self.record_thread:
+            self.record_thread.join()
+        if self.stream:
+            self.stream.close()
+
+        # Convert to normalized float32
+        if self.frames:
+            audio = np.frombuffer(b''.join(self.frames), dtype=np.int16)
+            return audio.astype(np.float32) / 32768.0
+        return None
+
+    def transcribe(self, audio):
+        """Convert audio to text using Whisper"""
+        if audio is None:
+            return {"text": "", "confidence": 0.0}
+
+        result = self.model.transcribe(audio=audio, language=self.language, fp16=self.use_fp16) # Whisper on G16 CPU doesn't support fp16
+
+        text = result["text"].strip()
+
+        # Calculate confidence from no_speech_prob
+        segments = result.get("segments", [])
+        if segments:
+            # Average no_speech_prob across segments, then invert
+            avg_no_speech = sum(seg.get("no_speech_prob", 0.0) for seg in segments) / len(segments)
+            confidence = 1.0 - avg_no_speech
+        else:
+            confidence = 0.0  # No segments = no confidence
+
+        return {
+            "text": text,
+            "confidence": round(confidence, 2)
+        }
+
+    def _listen(self):
         """
         Record audio from main device microphone using "push-to-talk" (Enter key).
         Currently, it is not real push to talk, but close enough.
@@ -79,29 +143,6 @@ class SpeechRecognizer:
             return recorded_audio.astype(np.float32) / 32768.0
         return None
 
-    def transcribe(self, audio):
-        """Convert audio to text using Whisper"""
-        if audio is None:
-            return {"text": "", "confidence": 0.0}
-
-        result = self.model.transcribe(audio=audio, language=self.language, fp16=self.use_fp16) # Whisper on G16 CPU doesn't support fp16
-
-        text = result["text"].strip()
-
-        # Calculate confidence from no_speech_prob
-        segments = result.get("segments", [])
-        if segments:
-            # Average no_speech_prob across segments, then invert
-            avg_no_speech = sum(seg.get("no_speech_prob", 0.0) for seg in segments) / len(segments)
-            confidence = 1.0 - avg_no_speech
-        else:
-            confidence = 0.0  # No segments = no confidence
-
-        return {
-            "text": text,
-            "confidence": round(confidence, 2)
-        }
-
 
     # Cleanup methods to ensure we don't leave audio resources hanging around. Autocalled or manually called when needed.
     def close(self) -> None:
@@ -134,7 +175,7 @@ class SpeechRecognizer:
 if __name__ == "__main__":
     asr = SpeechRecognizer()
 
-    audio = asr.listen()
+    audio = asr._listen()
     result = asr.transcribe(audio)
     print(f"\nFinal text: {result['text']}")
     print(f"Confidence: {result['confidence']}")
