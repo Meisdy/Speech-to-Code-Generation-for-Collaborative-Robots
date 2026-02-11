@@ -1,50 +1,71 @@
 """
 GUI module for Speech-to-Code Framework for Collaborative Robots.
 
-This module provides a modern GUI interface for recording voice commands
-and converting them to robot code using speech recognition.
+This module provides a pure view layer following MVP pattern.
+The GUI emits events and displays data - contains no business logic.
 """
 
-import threading
 import tkinter as tk
-import ttkbootstrap as ttkb
 from tkinter import scrolledtext
 from datetime import datetime
-from typing import Callable, Dict, Any
+from typing import Callable, Dict, Any, Optional
+import ttkbootstrap as ttkb
 from ttkbootstrap.constants import *
 
 
 class UserGUI:
-    """Main GUI class for the Speech-to-Code application."""
+    """
+    Pure View layer for Speech-to-Code application.
 
-    def __init__(self, process_speech: Callable[[str], Dict[str, Any]]) -> None:
+    Responsibilities:
+    - Display UI elements (buttons, status, log)
+    - Emit events to Presenter/Controller
+    - Update display when told to
+
+    Does NOT:
+    - Manage state
+    - Handle threading
+    - Contain business logic
+    """
+
+    def __init__(self,on_record_start: Callable[[], None],on_record_stop: Callable[[str], None] ) -> None:
         """
-        Initialize the GUI.
+        Initialize the GUI view.
 
         Args:
-            process_speech: Callback function that processes speech input.
-                           Takes robot_type (str) and returns dict with
-                           'text' and 'confidence' keys.
+            on_record_start: Callback when user presses record button
+            on_record_stop: Callback when user releases record button
+                           Takes robot_type (str) as parameter
         """
-        self.process_speech = process_speech
+        # Event callbacks (connect to Presenter)
+        self.on_record_start = on_record_start
+        self.on_record_stop = on_record_stop
+
+        # Setup window
         self.root = ttkb.Window(themename="darkly")
         self.root.title("Speech-to-Code Generation for Cobots")
         self.root.geometry("1000x700")
         self.root.minsize(600, 500)
 
-        # State management
-        self.is_recording: bool = False
+        # UI state for robot type selection (default value)
         self.robot_type: tk.StringVar = tk.StringVar(value="Franka Emika")
 
-        # Widget references (initialized in setup_ui)
+        # Widget references with type hints for better readability and IDE support
         self.record_btn: ttkb.Button
         self.status_label: ttkb.Label
         self.log_text: scrolledtext.ScrolledText
+        self._space_down: bool = False  # Track spacebar state to stop trigger spam of system
 
-        self.setup_ui()
-        self.bind_spacebar()
+        # Widget references - initialize to None (explicit declaration)
+        self.record_btn: Optional[ttkb.Button] = None
+        self.status_label: Optional[ttkb.Label] = None
+        self.log_text: Optional[scrolledtext.ScrolledText] = None
 
-    def setup_ui(self) -> None:
+        # Build the UI and bind events
+        self._setup_ui()
+        self._bind_events()
+
+    def _setup_ui(self) -> None:
         """Build and layout all GUI widgets."""
         # Header
         header = ttkb.Frame(self.root)
@@ -77,7 +98,7 @@ class UserGUI:
         robot_combo = ttkb.Combobox(
             robot_frame,
             textvariable=self.robot_type,
-            values=["Franka Emika", "Universal Robots", "Mock Robot"],
+            values=["Franka Emika", "Universal Robots", "Mock Adapter"],
             state="readonly",
             font=("Segoe UI", 11),
             width=15
@@ -91,7 +112,6 @@ class UserGUI:
         )
         self.record_btn.pack(pady=40, ipadx=80, ipady=25)
         self.record_btn.configure(bootstyle=PRIMARY)
-        self.bind_events()
 
         # Status Field
         self.status_label = ttkb.Label(
@@ -117,142 +137,143 @@ class UserGUI:
         )
         self.log_text.pack(fill=BOTH, expand=True)
 
-    def bind_events(self) -> None:
-        """Bind mouse events to the record button."""
-        self.record_btn.bind("<Button-1>", self.on_press)
-        self.record_btn.bind("<ButtonRelease-1>", self.on_release)
+    def _bind_events(self) -> None:
+        """Bind user input events to emit callbacks."""
+        # Mouse events on button
+        self.record_btn.bind("<Button-1>", self._handle_press)
+        self.record_btn.bind("<ButtonRelease-1>", self._handle_release)
 
-    def bind_spacebar(self) -> None:
-        """Bind spacebar key events for recording."""
-        self.root.bind("<space>", self.on_press)
-        self.root.bind("<KeyRelease-space>", self.on_release)
-        self.root.focus_set()
+        # Keyboard events (spacebar)
+        self.root.bind("<KeyPress-space>", self._handle_press)
+        self.root.bind("<KeyRelease-space>", self._handle_release)
+        self.root.focus_set() # Ensure root window has focus to capture key events
 
-    def on_press(self, _: tk.Event) -> str:
-        """
-        Handle button press event.
+    def _handle_press(self, event: tk.Event) -> str:
+        """Internal handler for press events (mouse or keyboard)."""
+        if event.type == tk.EventType.KeyPress and event.keysym == "space":
+            if self._space_down:
+                return "break"  # ignore auto-repeat
+            self._space_down = True
 
-        Args:
-            _: Tkinter event (unused)
-
-        Returns:
-            "break" to prevent default behavior
-        """
-        if not self.is_recording:
-            self.start_recording()
+        self.on_record_start()
         return "break"
 
-    def on_release(self, _: tk.Event) -> str:
-        """
-        Handle button release event.
+    def _handle_release(self, event: tk.Event) -> str:
+        """Internal handler for release events (mouse or keyboard)."""
+        if event.type == tk.EventType.KeyRelease and event.keysym == "space":
+            self._space_down = False
 
-        Args:
-            _: Tkinter event (unused)
-
-        Returns:
-            "break" to prevent default behavior
-        """
-        if self.is_recording:
-            self.stop_recording()
+        robot_type = self.robot_type.get()
+        self.on_record_stop(robot_type)
         return "break"
 
-    def start_recording(self) -> None:
-        """Start the recording process."""
-        self.is_recording = True
-        self.record_btn.configure(text="Recording...", bootstyle=WARNING)
-        self.status_label.configure(
-            text=f"🔴 Recording for {self.robot_type.get()}...",
-            bootstyle=WARNING
-        )
-        self.log(f"Started recording for {self.robot_type.get()}")
+    # ========== PUBLIC METHODS FOR PRESENTER TO UPDATE VIEW ==========
 
-    def stop_recording(self) -> None:
-        """Stop recording and begin processing."""
-        self.is_recording = False
-        self.record_btn.configure(text="Processing...", bootstyle=INFO)
-        self.status_label.configure(
-            text=f"Processing for {self.robot_type.get()}...",
-            bootstyle=INFO
-        )
-        threading.Thread(target=self.process_recording, daemon=True).start()
-
-    def process_recording(self) -> None:
-        """Process the recorded speech in a background thread."""
-        try:
-            result = self.process_speech(self.robot_type.get())
-            self.root.after(0, lambda: self.update_result(result))
-        except Exception as e:
-            self.root.after(0, lambda: self.log(f"❌ Error: {e}"))
-
-    def update_result(self, result: Dict[str, Any]) -> None:
+    def set_status(self, message: str, style: str = "info") -> None:
         """
-        Update UI with transcription results.
+        Update status label (called by Presenter).
 
         Args:
-            result: Dictionary containing 'text' and 'confidence' keys
+            message: Status text to display
+            style: Bootstrap style (info, success, warning, danger, primary)
+        """
+        self.status_label.configure(text=message, bootstyle=style)
+
+    def set_button_state(self, text: str, style: str = "primary", enabled: bool = True) -> None:
+        """
+        Update record button (called by Presenter).
+
+        Args:
+            text: Button text
+            style: Bootstrap style
+            enabled: Whether button is clickable
+        """
+        self.record_btn.configure(text=text, bootstyle=style)
+        if enabled:
+            self.record_btn.configure(state="normal")
+        else:
+            self.record_btn.configure(state="disabled")
+
+    def display_result(self, result: Dict[str, Any]) -> None:
+        """
+        Display transcription result (called by Presenter).
+
+        Args:
+            result: Dictionary with keys:
+                - text: Transcribed text
+                - confidence: Confidence score (0-1)
+                - Optional: status, code, etc.
         """
         text = result.get('text', 'N/A')
         conf = result.get('confidence', 0)
-        self.log(
-            f"✓ Transcribed: '{text}' (conf: {conf:.2f}) "
-            f"for {self.robot_type.get()}"
-        )
-        self.status_label.configure(
-            text=f"✅ Ready – Last: {text[:50]}...",
-            bootstyle=SUCCESS
-        )
-        self.recording_done()
+        status = result.get('status', 'unknown')
 
-    def recording_done(self) -> None:
-        """Reset UI to ready state after processing."""
-        self.record_btn.configure(
-            text="Press and hold to record (spacebar)",
-            bootstyle=PRIMARY
-        )
-        self.status_label.configure(
-            text=f"Ready for {self.robot_type.get()} – "
-                 f"start recording!",
-            bootstyle=INFO
-        )
+        # Log the result
+        self.log(f"Transcribed: '{text}' (confidence: {conf:.2f})")
+        if status != 'unknown':
+            self.log(f"Status: {status}")
+
+        # Update status to ready
+        preview = text[:50] + "..." if len(text) > 50 else text
+        self.set_status(f"✅ Ready – Last: {preview}", "success")
+        self.set_button_state("Press and hold to record (spacebar)", "primary", True)
+
+    def display_error(self, error_message: str) -> None:
+        """
+        Display error message (called by Presenter).
+
+        Args:
+            error_message: Error description
+        """
+        self.log(f"❌ Error: {error_message}")
+        self.set_status("Error occurred – Ready to retry", "danger")
+        self.set_button_state("Press and hold to record (spacebar)", "primary", True)
 
     def log(self, message: str) -> None:
         """
-        Thread-safe logging to the log text widget.
+        Append message to log area.
 
         Args:
-            message: Message to log
+            message: Log message to display
         """
-        self.log_text.config(state="normal")
+        self.log_text.config(state="normal") # Enable editing to insert log
         timestamp = datetime.now().strftime("%H:%M:%S")
         self.log_text.insert(tk.END, f"[{timestamp}] {message}\n")
-        self.log_text.see(tk.END)
-        self.log_text.config(state="disabled")
+        self.log_text.see(tk.END) # Auto-scroll to latest entry
+        self.log_text.config(state="disabled") # Disable editing again
 
     def run(self) -> None:
         """Start the GUI main event loop."""
         self.root.mainloop()
 
 
+# Testing stub
 def main() -> None:
-    """Entry point for testing the GUI with a dummy processor."""
-    def dummy_process(robot_type: str) -> Dict[str, Any]:
-        """
-        Simulate speech processing.
+    """Test GUI with dummy callbacks."""
+    def on_start():
+        print("Presenter: Recording started")
+        gui.set_button_state('Press and hold to record (spacebar)', 'warning', True)
+        gui.set_status("🔴 Recording...", "warning")
+        gui.log("Recording started")
 
-        Args:
-            robot_type: Type of robot selected
+    def on_stop(robot_type: str):
+        print(f"Presenter: Recording stopped for {robot_type}")
+        gui.set_button_state('Press and hold to record (spacebar)', 'info', True)
+        gui.set_status("Processing...", "info")
+        gui.log(f"Processing for {robot_type}...")
 
-        Returns:
-            Dictionary with transcription result
-        """
-        import time
-        time.sleep(2)
-        return {
-            "text": f"Move the {robot_type} forward",
-            "confidence": 0.92
-        }
+        # Simulate async result after 2s
+        def show_result():
+            result = {
+                "text": f"Move the {robot_type} forward",
+                "confidence": 0.92,
+                "status": "success"
+            }
+            gui.display_result(result)
 
-    gui = UserGUI(process_speech=dummy_process)
+        gui.root.after(2000, show_result)
+
+    gui = UserGUI(on_record_start=on_start, on_record_stop=on_stop)
     gui.run()
 
 
