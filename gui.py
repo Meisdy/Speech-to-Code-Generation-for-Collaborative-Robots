@@ -215,7 +215,7 @@ class UserGUI:
 
         # Update status to ready
         preview = text[:50] + "..." if len(text) > 50 else text
-        self.set_status(f"✅ Ready – Last: {preview}", "success")
+        self.set_status(f"✅ System is ready", "success")
         self.set_button_state("Press and hold to record (spacebar)", "primary", True)
 
     def display_error(self, error_message: str) -> None:
