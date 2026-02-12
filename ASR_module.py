@@ -31,14 +31,14 @@ class SpeechRecognizer:
         """
     def __init__(self):
         # Parameters from config
-        self.language = config.ASR_LANGUAGE
-        self.threshold = config.ASR_CONFIDENCE_THRESHOLD
-        self.sample_rate = config.ASR_SAMPLE_RATE
-        self.use_fp16 = config.ASR_FP16
+        self.language: str = config.ASR_LANGUAGE
+        self.threshold: float = config.ASR_CONFIDENCE_THRESHOLD
+        self.sample_rate: int = config.ASR_SAMPLE_RATE
+        self.use_fp16: bool = config.ASR_FP16
 
         # Recording data
-        self.stream = None  # Current audio stream for recording
-        self.frames = []  # List of raw audio chunks (bytes) captured during recording
+        self.stream: pyaudio.Stream | None = None
+        self.frames: list[bytes] = []
 
         # Load Whisper model and PyAudio
         try:
@@ -52,6 +52,7 @@ class SpeechRecognizer:
             raise RuntimeError(f"Failed to initialize PyAudio: {e}")
 
 
+    # Audio capture methods
     def start_listening(self) -> None:
         """Open stream and prepare for recording."""
         self.frames = []
@@ -65,7 +66,6 @@ class SpeechRecognizer:
             )
         except OSError as e:
             raise RuntimeError(f"Failed to open audio stream: {e}")
-
 
     def stop_listening(self) -> np.ndarray | None:
         """Close stream and return audio."""
