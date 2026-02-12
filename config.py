@@ -14,22 +14,22 @@ ASR_CONFIDENCE_THRESHOLD = 0.7       # Reject transcripts below this (0.0-1.0)
 ASR_FP16 = False                     # Use GPU acceleration (requires CUDA)
 
 # =================================================================================
-# Input Configuration
+# Parser Configuration (add as you build parser)
 # =================================================================================
-INPUT_METHOD = "keyboard"            # Options: keyboard, button
-PTT_TRIGGER = "enter"                # Push-to-talk trigger
+LLM_API_BASE = "http://localhost:1234/v1"
+LLM_MODEL_NAME = "meta-llama-3.1-8b-instruct"   # Update to your loaded model
+LLM_TEMPERATURE = 0.1                           # Low for deterministic output
+LLM_MAX_TOKENS = 2048
+LLM_TIMEOUT = 15                              # seconds
+
 
 # =================================================================================
 # Robot Backend Configuration
 # =================================================================================
-ROBOT_TYPE = "mock"                  # Options: mock, franka, ur
-ROBOT_IP = None                      # Robot IP address (None for mock)
-ROBOT_TIMEOUT = 5                    # Connection timeout in seconds
+ROBOT_TYPES= ['Franka Emika', 'Univeral Robot', 'Mock Adapter']  # Supported robot types
+ROBOT_IP = None                             # Robot IP address (None for mock)
+ROBOT_TIMEOUT = 5                           # Connection timeout in seconds
 
-# =================================================================================
-# Parser Configuration (add as you build parser)
-# =================================================================================
-PARSER_MAX_COMMAND_LENGTH = 200      # Maximum characters per command
 
 # =================================================================================
 # Logging Configuration
