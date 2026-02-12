@@ -12,6 +12,8 @@ from typing import Callable, Dict, Any, Optional
 import ttkbootstrap as ttkb
 from ttkbootstrap.constants import *
 
+import config
+
 
 class UserGUI:
     """
@@ -49,6 +51,7 @@ class UserGUI:
 
         # UI state for robot type selection (default value)
         self.robot_type: tk.StringVar = tk.StringVar(value="Franka Emika")
+        self.robot_types = config.ROBOT_TYPES
 
         # Widget references with type hints for better readability and IDE support
         self.record_btn: ttkb.Button
@@ -98,7 +101,7 @@ class UserGUI:
         robot_combo = ttkb.Combobox(
             robot_frame,
             textvariable=self.robot_type,
-            values=["Franka Emika", "Universal Robots", "Mock Adapter"],
+            values=self.robot_types,
             state="readonly",
             font=("Segoe UI", 11),
             width=15
