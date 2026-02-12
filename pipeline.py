@@ -6,8 +6,9 @@ from enum import Enum, auto
 class State(Enum):
     IDLE = auto()
     RECORDING = auto()
-    PROCESSING = auto()
-
+    TRANSCRIBING = auto()
+    #PARSING = auto()
+    #EXECUTING = auto()
 
 
 class Controller:
@@ -16,28 +17,52 @@ class Controller:
         self.asr = SpeechRecognizer()
         self.gui = None
 
-    def on_start(self):
+        # Recording thread control
+        self.recording_active = threading.Event()
+        self.recording_thread = None
+
+
+    def start_recording(self):
         if self.state != State.IDLE:
             return  # Ignore if busy
 
         self.state = State.RECORDING
         self.gui.set_status("🔴 Recording...", "warning")
         self.gui.set_button_state("Press and hold to record (spacebar)", "warning", True)
-        threading.Thread(target=self.asr.start_listening, daemon=True).start()
 
-    def on_stop(self, robot_type: str):
+        self.recording_active.set()
+        self.recording_thread = threading.Thread(target=self._recording_loop, daemon=True)
+        self.recording_thread.start()
+
+
+    def _recording_loop(self):
+        """Continuously record audio until recording_active is cleared."""
+        self.asr.start_listening()  # Initialize recording resources
+        while self.recording_active.is_set():
+            self.asr.read_chunk()  # This will block until recording is stopped
+
+
+    def start_execution(self, robot_type: str):
         if self.state != State.RECORDING:
             return
 
-        self.state = State.PROCESSING
+        # Update GUI immediately to show processing status while we wait for recording thread to finish
+        self.state = State.TRANSCRIBING
         self.gui.set_status("Processing...", "info")
-        self.gui.set_button_state("Press and hold to record (spacebar)", "info", True)
-        threading.Thread(target=lambda: self._process(robot_type), daemon=True).start()
+        self.gui.set_button_state("Press and hold to record (spacebar)", "info", False)
 
-    def _process(self, robot_type):
+        # Stop recording thread and wait for it to finish before processing audio
+        self.recording_active.clear()  # Signal recording thread to stop
+        if self.recording_thread:
+            self.recording_thread.join()  # Wait for recording thread to finish
+            self.recording_thread = None
+
+        threading.Thread(target=lambda: self._process_audio(robot_type), daemon=True).start()
+
+
+    def _process_audio(self, robot_type):
         audio = self.asr.stop_listening()
         result = self.asr.transcribe(audio)
-
         self.gui.root.after(0, lambda: self._finish(result))
 
     def _finish(self, result):
