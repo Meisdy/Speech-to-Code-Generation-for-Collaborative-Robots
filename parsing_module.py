@@ -5,29 +5,36 @@ from typing import Dict, Any
 from pathlib import Path
 import config
 
+"""
+To do:
+    check other errors that should get catched if possible
+    cleanup code more? 
+    test with more commands and edge cases
+    test implmenetation in pipeline
+    check if code is sound in terms of best practices, error handling, etc.
+    
+Notes: 
+    Consider adding logging of all interactions for debugging (with timestamps, input, output, errors) - can be toggled in config
+
+"""
+
+
+
 
 class CodeParser:
-    """
-    LLM-based parser for converting natural language to robot commands.
-
-    Uses LM Studio API to parse speech transcriptions into structured JSON
-    commands according to ruleset and command schema definitions.
-    """
+    """LLM-based parser for converting natural language to robot commands."""
 
     def __init__(self):
-        # LLM configuration from config
         self.api_base: str = config.LLM_API_BASE
         self.model_name: str = config.LLM_MODEL_NAME
         self.temperature: float = config.LLM_TEMPERATURE
         self.max_tokens: int = config.LLM_MAX_TOKENS
         self.timeout: int = config.LLM_TIMEOUT
 
-        # Load ruleset and command schema
         self.ruleset: Dict = self._load_json("ruleset.json")
         self.command_schema: Dict = self._load_json("command_schema.json")
-
-        # Build system prompt once
         self.system_prompt: str = self._build_system_prompt()
+
 
     def _load_json(self, filename: str) -> Dict:
         """Load JSON file from project root."""
@@ -36,7 +43,7 @@ class CodeParser:
             return json.load(f)
 
     def _build_system_prompt(self) -> str:
-        """Construct system prompt with ruleset and schema information."""
+        """Construct system prompt with ruleset and schema."""
         return f"""You are a robot command parser. Convert natural language to structured JSON commands.
 
                 AVAILABLE PRIMITIVES:
@@ -51,37 +58,45 @@ class CodeParser:
                 - Commands array can contain multiple sequential commands
                 - Use defaults from ruleset when parameters not specified
                 - Always include "mode", "robot", and "commands" fields
-                - If you want to add feedback, then add it to the "message" field in the output JSON, but do not include it if not needed
+                - If you want to add feedback, add it to the "message" field
                 """
 
     def parse(self, text: str, robot_type: str) -> Dict[str, Any]:
-        """
-        Parse natural language command to structured JSON.
-
-        Args:
-            text: Natural language command from ASR
-            robot_type: "Franka Emika" | "Universal Robots" | "Mock Adapter"
-
-        Returns:
-            {"command": {...}, "status": "success"}
-        """
-        # Build user prompt
+        """Parse natural language command to structured JSON."""
         user_prompt = f"Robot type: {robot_type}\nCommand: {text}\n\nGenerate JSON output:"
 
-        # Call LLM
-        response = self._call_llm(user_prompt)
+        try:
+            result = self._call_llm(user_prompt)
 
-        # Parse and validate JSON
-        parsed_command = self._parse_and_validate(response, robot_type)
+            # Check for token limit truncation
+            if result['choices'][0].get('finish_reason') == 'length':
+                return self._error_response(robot_type, f"Response truncated, used {result['usage']['total_tokens']} / {self.max_tokens} tokens)")
 
-        return {
-            "command": parsed_command,
-            "status": "success",
-            "raw_response": response
-        }
+            # Extract and clean response
+            response = result['choices'][0]['message']['content'].strip()
+            cleaned = self._clean_response(response) # Remove markdown fences if present
+            parsed = json.loads(cleaned)
 
-    def _call_llm(self, user_prompt: str) -> str:
-        """Call LM Studio API and return response text."""
+            return {"command": parsed, "status": "success"}
+
+        # Handle various exceptions and return standardized error responses
+        except requests.exceptions.ConnectionError:
+            return self._error_response(robot_type, f"LM Studio not running at {self.api_base}")
+
+        except requests.exceptions.Timeout:
+            return self._error_response(robot_type, f"LLM request timed out after {self.timeout}s")
+
+        except json.JSONDecodeError as e:
+            return self._error_response(robot_type, f"Invalid JSON from LLM: {e}")
+
+        except RuntimeError as e:
+            return self._error_response(robot_type, str(e))
+
+        except Exception as e:
+            return self._error_response(robot_type, f"Unexpected error: {e}")
+
+    def _call_llm(self, user_prompt: str) -> Dict[str, Any]:
+        """Call LM Studio API and return full result dict."""
         response = requests.post(
             f"{self.api_base}/chat/completions",
             json={
@@ -96,49 +111,43 @@ class CodeParser:
             timeout=self.timeout
         )
 
-        result = response.json()
-        return result['choices'][0]['message']['content'].strip()
+        return response.json()
 
-    def _parse_and_validate(self, response: str, robot_type: str) -> Dict[str, Any]:
-        """Parse LLM response and validate against schema."""
+    def _clean_response(self, response: str) -> str:
+        """Remove markdown code fences if present."""
         if response.startswith("```"):
+            print("Warning: LLM returned markdown-wrapped JSON")  # or proper logging
             response = response.split("```")[1]
             if response.startswith("json"):
                 response = response[4:]
-            response = response.strip()
+        return response.strip()
 
-        # Parse JSON
-        parsed = json.loads(response)
-
-        # Ensure required fields
-        if "robot" not in parsed:
-            parsed["robot"] = robot_type
-
-        if "mode" not in parsed:
-            parsed["mode"] = "live"
-
-        return parsed
+    def _error_response(self, robot_type: str, error_msg: str) -> Dict[str, Any]:
+        """Build standardized error response."""
+        return {
+            "command": {"robot": robot_type, "mode": "live"},
+            "status": "error",
+            "error": error_msg
+        }
 
 
-# Testing stub
 def main():
     parser = CodeParser()
 
     test_commands = [
         ("Open the gripper", "Franka Emika"),
+        ("Teach a new pose called NewHomePos", "Franka Emika"),
         ("Move to Home position and close gripper", "Universal Robots"),
-        ("Teach a new pose called PickPosition", "Franka Emika")
     ]
 
     for text, robot_type in test_commands:
         print(f"\n{'=' * 60}")
-        print(f"Input: {text}")
-        print(f"Robot: {robot_type}")
+        print(f"Input: {text} | Robot: {robot_type}")
 
         result = parser.parse(text, robot_type)
 
-        print(f"Status: {result['status']}")
-        print(f"Command: {json.dumps(result['command'], indent=2)}")
+        print("Parsed Command:")
+        print(json.dumps(result, indent=3))
 
 
 if __name__ == "__main__":
