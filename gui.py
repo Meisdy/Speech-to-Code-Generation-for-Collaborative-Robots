@@ -5,14 +5,14 @@ This module provides a pure view layer following MVP pattern.
 The GUI emits events and displays data - contains no business logic.
 """
 
+import config
 import tkinter as tk
+import ttkbootstrap as ttkb
 from tkinter import scrolledtext
 from datetime import datetime
 from typing import Callable, Dict, Any, Optional
-import ttkbootstrap as ttkb
 from ttkbootstrap.constants import *
 
-import config
 
 
 class UserGUI:
@@ -68,6 +68,7 @@ class UserGUI:
         self._setup_ui()
         self._bind_events()
 
+
     def _setup_ui(self) -> None:
         """Build and layout all GUI widgets."""
         # Header
@@ -83,7 +84,7 @@ class UserGUI:
 
         subtitle = ttkb.Label(
             header,
-            text="Press & hold button or SPACEBAR to record commands",
+            text="Press & hold button or use SPACEBAR to record commands",
             font=("Segoe UI", 12)
         )
         subtitle.pack(pady=(0, 20))
@@ -104,14 +105,14 @@ class UserGUI:
             values=self.robot_types,
             state="readonly",
             font=("Segoe UI", 11),
-            width=15
+            width=12
         )
         robot_combo.pack(side=LEFT, padx=(10, 0))
 
         # Main Record Button
         self.record_btn = ttkb.Button(
             self.root,
-            text="Press and hold to record (spacebar)"
+            text="Press and hold to record"
         )
         self.record_btn.pack(pady=40, ipadx=80, ipady=25)
         self.record_btn.configure(bootstyle=PRIMARY)
@@ -146,7 +147,7 @@ class UserGUI:
         self.record_btn.bind("<Button-1>", self._handle_press)
         self.record_btn.bind("<ButtonRelease-1>", self._handle_release)
 
-        # Keyboard events (spacebar)
+        # Keyboard events
         self.root.bind("<KeyPress-space>", self._handle_press)
         self.root.bind("<KeyRelease-space>", self._handle_release)
         self.root.focus_set() # Ensure root window has focus to capture key events
@@ -219,18 +220,7 @@ class UserGUI:
         # Update status to ready
         preview = text[:50] + "..." if len(text) > 50 else text
         self.set_status(f"✅ System is ready", "success")
-        self.set_button_state("Press and hold to record (spacebar)", "primary", True)
-
-    def display_error(self, error_message: str) -> None:
-        """
-        Display error message (called by Presenter).
-
-        Args:
-            error_message: Error description
-        """
-        self.log(f"❌ Error: {error_message}")
-        self.set_status("Error occurred – Ready to retry", "danger")
-        self.set_button_state("Press and hold to record (spacebar)", "primary", True)
+        self.set_button_state("Press and hold to record", "primary", True)
 
     def log(self, message: str) -> None:
         """
@@ -249,19 +239,28 @@ class UserGUI:
         """Start the GUI main event loop."""
         self.root.mainloop()
 
+    def on_window_close(self, cleanup_callback: Callable[[], None]) -> None:
+        """Register callback to run on window close."""
+
+        def close_handler():
+            cleanup_callback()
+            self.root.destroy()
+
+        self.root.protocol("WM_DELETE_WINDOW", close_handler)
+
 
 # Testing stub
 def main() -> None:
     """Test GUI with dummy callbacks."""
     def on_start():
         print("Presenter: Recording started")
-        gui.set_button_state('Press and hold to record (spacebar)', 'warning', True)
+        gui.set_button_state('Press and hold to record', 'warning', True)
         gui.set_status("🔴 Recording...", "warning")
         gui.log("Recording started")
 
     def on_stop(robot_type: str):
         print(f"Presenter: Recording stopped for {robot_type}")
-        gui.set_button_state('Press and hold to record (spacebar)', 'info', True)
+        gui.set_button_state('Press and hold to record', 'info', True)
         gui.set_status("Processing...", "info")
         gui.log(f"Processing for {robot_type}...")
 
@@ -278,7 +277,6 @@ def main() -> None:
 
     gui = UserGUI(on_record_start=on_start, on_record_stop=on_stop)
     gui.run()
-
 
 if __name__ == "__main__":
     main()
