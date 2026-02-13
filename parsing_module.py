@@ -7,10 +7,10 @@ into structured JSON commands according to defined rulesets and schemas.
 """
 
 import json
+import config
 import requests
 from typing import Dict, Any
 from pathlib import Path
-import config
 
 
 class CodeParser:
@@ -35,7 +35,6 @@ class CodeParser:
         self.ruleset: Dict = self._load_json("ruleset.json")
         self.command_schema: Dict = self._load_json("command_schema.json")
         self.system_prompt: str = self._build_system_prompt()
-
 
     def _load_json(self, filename: str) -> Dict:
         """
@@ -93,7 +92,7 @@ RULES:
         """
         # Validate input
         if not text or not text.strip() or len(text.strip()) < 10:
-            return self._error_response(robot_type, "Empty command")
+            return self._error_response(robot_type, "Command empty or too short")
 
         user_prompt = f"Robot type: {robot_type}\nCommand: {text}\n\nGenerate JSON output:"
 
