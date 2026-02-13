@@ -4,6 +4,10 @@ Configuration for Speech-to-Code Framework
 All values can be edited directly in this file
 """
 
+
+FRAMEWORK_MODE = "live"              # Add programming / advanced mode later
+
+
 # =================================================================================
 # ASR (Automatic Speech Recognition) Configuration
 # =================================================================================
@@ -20,7 +24,7 @@ LLM_API_BASE = "http://localhost:1234/v1"
 LLM_MODEL_NAME = "meta-llama-3.1-8b-instruct"   # Update to your loaded model
 LLM_TEMPERATURE = 0.1                           # Low for deterministic output
 LLM_MAX_TOKENS = 2048
-LLM_TIMEOUT = 15                              # seconds
+LLM_TIMEOUT = 60                              # seconds
 
 
 # =================================================================================
@@ -38,3 +42,4 @@ LOGGING_ENABLED = True               # Enable/disable logging
 LOGGING_DIR = "./logs"               # Log output directory
 LOGGING_LEVEL = "INFO"               # Options: DEBUG, INFO, WARNING, ERROR
 LOGGING_SAVE_AUDIO = False           # Save audio files for debugging
+LOGGING_SAVE_PARSE = True            # Save parser outputs for debugging
