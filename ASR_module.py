@@ -51,6 +51,8 @@ class SpeechRecognizer:
         except Exception as e:
             raise RuntimeError(f"Failed to initialize PyAudio: {e}")
 
+        # Start listening immediately to reduce latency
+        self.start_listening()
 
     # Audio capture methods
     def start_listening(self) -> None:
@@ -67,18 +69,39 @@ class SpeechRecognizer:
         except OSError as e:
             raise RuntimeError(f"Failed to open audio stream: {e}")
 
-    def stop_listening(self) -> np.ndarray | None:
-        """Close stream and return audio."""
-        if self.stream:
-            self.stream.close()
-            self.stream = None
+    def is_listening(self) -> bool:
+        """Check if stream is open and ready."""
+        return self.stream is not None
 
-        if self.frames:
-            audio = np.frombuffer(b''.join(self.frames), dtype=np.int16)
+    def get_audio(self) -> np.ndarray | None:
+        """
+        Retrieve recorded audio and reset for next recording.
+        Stream remains open for instant next capture.
+        """
+        if not self.frames:
+            return None
 
-            # Normalize int16 to float32 range [-1.0, 1.0] for Whisper
-            return audio.astype(np.float32) / 32768.0
-        return None
+        audio = np.frombuffer(b''.join(self.frames), dtype=np.int16)
+        self.frames = []  # Clear for next recording
+
+        # Normalize int16 to float32 range [-1.0, 1.0] for Whisper
+        return audio.astype(np.float32) / 32768.0
+
+    def close(self) -> None:
+        """Clean up audio resources safely."""
+        try:
+            # Close stream if open
+            if self.stream:
+                self.stream.close()
+                self.stream = None
+
+            # Terminate PyAudio
+            if hasattr(self, 'audio_interpreter') and self.audio_interpreter:
+                self.audio_interpreter.terminate()
+                self.audio_interpreter = None
+        except (OSError, AttributeError) as e:
+            print(f"Warning: Error closing PyAudio: {e}")
+
 
     def read_chunk(self) -> None:
         """Internal: read one chunk (called by pipeline loop)."""
@@ -111,16 +134,7 @@ class SpeechRecognizer:
         return {"text": text, "confidence": round(confidence, 2)}
 
 
-    # Cleanup methods
-    def close(self) -> None:
-        """Clean up audio resources safely."""
-        try:
-            if hasattr(self, 'audio_interpreter') and self.audio_interpreter:
-                self.audio_interpreter.terminate()
-                self.audio_interpreter = None
-        except (OSError, AttributeError) as e:
-            print(f"Warning: Error closing PyAudio: {e}")
-
+    # Support context manager and cleanup
     def __del__(self):
         """Ensure resources are cleaned up on deletion."""
         try:
@@ -145,11 +159,9 @@ def main():
     print("Press ENTER to start recording...")
     input()
 
-    # Start recording with continuous read loop
     recording = threading.Event()
     recording.set()
 
-    asr.start_listening()
     print("🔴 Recording... (press ENTER to stop)")
 
     def record_loop():
@@ -163,14 +175,15 @@ def main():
     recording.clear()
     thread.join()
 
-    # Process audio
-    audio = asr.stop_listening()
+    # Get audio (stream stays open)
+    audio = asr.get_audio()
     result = asr.transcribe(audio)
 
     print(f"\nFinal text: {result['text']}")
     print(f"Confidence: {result['confidence']}")
 
-    asr.close()
+    asr.close()  # Only close on exit
+
 
 if __name__ == "__main__":
     main()
