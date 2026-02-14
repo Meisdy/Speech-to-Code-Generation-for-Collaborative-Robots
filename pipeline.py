@@ -44,6 +44,7 @@ class Controller:
         self.asr = SpeechRecognizer()
         self.parser = CodeParser()
         self.gui = None
+        self.confidence_threshold = config.ASR_CONFIDENCE_THRESHOLD
 
         # Recording thread control
         self.recording_active = threading.Event()
@@ -54,6 +55,7 @@ class Controller:
         self.log_audio: bool = config.LOGGING_ENABLED and config.LOGGING_SAVE_AUDIO
         self.log_parsing: bool = config.LOGGING_ENABLED and config.LOGGING_SAVE_PARSE
 
+        # Create logging directory if needed
         if self.log_audio or self.log_parsing:
             os.makedirs(self.log_dir, exist_ok=True)
 
@@ -121,13 +123,19 @@ class Controller:
             result: Transcription result with 'text' and 'confidence'
             robot_type: Target robot for parsing
         """
-        self.gui.display_result(result)
 
         # Check if transcription was successful
         if not result.get("text") or result.get("confidence", 0) == 0:
             self.gui.set_status("❌ Transcription failed", "danger")
             self.state = State.IDLE
             return
+
+        # Check for low confidence and warn user
+        if result.get("confidence", 1) < self.confidence_threshold:
+            self.gui.log("Warning: Low confidence in transcription, parsing may fail")
+
+        # Display transcription result
+        self.gui.display_result(result)
 
         # Move to parsing state
         self.state = State.PARSING
@@ -230,6 +238,7 @@ class Controller:
         except Exception as e:
             print(f"Warning: Cleanup error: {e}")
 
+    # Helper method to reset button state after processing
     def _set_button_state(self, visual_state: str = "primary", enabled: bool = True):
         """Reset button state to default."""
         self.gui.set_button_state("Press and hold to record", visual_state, enabled)
