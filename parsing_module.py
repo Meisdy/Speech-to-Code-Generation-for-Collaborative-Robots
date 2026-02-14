@@ -196,8 +196,8 @@ def main():
     test_commands = [
         ("Open the gripper", "Franka Emika"),
         ("Teach a new pose called NewHomePos", "Franka Emika"),
-        ("Move to Home position and close gripper", "Universal Robots"),
-        ("Move to Home position, then to Pick position, open gripper, move to Place position, and close gripper", "Universal Robots"),
+        ("Move to Home position and close gripper", "Universal Robot"),
+        ("Move to Home position, then to Pick position, open gripper, move to Place position, and close gripper", "Universal Robot"),
     ]
 
     for text, robot_type in test_commands:

@@ -30,7 +30,7 @@ LLM_TIMEOUT = 60                              # seconds
 # =================================================================================
 # Robot Backend Configuration
 # =================================================================================
-ROBOT_TYPES= ['Franka Emika', 'Univeral Robot', 'Mock Adapter']  # Supported robot types
+ROBOT_TYPES= ['Franka Emika', 'Universal Robot', 'Mock Adapter']  # Supported robot types
 ROBOT_IP = None                             # Robot IP address (None for mock)
 ROBOT_TIMEOUT = 5                           # Connection timeout in seconds
 
