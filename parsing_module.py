@@ -11,6 +11,9 @@ import config
 import requests
 from typing import Dict, Any
 from pathlib import Path
+import logging
+
+logger = logging.getLogger("cobot")
 
 
 class CodeParser:
@@ -108,32 +111,41 @@ RULES:
 
             # Extract and clean response
             response = result['choices'][0]['message']['content'].strip()
+            logger.debug("Parser: LLM raw response preview: %s", response[:500])
             cleaned = self._clean_response(response)  # Remove markdown fences if present
             parsed = json.loads(cleaned)
 
+            logger.info("Parser: Parsing successful")
             return {"command": parsed, "status": "success"}
 
         # Network and API errors
         except requests.exceptions.ConnectionError:
+            logger.error("Parser: LM Studio connection error")
             return self._error_response(robot_type, f"LM Studio not running at {self.api_base}")
 
         except requests.exceptions.Timeout:
+            logger.error("Parser: LLM request timed out")
             return self._error_response(robot_type, f"LLM request timed out after {self.timeout}s")
 
         except requests.exceptions.HTTPError as e:
+            logger.exception("Parser: HTTP error from LLM")
             return self._error_response(robot_type, f"HTTP error: {e}")
 
         except KeyError as e:
+            logger.exception("Parser: Unexpected API structure missing key")
             return self._error_response(robot_type, f"Unexpected API structure: missing {e}")
 
         # Parsing errors
         except json.JSONDecodeError as e:
+            logger.error("Parser: JSON decode error")
             return self._error_response(robot_type, f"Invalid JSON from LLM: {e}")
 
         except RuntimeError as e:
+            logger.exception("Parser: Runtime error during parsing")
             return self._error_response(robot_type, str(e))
 
         except Exception as e:
+            logger.exception("Parser: Unexpected exception")
             return self._error_response(robot_type, f"Unexpected error: {e}")
 
     def _call_llm(self, user_prompt: str) -> Dict[str, Any]:

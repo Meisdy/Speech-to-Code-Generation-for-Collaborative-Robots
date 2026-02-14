@@ -1,8 +1,8 @@
-import os
 import time
 import json
 import config
 import threading
+import logging
 from enum import Enum, auto
 from parsing_module import CodeParser
 from ASR_module import SpeechRecognizer
@@ -10,16 +10,17 @@ from ASR_module import SpeechRecognizer
 
 """
 
-Notes: 
+Notes:
 Input lagg when pressing recording button. Good if we can fix this
-Positions and names with numbers maybe need a better llm promt so we do not mix 1 and one
-Still not sure if this is a real state machine. Check the run of GUI aswell in depth
+Positions and names with numbers maybe need a better llm prompt so we do not mix 1 and one
+Still not sure if this is a real state machine. Check the run of GUI as well in depth
 maybe update all gui stuff in one gui display handler that checks the state of the controller
 
 
 
 """
 
+logger = logging.getLogger("cobot")
 
 
 class State(Enum):
@@ -52,12 +53,8 @@ class Controller:
 
         # Logging configuration
         self.log_dir: str = config.LOGGING_DIR
-        self.log_audio: bool = config.LOGGING_ENABLED and config.LOGGING_SAVE_AUDIO
-        self.log_parsing: bool = config.LOGGING_ENABLED and config.LOGGING_SAVE_PARSE
-
-        # Create logging directory if needed
-        if self.log_audio or self.log_parsing:
-            os.makedirs(self.log_dir, exist_ok=True)
+        self.log_audio: bool = config.LOGGING_SAVE_AUDIO
+        self.log_parsing: bool = config.LOGGING_SAVE_PARSE
 
     def set_gui(self, gui):
         """Link GUI to controller during startup."""
@@ -77,6 +74,8 @@ class Controller:
         self.recording_active.set()
         self.recording_thread = threading.Thread(target=self._recording_loop, daemon=True)
         self.recording_thread.start()
+
+        logger.info("Recording started")
 
     def _recording_loop(self):
         """Continuously record audio until recording_active is cleared."""
@@ -104,6 +103,8 @@ class Controller:
             self.recording_thread.join()
             self.recording_thread = None
 
+        logger.info("Recording stopped, starting transcription")
+
         # Process audio in background thread
         threading.Thread(target=lambda: self._process_audio(robot_type), daemon=True).start()
 
@@ -127,15 +128,14 @@ class Controller:
         # Check if transcription was successful
         if not result.get("text") or result.get("confidence", 0) == 0:
             self.gui.set_status("❌ Transcription failed", "danger")
+            self._set_button_state()
             self.state = State.IDLE
+            logger.error("Transcription failed: no text or zero confidence")
             return
 
         # Check for low confidence and warn user
         if result.get("confidence", 1) < self.confidence_threshold:
-            self.gui.log("Warning: Low confidence in transcription, parsing may fail")
-
-        # Display transcription result
-        self.gui.display_result(result)
+            logger.warning("ASR confidence low: %.2f - parsing may fail", result.get("confidence", 0.0))
 
         # Move to parsing state
         self.state = State.PARSING
@@ -167,8 +167,8 @@ class Controller:
 
         if parse_result["status"] == "success":
             command_as_string = self._command_to_string(parse_result["command"])
-            self.gui.log('Parsed successfully: ' + command_as_string)
             self.gui.set_status("✅ Command parsed successfully", "success")
+            logger.info(f'Parser: Command summary \"{command_as_string}\"')
 
             # save the parsed command if logging is enabled
             if self.log_parsing:
@@ -176,12 +176,12 @@ class Controller:
                 filename = f"{self.log_dir}/{timestamp}_parse_result.json"
                 with open(filename, "w") as f:
                     json.dump(parse_result["command"], f, indent=4)
-                self.gui.log(f"Saved parsed command to {filename}")
+                logger.info(f"Parser: Saved parsed command to {filename}")
 
         else:
             error_msg = parse_result.get("error", "Unknown parsing error")
-            self.gui.log(f"Parsing failed: {error_msg}")
             self.gui.set_status(f"❌ {error_msg}", "danger")
+            logger.error("Parsing failed: %s", error_msg)
 
         # Return to idle state
         self.state = State.IDLE
@@ -202,9 +202,9 @@ class Controller:
                 # Handle dictionary target
                 if isinstance(target, dict):
                     name = target.get("name", "?")
-                    parts.append(f"Move to {name}")
+                    parts.append(f"Move to {name} pos.")
                 else:
-                    parts.append(f"Move to {target}")
+                    parts.append(f"Move to {target} pos.")
 
             elif action == "gripper":
                 state = cmd.get("state", cmd.get("command", "?"))  # Try both 'state' and 'command'
@@ -236,7 +236,7 @@ class Controller:
             if self.asr.is_listening():
                 self.asr.close()
         except Exception as e:
-            print(f"Warning: Cleanup error: {e}")
+            logger.warning(f"Cleanup error: {e}")
 
     # Helper method to reset button state after processing
     def _set_button_state(self, visual_state: str = "primary", enabled: bool = True):

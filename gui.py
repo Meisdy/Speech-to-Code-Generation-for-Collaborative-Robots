@@ -6,10 +6,10 @@ The GUI emits events and displays data - contains no business logic.
 """
 
 import config
+import logging
 import tkinter as tk
 import ttkbootstrap as ttkb
 from tkinter import scrolledtext
-from datetime import datetime
 from typing import Callable, Dict, Any, Optional
 from ttkbootstrap.constants import *
 
@@ -137,9 +137,19 @@ class UserGUI:
             height=12,
             font=("Consolas", 10),
             state="disabled",
-            bg="#212529"
+            bg="#212529",
+            fg="#f8f9fa",
+            insertbackground="#f8f9fa"
         )
         self.log_text.pack(fill=BOTH, expand=True)
+
+        # Configure text tags for colored log levels
+        # Keep colors minimal and readable on dark background
+        self.log_text.tag_config('DEBUG', foreground='#9AA5B1')   # dim gray
+        self.log_text.tag_config('INFO', foreground='#F8F9FA')    # light/white
+        self.log_text.tag_config('WARNING', foreground='#FFC107') # amber
+        self.log_text.tag_config('ERROR', foreground='#FF6B6B')   # soft red
+        self.log_text.tag_config('CRITICAL', foreground='#FF3B30', underline=True)
 
     def _bind_events(self) -> None:
         """Bind user input events to emit callbacks."""
@@ -198,40 +208,22 @@ class UserGUI:
         else:
             self.record_btn.configure(state="disabled")
 
-    def display_result(self, result: Dict[str, Any]) -> None:
+    def log(self, message: str, level: int = logging.INFO) -> None:
         """
-        Display transcription result (called by Presenter).
-
-        Args:
-            result: Dictionary with keys:
-                - text: Transcribed text
-                - confidence: Confidence score (0-1)
-                - Optional: status, code, etc.
-        """
-        text = result.get('text', 'N/A')
-        conf = result.get('confidence', 0)
-        status = result.get('status', 'unknown')
-
-        # Log the result
-        self.log(f"Transcribed: '{text}' (confidence: {conf:.2f})")
-        if status != 'unknown':
-            self.log(f"Status: {status}")
-
-        # Update status to ready
-        preview = text[:50] + "..." if len(text) > 50 else text
-        self.set_status(f"✅ System is ready", "success")
-        self.set_button_state("Press and hold to record", "primary", True)
-
-    def log(self, message: str) -> None:
-        """
-        Append message to log area.
+        Append message to log area with optional level for coloring.
 
         Args:
             message: Log message to display
+            level: logging level (int) - controls color/tag
         """
+        # Determine tag name from level
+        level_name = logging.getLevelName(level)
+        if not isinstance(level_name, str):
+            level_name = 'INFO'
+
+        # Ensure GUI update happens on main thread; callers from GuiHandler already schedule via after
         self.log_text.config(state="normal") # Enable editing to insert log
-        timestamp = datetime.now().strftime("%H:%M:%S")
-        self.log_text.insert(tk.END, f"[{timestamp}] {message}\n")
+        self.log_text.insert(tk.END, f"{message}\n", level_name)
         self.log_text.see(tk.END) # Auto-scroll to latest entry
         self.log_text.config(state="disabled") # Disable editing again
 
@@ -271,7 +263,7 @@ def main() -> None:
                 "confidence": 0.92,
                 "status": "success"
             }
-            gui.display_result(result)
+            gui.log(str(result))
 
         gui.root.after(2000, show_result)
 
