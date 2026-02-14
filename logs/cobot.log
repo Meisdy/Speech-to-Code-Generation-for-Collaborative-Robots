@@ -1,0 +1,27 @@
+2026-02-14 18:07:10 [INFO] Application starting
+2026-02-14 18:07:13 [INFO] Application ready
+2026-02-14 18:07:14 [INFO] Recording started
+2026-02-14 18:07:18 [INFO] Recording stopped, starting transcription
+2026-02-14 18:07:19 [INFO] ASR: transcribed text 'Move to the home position and open the gripper.', confidence = 0.98
+2026-02-14 18:07:22 [DEBUG] Parser: LLM raw response preview: {
+  "mode": "live",
+  "robot": "franka",
+  "commands": [
+    {
+      "action": "move",
+      "motion_type": "moveJ",
+      "target": {
+        "type": "named_pose",
+        "name": "Home"
+      }
+    },
+    {
+      "action": "gripper",
+      "command": "open"
+    }
+  ],
+  "message": ""
+}
+2026-02-14 18:07:22 [INFO] Parser: Parsing successful
+2026-02-14 18:07:22 [INFO] Parser: Command summary "Move to Home pos. → Open gripper"
+2026-02-14 18:07:31 [INFO] Application shutting down
