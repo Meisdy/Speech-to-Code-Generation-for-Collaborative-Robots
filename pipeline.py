@@ -1,12 +1,12 @@
-from sympy import false
-
-from ASR_module import SpeechRecognizer
-from parsing_module import CodeParser
-import threading
-from enum import Enum, auto
+import os
+import time
 import json
 import config
-import time
+import threading
+from enum import Enum, auto
+from parsing_module import CodeParser
+from ASR_module import SpeechRecognizer
+
 
 """
 
@@ -53,6 +53,9 @@ class Controller:
         self.log_dir: str = config.LOGGING_DIR
         self.log_audio: bool = config.LOGGING_ENABLED and config.LOGGING_SAVE_AUDIO
         self.log_parsing: bool = config.LOGGING_ENABLED and config.LOGGING_SAVE_PARSE
+
+        if self.log_audio or self.log_parsing:
+            os.makedirs(self.log_dir, exist_ok=True)
 
     def set_gui(self, gui):
         """Link GUI to controller during startup."""
