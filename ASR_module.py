@@ -4,6 +4,7 @@ import pyaudio
 import numpy as np
 import threading
 import config
+import logging
 
 """
 Notes:
@@ -14,6 +15,7 @@ Notes:
 - Consider exploring GPU acceleration with fp16 if performance is an issue
 """
 
+logger = logging.getLogger("cobot")
 
 class SpeechRecognizer:
     """
@@ -100,7 +102,7 @@ class SpeechRecognizer:
                 self.audio_interpreter.terminate()
                 self.audio_interpreter = None
         except (OSError, AttributeError) as e:
-            print(f"Warning: Error closing PyAudio: {e}")
+            logger.error(f"Error closing PyAudio: {e}")
 
 
     def read_chunk(self) -> None:
@@ -117,7 +119,7 @@ class SpeechRecognizer:
         try:
             result = self.model.transcribe(audio=audio, language=self.language, fp16=self.use_fp16)
         except Exception as e:
-            print(f"Transcription error: {e}")
+            logger.error(f"Transcription error {e}")
             return {"text": "", "confidence": 0.0}
 
         text = result["text"].strip()
@@ -131,6 +133,7 @@ class SpeechRecognizer:
         else:
             confidence = 0.0
 
+        logger.info("ASR: transcribed text '%s', confidence = %.2f", text, confidence)
         return {"text": text, "confidence": round(confidence, 2)}
 
 
