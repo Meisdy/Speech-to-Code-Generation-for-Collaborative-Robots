@@ -49,7 +49,7 @@ class Controller:
 
         # Update state and GUI
         self.state = State.RECORDING
-        self.gui.set_status("🔴 Recording...", "warning")
+        self.gui.set_gui_status_line("🔴 Recording...", "warning")
         self._set_button_state('warning', True)
 
         # Start recording thread
@@ -76,7 +76,7 @@ class Controller:
 
         # Update GUI to show processing
         self.state = State.TRANSCRIBING
-        self.gui.set_status("Processing...", "info")
+        self.gui.set_gui_status_line("Processing...", "info")
         self._set_button_state('info', False)
 
         # Stop recording thread and wait for completion
@@ -109,7 +109,7 @@ class Controller:
 
         # Check if transcription was successful
         if not result.get("text") or result.get("confidence", 0) == 0:
-            self.gui.set_status("❌ Transcription failed", "danger")
+            self.gui.set_gui_status_line("❌ Transcription failed", "danger")
             self._set_button_state()
             self.state = State.IDLE
             logger.error("Transcription failed: no text or zero confidence")
@@ -121,7 +121,7 @@ class Controller:
 
         # Move to parsing state
         self.state = State.PARSING
-        self.gui.set_status("Parsing command...", "info")
+        self.gui.set_gui_status_line("Parsing command...", "info")
 
         # Parse in background thread
         threading.Thread(target=lambda: self._parse_command(result["text"], robot_type), daemon=True).start()
@@ -149,12 +149,12 @@ class Controller:
 
         if parse_result["status"] == "success":
             command_as_string = self._command_to_string(parse_result["command"])
-            self.gui.set_status("✅ Command parsed successfully", "success")
+            self.gui.set_gui_status_line("✅ Command parsed successfully", "success")
             logger.info(f'Parser: Command summary \"{command_as_string}\"')
 
         else:
             error_msg = parse_result.get("error", "Unknown parsing error")
-            self.gui.set_status(f"❌ Parsing error", "danger")
+            self.gui.set_gui_status_line(f"❌ Parsing error", "danger")
             logger.error("Parsing failed: %s", error_msg)
 
         # Return to idle state
