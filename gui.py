@@ -183,7 +183,7 @@ class UserGUI:
 
     # ========== PUBLIC METHODS FOR PRESENTER TO UPDATE VIEW ==========
 
-    def set_status(self, message: str, style: str = "info") -> None:
+    def set_gui_status_line(self, message: str, style: str = "info") -> None:
         """
         Update status label (called by Presenter).
 
@@ -247,13 +247,13 @@ def main() -> None:
     def on_start():
         print("Presenter: Recording started")
         gui.set_button_state('Press and hold to record', 'warning', True)
-        gui.set_status("🔴 Recording...", "warning")
+        gui.set_gui_status_line("🔴 Recording...", "warning")
         gui.log("Recording started")
 
     def on_stop(robot_type: str):
         print(f"Presenter: Recording stopped for {robot_type}")
         gui.set_button_state('Press and hold to record', 'info', True)
-        gui.set_status("Processing...", "info")
+        gui.set_gui_status_line("Processing...", "info")
         gui.log(f"Processing for {robot_type}...")
 
         # Simulate async result after 2s
