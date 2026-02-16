@@ -10,8 +10,8 @@ import logging
 import tkinter as tk
 import ttkbootstrap as ttkb
 from tkinter import scrolledtext
-from typing import Callable, Dict, Any, Optional
-from ttkbootstrap.constants import *
+from typing import Callable, Optional
+from ttkbootstrap.constants import LEFT, BOTH, X, PRIMARY
 
 
 
