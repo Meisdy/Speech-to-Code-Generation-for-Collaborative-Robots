@@ -25,3 +25,47 @@
 2026-02-14 18:07:22 [INFO] Parser: Parsing successful
 2026-02-14 18:07:22 [INFO] Parser: Command summary "Move to Home pos. → Open gripper"
 2026-02-14 18:07:31 [INFO] Application shutting down
+2026-02-16 10:00:30 [INFO] Application starting
+2026-02-16 10:00:35 [INFO] Application ready
+2026-02-16 10:00:37 [INFO] Recording started
+2026-02-16 10:00:41 [INFO] Recording stopped, starting transcription
+2026-02-16 10:00:42 [INFO] ASR: transcribed text 'Move to whole position and open the gripper.', confidence = 0.97
+2026-02-16 10:00:46 [ERROR] Parser: LM Studio connection error
+2026-02-16 10:00:46 [ERROR] Parsing failed: LM Studio not running at http://localhost:1234/v1
+2026-02-16 10:01:01 [INFO] Application shutting down
+2026-02-16 10:28:19 [INFO] Application starting
+2026-02-16 10:28:25 [INFO] Application ready
+2026-02-16 10:28:30 [INFO] Recording started
+2026-02-16 10:28:33 [INFO] Recording stopped, starting transcription
+2026-02-16 10:28:33 [ERROR] Failed to save audio recording: Python integer 32768 out of bounds for int16
+2026-02-16 10:28:34 [INFO] ASR: transcribed text '1, 2, 3, test.', confidence = 0.80
+2026-02-16 10:28:38 [ERROR] Parser: LM Studio connection error
+2026-02-16 10:28:38 [ERROR] Parsing failed: LM Studio not running at http://localhost:1234/v1
+2026-02-16 10:30:47 [INFO] Application shutting down
+2026-02-16 10:30:55 [INFO] Application starting
+2026-02-16 10:30:59 [INFO] Application ready
+2026-02-16 10:31:00 [INFO] Recording started
+2026-02-16 10:31:02 [INFO] Recording stopped, starting transcription
+2026-02-16 10:31:02 [INFO] Saved audio to logs\audio_20260216_103102.wav
+2026-02-16 10:31:03 [INFO] ASR: transcribed text 'One, two, three.', confidence = 0.80
+2026-02-16 10:31:07 [ERROR] Parser: LM Studio connection error
+2026-02-16 10:31:07 [ERROR] Parsing failed: LM Studio not running at http://localhost:1234/v1
+2026-02-16 10:31:59 [INFO] Application shutting down
+2026-02-16 10:33:22 [INFO] Application starting
+2026-02-16 10:33:26 [INFO] Application ready
+2026-02-16 10:33:27 [INFO] Recording started
+2026-02-16 10:33:35 [INFO] Recording stopped, starting transcription
+2026-02-16 10:33:35 [INFO] Saved audio to logs\20260216_103335_audio.wav
+2026-02-16 10:33:37 [INFO] ASR: transcribed text 'This is the first test to see how the microphone quality is like on the recording of the Cobalt speech software.', confidence = 0.71
+2026-02-16 10:33:41 [ERROR] Parser: LM Studio connection error
+2026-02-16 10:33:41 [ERROR] Parsing failed: LM Studio not running at http://localhost:1234/v1
+2026-02-16 10:34:18 [INFO] Application shutting down
+2026-02-16 10:52:28 [INFO] Application starting
+2026-02-16 10:52:32 [INFO] Application ready
+2026-02-16 10:52:38 [INFO] Recording started
+2026-02-16 10:52:44 [INFO] Recording stopped, starting transcription
+2026-02-16 10:52:44 [INFO] Saved audio to logs\20260216_105244_audio.wav
+2026-02-16 10:52:45 [INFO] ASR: transcribed text '1, 2, 3, 4, please move to the home position next.', confidence = 0.90
+2026-02-16 10:52:49 [ERROR] Parser: LM Studio connection error
+2026-02-16 10:52:49 [ERROR] Parsing failed: LM Studio not running at http://localhost:1234/v1
+2026-02-16 10:52:51 [INFO] Application shutting down
