@@ -1,42 +1,38 @@
 # speech_module.py
+"""
+Speech recognition module using OpenAI Whisper.
+Handles microphone audio capture and transcription for the speech-to-code pipeline.
+"""
 import whisper
 import pyaudio
 import numpy as np
 import threading
 import config
 import logging
-
-"""
-Notes:
-- Consider adding logging statements for debugging and performance monitoring
-- Consider adding a method to save audio files for debugging if LOGGING_SAVE_AUDIO is True
-- Consider adding a timeout for recording to prevent infinite loops
-- Consider adding support for microphone choice (currently uses default input device of computer)
-- Consider exploring GPU acceleration with fp16 if performance is an issue
-"""
+import wave
+import os
+from datetime import datetime
 
 logger = logging.getLogger("cobot")
 
+
 class SpeechRecognizer:
     """
-        Speech recognition module using OpenAI's Whisper model.
+    Speech recognition module using OpenAI's Whisper model.
 
-        Handles audio capture from microphone and transcription to text.
-        Designed to be controlled by Pipeline orchestration layer.
+    Handles audio capture from microphone and transcription to text.
+    Designed to be controlled by Pipeline orchestration layer.
+    """
 
-        Usage:
-            asr = SpeechRecognizer()
-            asr.start_listening()
-            # ... read_chunk() in loop ...
-            audio = asr.stop_listening()
-            result = asr.transcribe(audio)
-        """
     def __init__(self):
         # Parameters from config
+        self.model_size: str = config.ASR_MODEL_SIZE
         self.language: str = config.ASR_LANGUAGE
         self.threshold: float = config.ASR_CONFIDENCE_THRESHOLD
         self.sample_rate: int = config.ASR_SAMPLE_RATE
         self.use_fp16: bool = config.ASR_FP16
+        self.log_audio: bool = config.LOGGING_SAVE_AUDIO
+        self.log_path: str = config.LOGGING_DIR
 
         # Recording data
         self.stream: pyaudio.Stream | None = None
@@ -44,21 +40,26 @@ class SpeechRecognizer:
 
         # Load Whisper model and PyAudio
         try:
-            self.model = whisper.load_model(config.ASR_MODEL_SIZE)
+            self.model = whisper.load_model(self.model_size)
         except Exception as e:
-            raise RuntimeError(f"Failed to load Whisper model '{config.ASR_MODEL_SIZE}': {e}")
+            logger.exception(f"Failed to load Whisper model '{config.ASR_MODEL_SIZE}': {e}")
 
         try:
             self.audio_interpreter: pyaudio.PyAudio = pyaudio.PyAudio()
         except Exception as e:
-            raise RuntimeError(f"Failed to initialize PyAudio: {e}")
+            logger.exception(f"Failed to initialize PyAudio: {e}")
+
 
         # Start listening immediately to reduce latency
         self.start_listening()
 
-    # Audio capture methods
     def start_listening(self) -> None:
-        """Open stream and prepare for recording."""
+        """
+        Open audio stream and prepare for recording.
+
+        Raises:
+            RuntimeError: If audio stream cannot be opened.
+        """
         self.frames = []
         try:
             self.stream = self.audio_interpreter.open(
@@ -69,16 +70,25 @@ class SpeechRecognizer:
                 frames_per_buffer=1024
             )
         except OSError as e:
-            raise RuntimeError(f"Failed to open audio stream: {e}")
+            logger.exception("Failed to open audio stream")
 
     def is_listening(self) -> bool:
-        """Check if stream is open and ready."""
+        """
+        Check if audio stream is open and ready.
+
+        Returns:
+            bool: True if stream is active, False otherwise.
+        """
         return self.stream is not None
 
     def get_audio(self) -> np.ndarray | None:
         """
         Retrieve recorded audio and reset for next recording.
+
         Stream remains open for instant next capture.
+
+        Returns:
+            np.ndarray: Normalized float32 audio in range [-1.0, 1.0], or None if no frames recorded.
         """
         if not self.frames:
             return None
@@ -86,40 +96,30 @@ class SpeechRecognizer:
         audio = np.frombuffer(b''.join(self.frames), dtype=np.int16)
         self.frames = []  # Clear for next recording
 
+        # Optionally save audio for debugging
+        if self.log_audio:
+            self._save_audio(audio)
+
         # Normalize int16 to float32 range [-1.0, 1.0] for Whisper
         return audio.astype(np.float32) / 32768.0
 
-    def close(self) -> None:
-        """Clean up audio resources safely."""
-        try:
-            # Close stream if open
-            if self.stream:
-                self.stream.close()
-                self.stream = None
-
-            # Terminate PyAudio
-            if hasattr(self, 'audio_interpreter') and self.audio_interpreter:
-                self.audio_interpreter.terminate()
-                self.audio_interpreter = None
-        except (OSError, AttributeError) as e:
-            logger.error(f"Error closing PyAudio: {e}")
-
-
-    def read_chunk(self) -> None:
-        """Internal: read one chunk (called by pipeline loop)."""
-        if self.stream:
-            data = self.stream.read(1024, exception_on_overflow=False)
-            self.frames.append(data)
-
     def transcribe(self, audio: np.ndarray | None) -> dict:
-        """Convert audio to text using OpenAI's Whisper."""
+        """
+        Convert audio to text using OpenAI's Whisper.
+
+        Args:
+            audio (np.ndarray): Normalized float32 audio array from get_audio().
+
+        Returns:
+            dict: Dictionary with 'text' (str) and 'confidence' (float) keys.
+        """
         if audio is None:
             return {"text": "", "confidence": 0.0}
 
         try:
             result = self.model.transcribe(audio=audio, language=self.language, fp16=self.use_fp16)
         except Exception as e:
-            logger.error(f"Transcription error {e}")
+            logger.exception(f"Transcription failed: {e}")
             return {"text": "", "confidence": 0.0}
 
         text = result["text"].strip()
@@ -136,8 +136,47 @@ class SpeechRecognizer:
         logger.info("ASR: transcribed text '%s', confidence = %.2f", text, confidence)
         return {"text": text, "confidence": round(confidence, 2)}
 
+    def close(self) -> None:
+        """Clean up audio resources safely."""
+        try:
+            # Close stream if open
+            if self.stream:
+                self.stream.close()
+                self.stream = None
 
-    # Support context manager and cleanup
+            # Terminate PyAudio
+            if hasattr(self, 'audio_interpreter') and self.audio_interpreter:
+                self.audio_interpreter.terminate()
+                self.audio_interpreter = None
+        except (OSError, AttributeError) as e:
+            logger.error(f"Error closing PyAudio: {e}")
+
+    def read_chunk(self) -> None:
+        """Read one audio chunk from stream (called by pipeline loop)."""
+        if self.stream:
+            data = self.stream.read(1024, exception_on_overflow=False)
+            self.frames.append(data)
+
+    def _save_audio(self, audio: np.ndarray) -> None:
+        """Save recorded audio to logs folder for debugging."""
+        try:
+            # Generate timestamp-based filename
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            filepath = os.path.join("logs", f"{timestamp}_audio.wav")
+
+            # Write WAV file
+            with wave.open(filepath, 'wb') as wf:
+                wf.setnchannels(1)  # Mono
+                wf.setsampwidth(2)  # 2 bytes = 16-bit
+                wf.setframerate(self.sample_rate)
+                wf.writeframes(audio.tobytes())
+
+            logger.info(f"Saved audio to {filepath}")
+
+        except Exception as e:
+            logger.error(f"Failed to save debug audio: {e}")
+
+    # Lifecycle methods
     def __del__(self):
         """Ensure resources are cleaned up on deletion."""
         try:
