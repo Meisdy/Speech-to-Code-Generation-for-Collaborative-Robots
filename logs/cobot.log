@@ -69,3 +69,90 @@
 2026-02-16 10:52:49 [ERROR] Parser: LM Studio connection error
 2026-02-16 10:52:49 [ERROR] Parsing failed: LM Studio not running at http://localhost:1234/v1
 2026-02-16 10:52:51 [INFO] Application shutting down
+2026-02-16 11:15:56 [INFO] Application starting
+2026-02-16 11:16:00 [INFO] Application ready
+2026-02-16 11:16:26 [INFO] Recording started
+2026-02-16 11:16:29 [INFO] Recording stopped, starting transcription
+2026-02-16 11:16:29 [INFO] ASR: transcribed text 'Move to home position.', confidence = 0.90
+2026-02-16 11:16:33 [ERROR] Parser: LM Studio connection error
+2026-02-16 11:16:33 [ERROR] Parsing failed: LM Studio not running at http://localhost:1234/v1
+2026-02-16 11:17:05 [INFO] Recording started
+2026-02-16 11:17:09 [INFO] Recording stopped, starting transcription
+2026-02-16 11:17:09 [INFO] ASR: transcribed text 'Move to the home position now.', confidence = 0.85
+2026-02-16 11:17:24 [DEBUG] Parser: LLM raw response preview: {
+  "mode": "live",
+  "robot": "franka",
+  "commands": [
+    {
+      "action": "move",
+      "motion_type": "moveJ",
+      "target": {
+        "type": "named_pose",
+        "name": "Home"
+      }
+    }
+  ],
+  "message": ""
+}
+2026-02-16 11:17:24 [INFO] Parser: Parsing successful
+2026-02-16 11:17:24 [ERROR] Parser: Unexpected API structure missing key
+Traceback (most recent call last):
+  File "C:\Users\Sandy\Desktop\Cobot Code Generation\parsing_module.py", line 127, in parse
+    self._save_parsed_command(parsed)
+  File "C:\Users\Sandy\Desktop\Cobot Code Generation\parsing_module.py", line 217, in _save_parsed_command
+    json.dump(parsed["command"], f, indent=4)
+              ~~~~~~^^^^^^^^^^^
+KeyError: 'command'
+2026-02-16 11:17:24 [ERROR] Parsing failed: Unexpected API structure: missing 'command'
+2026-02-16 11:17:51 [INFO] Recording started
+2026-02-16 11:17:54 [INFO] Recording stopped, starting transcription
+2026-02-16 11:17:54 [INFO] ASR: transcribed text 'Move to home position.', confidence = 0.89
+2026-02-16 11:17:58 [DEBUG] Parser: LLM raw response preview: {
+  "mode": "live",
+  "robot": "franka",
+  "commands": [
+    {
+      "action": "move",
+      "motion_type": "moveJ",
+      "target": {
+        "type": "named_pose",
+        "name": "Home"
+      }
+    }
+  ],
+  "message": ""
+}
+2026-02-16 11:17:58 [INFO] Parser: Parsing successful
+2026-02-16 11:17:58 [ERROR] Parser: Unexpected API structure missing key
+Traceback (most recent call last):
+  File "C:\Users\Sandy\Desktop\Cobot Code Generation\parsing_module.py", line 127, in parse
+    self._save_parsed_command(parsed)
+  File "C:\Users\Sandy\Desktop\Cobot Code Generation\parsing_module.py", line 217, in _save_parsed_command
+    json.dump(parsed["command"], f, indent=4)
+              ~~~~~~^^^^^^^^^^^
+KeyError: 'command'
+2026-02-16 11:17:58 [ERROR] Parsing failed: Unexpected API structure: missing 'command'
+2026-02-16 11:20:01 [INFO] Application shutting down
+2026-02-16 11:20:10 [INFO] Application starting
+2026-02-16 11:20:12 [INFO] Application ready
+2026-02-16 11:21:12 [INFO] Recording started
+2026-02-16 11:21:15 [INFO] Recording stopped, starting transcription
+2026-02-16 11:21:15 [INFO] ASR: transcribed text 'Move to home position.', confidence = 0.84
+2026-02-16 11:21:19 [DEBUG] Parser: LLM raw response preview: {
+  "mode": "live",
+  "robot": "franka",
+  "commands": [
+    {
+      "action": "move",
+      "motion_type": "moveJ",
+      "target": {
+        "type": "named_pose",
+        "name": "Home"
+      }
+    }
+  ],
+  "message": ""
+}
+2026-02-16 11:21:19 [INFO] Parser: Parsing successful
+2026-02-16 11:21:19 [INFO] Parser: Saved parsed command to ./logs/260216_112119_parse_result.json
+2026-02-16 11:21:19 [INFO] Parser: Command summary "Move to Home pos."
