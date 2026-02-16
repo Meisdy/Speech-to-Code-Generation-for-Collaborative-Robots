@@ -213,3 +213,62 @@ KeyError: 'command'
 2026-02-16 11:49:38 [INFO] Parser: Parsing successful
 2026-02-16 11:49:38 [INFO] Parser: Command summary "Move to Home pos. → Open gripper → Move to {'type': 'offset_from_pose', 'pose_name': 'Home', 'offset': {'x': 1, 'y': 0, 'z': 0}} pos."
 2026-02-16 11:50:23 [INFO] Application shutting down
+2026-02-16 11:54:06 [INFO] Application starting
+2026-02-16 11:54:10 [INFO] Application ready
+2026-02-16 11:54:16 [INFO] Recording started
+2026-02-16 11:54:23 [INFO] Recording stopped, starting transcription
+2026-02-16 11:54:24 [INFO] ASR: transcribed text 'Move to position 1, open the gripper and then move to position 2 linearly.', confidence = 0.95
+2026-02-16 11:54:28 [DEBUG] Parser: LLM raw response preview: {
+  "mode": "live",
+  "robot": "franka",
+  "commands": [
+    {
+      "action": "move",
+      "motion_type": "moveJ",
+      "target": {
+        "type": "named_pose",
+        "name": "position_1"
+      }
+    },
+    {
+      "action": "gripper",
+      "command": "open"
+    },
+    {
+      "action": "move",
+      "motion_type": "moveL",
+      "target": {
+        "type": "named_pose",
+        "name": "position_2"
+      }
+    }
+  ],
+  "message": ""
+}
+2026-02-16 11:54:28 [INFO] Parser: Parsing successful
+2026-02-16 11:54:28 [INFO] Parser: Command summary "Move to position_1 pos. → Open gripper → Move to position_2 pos."
+2026-02-16 11:54:48 [INFO] Recording started
+2026-02-16 11:54:52 [INFO] Recording stopped, starting transcription
+2026-02-16 11:54:52 [INFO] ASR: transcribed text 'Safety care position as position 3.', confidence = 0.83
+2026-02-16 11:54:56 [DEBUG] Parser: LLM raw response preview: {
+  "mode": "live",
+  "robot": "franka",
+  "commands": [
+    {
+      "action": "move",
+      "motion_type": "moveJ",
+      "target": {
+        "type": "named_pose",
+        "name": "Safety care position"
+      }
+    },
+    {
+      "action": "teach_pose",
+      "pose_name": "Position 3",
+      "overwrite": false
+    }
+  ],
+  "message": ""
+}
+2026-02-16 11:54:56 [INFO] Parser: Parsing successful
+2026-02-16 11:54:56 [INFO] Parser: Command summary "Move to Safety care position pos. → Teach_pose"
