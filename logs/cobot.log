@@ -272,3 +272,4 @@ KeyError: 'command'
 }
 2026-02-16 11:54:56 [INFO] Parser: Parsing successful
 2026-02-16 11:54:56 [INFO] Parser: Command summary "Move to Safety care position pos. → Teach_pose"
+2026-02-16 12:03:59 [INFO] Application shutting down
