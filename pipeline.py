@@ -154,7 +154,7 @@ class Controller:
 
         else:
             error_msg = parse_result.get("error", "Unknown parsing error")
-            self.gui.set_status(f"❌ {error_msg}", "danger")
+            self.gui.set_status(f"❌ Parsing error", "danger")
             logger.error("Parsing failed: %s", error_msg)
 
         # Return to idle state
@@ -171,29 +171,24 @@ class Controller:
         for cmd in commands:
             action = cmd.get("action", "unknown")
 
+            # Action-specific formatting
             if action == "move":
                 target = cmd.get("target", {})
-                # Handle dictionary target
-                if isinstance(target, dict):
-                    name = target.get("name", "?")
-                    parts.append(f"Move to {name} pos.")
-                else:
-                    parts.append(f"Move to {target} pos.")
+                name = target.get("name", target) if isinstance(target, dict) else target
+                parts.append(f"Move to {name} pos.")
 
             elif action == "gripper":
-                state = cmd.get("state", cmd.get("command", "?"))  # Try both 'state' and 'command'
+                state = cmd.get("state") or cmd.get("command", "?")
                 parts.append(f"{state.capitalize()} gripper")
 
             elif action == "teach":
-                name = cmd.get("name", "?")
-                parts.append(f"Teach position '{name}'")
+                parts.append(f"Teach position '{cmd.get('name', '?')}'")
 
             elif action == "wait":
-                duration = cmd.get("duration", "?")
-                parts.append(f"Wait {duration}s")
+                parts.append(f"Wait {cmd.get('duration', '?')}s")
 
             else:
-                parts.append(f"{action.capitalize()}")
+                parts.append(action.capitalize())
 
         return " → ".join(parts)
 

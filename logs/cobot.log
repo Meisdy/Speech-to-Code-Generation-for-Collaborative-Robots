@@ -157,3 +157,59 @@ KeyError: 'command'
 2026-02-16 11:21:19 [INFO] Parser: Saved parsed command to ./logs/260216_112119_parse_result.json
 2026-02-16 11:21:19 [INFO] Parser: Command summary "Move to Home pos."
 2026-02-16 11:25:04 [INFO] Application shutting down
+2026-02-16 11:48:20 [INFO] Application starting
+2026-02-16 11:48:24 [INFO] Application ready
+2026-02-16 11:49:02 [INFO] Recording started
+2026-02-16 11:49:05 [INFO] Recording stopped, starting transcription
+2026-02-16 11:49:06 [INFO] ASR: transcribed text 'Move to home position.', confidence = 0.79
+2026-02-16 11:49:15 [DEBUG] Parser: LLM raw response preview: {
+  "mode": "live",
+  "robot": "franka",
+  "commands": [
+    {
+      "action": "move",
+      "motion_type": "moveJ",
+      "target": {
+        "type": "named_pose",
+        "name": "Home"
+      }
+    }
+  ],
+  "message": ""
+}
+2026-02-16 11:49:15 [INFO] Parser: Parsing successful
+2026-02-16 11:49:15 [INFO] Parser: Command summary "Move to Home pos."
+2026-02-16 11:49:26 [INFO] Recording started
+2026-02-16 11:49:32 [INFO] Recording stopped, starting transcription
+2026-02-16 11:49:33 [INFO] ASR: transcribed text 'Move to home position, open the gripper and then move to position one.', confidence = 0.90
+2026-02-16 11:49:38 [DEBUG] Parser: LLM raw response preview: {
+  "mode": "live",
+  "robot": "franka",
+  "commands": [
+    {
+      "action": "move",
+      "motion_type": "moveJ",
+      "target": {
+        "type": "named_pose",
+        "name": "Home"
+      }
+    },
+    {
+      "action": "gripper",
+      "command": "open"
+    },
+    {
+      "action": "move",
+      "motion_type": "moveJ",
+      "target": {
+        "type": "offset_from_pose",
+        "pose_name": "Home",
+        "offset": {
+          "x": 1,
+          "y": 0,
+          "z": 0
+        }
+      }
+2026-02-16 11:49:38 [INFO] Parser: Parsing successful
+2026-02-16 11:49:38 [INFO] Parser: Command summary "Move to Home pos. → Open gripper → Move to {'type': 'offset_from_pose', 'pose_name': 'Home', 'offset': {'x': 1, 'y': 0, 'z': 0}} pos."
+2026-02-16 11:50:23 [INFO] Application shutting down
