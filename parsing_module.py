@@ -44,7 +44,7 @@ class CodeParser:
         self.log_parsing: bool = config.LOGGING_SAVE_PARSE
         self.log_path: str = config.LOGGING_DIR
 
-    def _load_json(self, filename: str) -> Dict:
+    def _load_json(self, filename: str) -> Any | None:
         """
         Load JSON file from module directory.
 
@@ -62,7 +62,7 @@ class CodeParser:
             with open(file_path, 'r') as f:
                 return json.load(f)
         except FileNotFoundError:
-            raise FileNotFoundError(f"Required file not found: {filename}")
+            logger.error(f"Parser: Failed to load {filename} - file not found")
 
     def _build_system_prompt(self) -> str:
         """Build LLM system prompt with ruleset and schema definitions."""
@@ -216,6 +216,7 @@ RULES:
         with open(filename, "w") as f:
             json.dump(parsed, f, indent=4)
         logger.info(f"Parser: Saved parsed command to {filename}")
+
 
 def main():
     """Test parser with sample commands."""

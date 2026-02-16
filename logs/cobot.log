@@ -156,3 +156,4 @@ KeyError: 'command'
 2026-02-16 11:21:19 [INFO] Parser: Parsing successful
 2026-02-16 11:21:19 [INFO] Parser: Saved parsed command to ./logs/260216_112119_parse_result.json
 2026-02-16 11:21:19 [INFO] Parser: Command summary "Move to Home pos."
+2026-02-16 11:25:04 [INFO] Application shutting down
