@@ -1,5 +1,3 @@
-import time
-import json
 import config
 import threading
 import logging
@@ -7,18 +5,6 @@ from enum import Enum, auto
 from parsing_module import CodeParser
 from ASR_module import SpeechRecognizer
 
-
-"""
-
-Notes:
-Input lagg when pressing recording button. Good if we can fix this
-Positions and names with numbers maybe need a better llm prompt so we do not mix 1 and one
-Still not sure if this is a real state machine. Check the run of GUI as well in depth
-maybe update all gui stuff in one gui display handler that checks the state of the controller
-
-
-
-"""
 
 logger = logging.getLogger("cobot")
 
@@ -51,10 +37,6 @@ class Controller:
         self.recording_active = threading.Event()
         self.recording_thread = None
 
-        # Logging configuration
-        self.log_dir: str = config.LOGGING_DIR
-        self.log_audio: bool = config.LOGGING_SAVE_AUDIO
-        self.log_parsing: bool = config.LOGGING_SAVE_PARSE
 
     def set_gui(self, gui):
         """Link GUI to controller during startup."""
@@ -170,14 +152,6 @@ class Controller:
             self.gui.set_status("✅ Command parsed successfully", "success")
             logger.info(f'Parser: Command summary \"{command_as_string}\"')
 
-            # save the parsed command if logging is enabled
-            if self.log_parsing:
-                timestamp = time.strftime("%y%m%d_%H%M%S")
-                filename = f"{self.log_dir}/{timestamp}_parse_result.json"
-                with open(filename, "w") as f:
-                    json.dump(parse_result["command"], f, indent=4)
-                logger.info(f"Parser: Saved parsed command to {filename}")
-
         else:
             error_msg = parse_result.get("error", "Unknown parsing error")
             self.gui.set_status(f"❌ {error_msg}", "danger")
@@ -223,6 +197,10 @@ class Controller:
 
         return " → ".join(parts)
 
+    def _set_button_state(self, visual_state: str = "primary", enabled: bool = True):
+        """Reset button state to default."""
+        self.gui.set_button_state("Press and hold to record", visual_state, enabled)
+
     def cleanup(self):
         """Clean up resources on shutdown."""
         try:
@@ -237,9 +215,3 @@ class Controller:
                 self.asr.close()
         except Exception as e:
             logger.warning(f"Cleanup error: {e}")
-
-    # Helper method to reset button state after processing
-    def _set_button_state(self, visual_state: str = "primary", enabled: bool = True):
-        """Reset button state to default."""
-        self.gui.set_button_state("Press and hold to record", visual_state, enabled)
-
