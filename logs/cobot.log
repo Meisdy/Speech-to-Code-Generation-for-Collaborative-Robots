@@ -273,3 +273,46 @@ KeyError: 'command'
 2026-02-16 11:54:56 [INFO] Parser: Parsing successful
 2026-02-16 11:54:56 [INFO] Parser: Command summary "Move to Safety care position pos. → Teach_pose"
 2026-02-16 12:03:59 [INFO] Application shutting down
+2026-02-16 12:05:27 [INFO] Application starting
+2026-02-16 12:05:30 [INFO] Application ready
+2026-02-16 12:05:32 [INFO] Recording started
+2026-02-16 12:05:38 [INFO] Recording stopped, starting transcription
+2026-02-16 12:05:39 [INFO] ASR: transcribed text 'Move to position one, open the gripper and then move back to home position.', confidence = 0.93
+2026-02-16 12:05:44 [DEBUG] Parser: LLM raw response preview: {
+  "mode": "live",
+  "robot": "franka",
+  "commands": [
+    {
+      "action": "move",
+      "motion_type": "moveJ",
+      "target": {
+        "type": "named_pose",
+        "name": "position_1"
+      }
+    },
+    {
+      "action": "gripper",
+      "command": "open"
+    },
+    {
+      "action": "move",
+      "motion_type": "moveJ",
+      "target": {
+        "type": "named_pose",
+        "name": "Home"
+      }
+    }
+  ],
+  "message": ""
+}
+2026-02-16 12:05:44 [INFO] Parser: Parsing successful
+2026-02-16 12:05:44 [INFO] Parser: Command summary "Move to position_1 pos. → Open gripper → Move to Home pos."
+2026-02-16 12:05:59 [INFO] Application shutting down
+2026-02-16 14:10:58 [INFO] Application starting
+2026-02-16 14:11:02 [INFO] Application ready
+2026-02-16 14:11:04 [INFO] Recording started
+2026-02-16 14:11:07 [INFO] Recording stopped, starting transcription
+2026-02-16 14:11:08 [INFO] ASR: transcribed text 'Move to half position.', confidence = 0.86
+2026-02-16 14:11:12 [ERROR] Parser: LM Studio connection error
+2026-02-16 14:11:12 [ERROR] Parsing failed: LM Studio not running at http://localhost:1234/v1
+2026-02-16 14:11:13 [INFO] Application shutting down
