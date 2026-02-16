@@ -461,3 +461,30 @@ KeyError: slice(None, 500, None)
 2026-02-16 14:58:13 [INFO] Parser: Parsing successful
 2026-02-16 14:58:14 [INFO] Parser: Command summary "Open gripper → Move to position_1 pos. → Close gripper → Move to Home pos."
 2026-02-16 15:07:20 [INFO] Application shutting down
+2026-02-16 15:21:26 [INFO] Application starting
+2026-02-16 15:21:29 [INFO] Application ready
+2026-02-16 15:21:42 [INFO] Recording started
+2026-02-16 15:21:47 [INFO] Recording stopped, starting transcription
+2026-02-16 15:21:48 [INFO] ASR: transcribed text 'Move to position one, close the griffer.', confidence = 0.92
+2026-02-16 15:21:58 [DEBUG] Parser: LLM raw response preview: {
+  "mode": "live",
+  "robot": "franka",
+  "commands": [
+    {
+      "action": "move",
+      "motion_type": "moveJ",
+      "target": {
+        "type": "named_pose",
+        "name": "position_1"
+      }
+    },
+    {
+      "action": "gripper",
+      "command": "close"
+    }
+  ],
+  "message": ""
+}
+2026-02-16 15:21:58 [DEBUG] Parser: Parsed JSON after cleanup: {"mode": "live", "robot": "franka", "commands": [{"action": "move", "motion_type": "moveJ", "target": {"type": "named_pose", "name": "position_1"}}, {"action": "gripper", "command": "close"}], "message": ""}
+2026-02-16 15:21:58 [INFO] Parser: Parsing successful
+2026-02-16 15:21:58 [INFO] Parser: Command summary "Move to position_1 pos. → Close gripper"
