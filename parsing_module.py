@@ -115,11 +115,20 @@ RULES:
                     f"Response truncated, used {result['usage']['total_tokens']} / {self.max_tokens} tokens)"
                 )
 
-            # Extract and clean response
+            # Extract response content
             response = result['choices'][0]['message']['content'].strip()
             logger.debug("Parser: LLM raw response preview: %s", response[:500])
-            cleaned = self._clean_response(response)  # Remove formatting fences if present
+
+            # Cleanup head of response if LLM ignored formatting instructions
+            cleaned = self._clean_response(response)
             parsed = json.loads(cleaned)
+            logger.debug("Parser: Parsed JSON after cleanup: %s", json.dumps(parsed)[:500])
+
+            # Validate content
+            is_valid, error_msg = self._validate_answer(parsed)
+            if not is_valid:
+                logger.error(f"Parser: Validation failed - {error_msg}")
+                return self._error_response(robot_type, f"Invalid command structure: {error_msg}")
 
             logger.info("Parser: Parsing successful")
 
@@ -202,6 +211,74 @@ RULES:
             if response.startswith("json"):
                 response = response[4:]
         return response.strip()
+
+    def _validate_answer(self, parsed: Dict) -> tuple[bool, str]:
+        """
+        Validate parsed command structure and action definitions.
+
+        Args:
+            parsed: Parsed JSON from LLM response
+
+        Returns:
+            (is_valid, error_message) - error_message empty string if valid
+        """
+
+        # Check for missing top-level fields
+        for field in ["mode", "robot", "commands"]:
+            if field not in parsed:
+                return False, f'Missing required field: "{field}"'
+
+        # Validate commands is array and not empty
+        if not isinstance(parsed["commands"], list):
+            return False, "Commands must be an array"
+
+        if not parsed["commands"]:
+            return False, "Commands array is empty"
+
+        # Validate each command
+        valid_actions = set(self.ruleset["primitives"].keys())
+
+        for cmd in parsed["commands"]:
+            # Check action exists
+            if "action" not in cmd:
+                return False, "Missing action field in command"
+
+            action = cmd["action"]
+
+            # Check action is valid
+            if action not in valid_actions:
+                return False, f'Invalid action type: "{action}"'
+
+            # Action-specific validation
+            if action == "move":
+                if "target" not in cmd or not isinstance(cmd["target"], dict):
+                    return False, "Move command missing target"
+                if "name" not in cmd["target"]:
+                    return False, "Move target missing name"
+                if "motion_type" in cmd and cmd["motion_type"] not in ["moveJ", "moveL"]:
+                    return False, "Invalid motion type"
+
+            elif action == "gripper":
+                if "command" not in cmd:
+                    return False, "Gripper command missing command field"
+                if cmd["command"] not in ["open", "close"]:
+                    return False, "Invalid gripper command"
+
+            elif action == "wait":
+                if "duration_s" not in cmd:
+                    return False, "Wait command missing duration"
+                if not isinstance(cmd["duration_s"], (int, float)):
+                    return False, "Wait duration must be a number"
+
+            elif action == "teach_pose":
+                if "pose_name" not in cmd:
+                    return False, "Teach pose missing pose name"
+
+            elif action == "delete_pose":
+                if "pose_name" not in cmd:
+                    return False, "Delete pose missing pose name"
+
+        return True, ""
 
     def _error_response(self, robot_type: str, error_msg: str) -> Dict[str, Any]:
         """Build standardized error response structure."""

@@ -316,3 +316,148 @@ KeyError: 'command'
 2026-02-16 14:11:12 [ERROR] Parser: LM Studio connection error
 2026-02-16 14:11:12 [ERROR] Parsing failed: LM Studio not running at http://localhost:1234/v1
 2026-02-16 14:11:13 [INFO] Application shutting down
+2026-02-16 14:49:53 [INFO] Application starting
+2026-02-16 14:49:57 [INFO] Application ready
+2026-02-16 14:51:17 [INFO] Recording started
+2026-02-16 14:51:22 [INFO] Recording stopped, starting transcription
+2026-02-16 14:51:23 [INFO] ASR: transcribed text 'Move to the position 1 and open the gripper.', confidence = 0.96
+2026-02-16 14:51:38 [DEBUG] Parser: LLM raw response preview: {
+  "mode": "live",
+  "robot": "franka",
+  "commands": [
+    {
+      "action": "move",
+      "motion_type": "moveJ",
+      "target": {
+        "type": "named_pose",
+        "name": "position_1"
+      }
+    },
+    {
+      "action": "gripper",
+      "command": "open"
+    }
+  ],
+  "message": ""
+}
+2026-02-16 14:51:38 [DEBUG] Parser: Parsed JSON after cleanup: {"mode": "live", "robot": "franka", "commands": [{"action": "move", "motion_type": "moveJ", "target": {"type": "named_pose", "name": "position_1"}}, {"action": "gripper", "command": "open"}], "message": ""}
+2026-02-16 14:51:38 [INFO] Parser: Parsing successful
+2026-02-16 14:51:38 [INFO] Parser: Command summary "Move to position_1 pos. → Open gripper"
+2026-02-16 14:54:07 [INFO] Recording started
+2026-02-16 14:54:14 [INFO] Recording stopped, starting transcription
+2026-02-16 14:54:15 [INFO] ASR: transcribed text 'Move to position 2 and close to gripper. Afterwards move linearly to home position.', confidence = 0.95
+2026-02-16 14:54:20 [DEBUG] Parser: LLM raw response preview: {
+  "mode": "live",
+  "robot": "franka",
+  "commands": [
+    {
+      "action": "move",
+      "motion_type": "moveJ",
+      "target": {
+        "type": "named_pose",
+        "name": "position_2"
+      }
+    },
+    {
+      "action": "gripper",
+      "command": "close"
+    },
+    {
+      "action": "move",
+      "motion_type": "moveL",
+      "target": {
+        "type": "offset_from_pose",
+        "pose_name": "Home",
+        "offset": 0
+      }
+    }
+  ],
+  "message": ""
+}
+2026-02-16 14:54:20 [DEBUG] Parser: Parsed JSON after cleanup: {"mode": "live", "robot": "franka", "commands": [{"action": "move", "motion_type": "moveJ", "target": {"type": "named_pose", "name": "position_2"}}, {"action": "gripper", "command": "close"}, {"action": "move", "motion_type": "moveL", "target": {"type": "offset_from_pose", "pose_name": "Home", "offset": 0}}], "message": ""}
+2026-02-16 14:54:20 [ERROR] Parser: Validation failed - Move target missing name
+2026-02-16 14:54:20 [ERROR] Parsing failed: Invalid command structure: Move target missing name
+2026-02-16 14:54:37 [INFO] Application shutting down
+2026-02-16 14:56:48 [INFO] Application starting
+2026-02-16 14:56:51 [INFO] Application ready
+2026-02-16 14:56:52 [INFO] Recording started
+2026-02-16 14:57:02 [INFO] Recording stopped, starting transcription
+2026-02-16 14:57:03 [INFO] ASR: transcribed text 'Open gripper, move L to position 1, close gripper and then move to position home.', confidence = 0.95
+2026-02-16 14:57:08 [DEBUG] Parser: LLM raw response preview: {
+  "mode": "live",
+  "robot": "franka",
+  "commands": [
+    {
+      "action": "gripper",
+      "command": "open"
+    },
+    {
+      "action": "move",
+      "motion_type": "moveL",
+      "target": {
+        "type": "named_pose",
+        "name": "position_1"
+      }
+    },
+    {
+      "action": "gripper",
+      "command": "close"
+    },
+    {
+      "action": "move",
+      "motion_type": "moveJ",
+      "target": {
+        "type": "named_pose",
+        "name": "Home"
+      }
+    }
+  ],
+  "message":
+2026-02-16 14:57:08 [ERROR] Parser: Unexpected API structure missing key
+Traceback (most recent call last):
+  File "C:\Users\Sandy\Desktop\Cobot Code Generation\parsing_module.py", line 125, in parse
+    logger.debug("Parser: Parsed JSON after cleanup: %s", parsed[:500])
+                                                          ~~~~~~^^^^^^
+KeyError: slice(None, 500, None)
+2026-02-16 14:57:08 [ERROR] Parsing failed: Unexpected API structure: missing slice(None, 500, None)
+2026-02-16 14:57:32 [INFO] Application shutting down
+2026-02-16 14:57:53 [INFO] Application starting
+2026-02-16 14:57:57 [INFO] Application ready
+2026-02-16 14:57:58 [INFO] Recording started
+2026-02-16 14:58:07 [INFO] Recording stopped, starting transcription
+2026-02-16 14:58:09 [INFO] ASR: transcribed text 'Open the gripper, move L to position 1, close the gripper and then move to position home.', confidence = 0.62
+2026-02-16 14:58:09 [WARNING] ASR confidence low: 0.62 - parsing may fail
+2026-02-16 14:58:13 [DEBUG] Parser: LLM raw response preview: {
+  "mode": "live",
+  "robot": "franka",
+  "commands": [
+    {
+      "action": "gripper",
+      "command": "open"
+    },
+    {
+      "action": "move",
+      "motion_type": "moveL",
+      "target": {
+        "type": "named_pose",
+        "name": "position_1"
+      }
+    },
+    {
+      "action": "gripper",
+      "command": "close"
+    },
+    {
+      "action": "move",
+      "motion_type": "moveJ",
+      "target": {
+        "type": "named_pose",
+        "name": "Home"
+      }
+    }
+  ],
+  "message":
+2026-02-16 14:58:13 [DEBUG] Parser: Parsed JSON after cleanup: {"mode": "live", "robot": "franka", "commands": [{"action": "gripper", "command": "open"}, {"action": "move", "motion_type": "moveL", "target": {"type": "named_pose", "name": "position_1"}}, {"action": "gripper", "command": "close"}, {"action": "move", "motion_type": "moveJ", "target": {"type": "named_pose", "name": "Home"}}], "message": ""}
+2026-02-16 14:58:13 [INFO] Parser: Parsing successful
+2026-02-16 14:58:14 [INFO] Parser: Command summary "Open gripper → Move to position_1 pos. → Close gripper → Move to Home pos."
+2026-02-16 15:07:20 [INFO] Application shutting down
