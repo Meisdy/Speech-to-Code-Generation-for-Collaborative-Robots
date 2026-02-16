@@ -23,8 +23,8 @@
       "duration_s": 1.0
     },
     {
-      "action": "teach",
-      "pose_name": "NewPose",
+      "action": "teach_pose",
+      "pose_name": "position_1",
       "overwrite": false
     },
     {
