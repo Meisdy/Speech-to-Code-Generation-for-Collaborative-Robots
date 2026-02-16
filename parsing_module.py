@@ -7,6 +7,7 @@ into structured JSON commands according to defined rulesets and schemas.
 """
 
 import json
+import time
 import config
 import requests
 from typing import Dict, Any
@@ -38,6 +39,10 @@ class CodeParser:
         self.ruleset: Dict = self._load_json("ruleset.json")
         self.command_schema: Dict = self._load_json("command_schema.json")
         self.system_prompt: str = self._build_system_prompt()
+
+        # Logging configuration
+        self.log_parsing: bool = config.LOGGING_SAVE_PARSE
+        self.log_path: str = config.LOGGING_DIR
 
     def _load_json(self, filename: str) -> Dict:
         """
@@ -112,10 +117,15 @@ RULES:
             # Extract and clean response
             response = result['choices'][0]['message']['content'].strip()
             logger.debug("Parser: LLM raw response preview: %s", response[:500])
-            cleaned = self._clean_response(response)  # Remove markdown fences if present
+            cleaned = self._clean_response(response)  # Remove formatting fences if present
             parsed = json.loads(cleaned)
 
             logger.info("Parser: Parsing successful")
+
+            # save the parsed command if logging is enabled
+            if self.log_parsing:
+                self._save_parsed_command(parsed)
+
             return {"command": parsed, "status": "success"}
 
         # Network and API errors
@@ -200,6 +210,12 @@ RULES:
             "error": error_msg
         }
 
+    def _save_parsed_command(self, parsed: Dict[str, Any]) -> None:
+        timestamp = time.strftime("%y%m%d_%H%M%S")
+        filename = f"{self.log_path}/{timestamp}_parse_result.json"
+        with open(filename, "w") as f:
+            json.dump(parsed, f, indent=4)
+        logger.info(f"Parser: Saved parsed command to {filename}")
 
 def main():
     """Test parser with sample commands."""
