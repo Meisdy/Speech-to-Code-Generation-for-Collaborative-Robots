@@ -70,7 +70,7 @@ class SpeechRecognizer:
                 frames_per_buffer=1024
             )
         except OSError as e:
-            logger.exception("Failed to open audio stream")
+            logger.exception(f"Failed to open audio stream: {e}")
 
     def is_listening(self) -> bool:
         """
@@ -181,8 +181,8 @@ class SpeechRecognizer:
         """Ensure resources are cleaned up on deletion."""
         try:
             self.close()
-        except Exception:
-            pass
+        except Exception as e:
+            logger.debug(f'ASR __del__ called, but close() raised an exception (likely already cleaned up): {e}')
 
     def __enter__(self):
         """Context manager support."""
