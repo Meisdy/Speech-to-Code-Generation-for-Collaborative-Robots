@@ -1,3 +1,4 @@
+import json
 import zmq
 
 
@@ -40,8 +41,47 @@ class ClientZeroMQ:
 def main():
     sender = ClientZeroMQ("tcp://localhost:5555")
 
+    data = {
+  "mode": "live",
+  "robot": "ur",
+  "commands": [
+    {
+      "action": "move",
+      "motion_type": "moveJ",
+      "target": {
+        "type": "named_pose",
+        "name": "Home"
+      }
+    },
+    {
+      "action": "gripper",
+      "command": "open"
+    },
+    {
+      "action": "gripper",
+      "command": "close"
+    },
+    {
+      "action": "wait",
+      "duration_s": 1.0
+    },
+    {
+      "action": "teach_pose",
+      "pose_name": "position_1",
+    },
+    {
+      "action": "delete_pose",
+      "pose_name": "Home"
+    }
+  ],
+  "message": "Generated a sequence containing all available command types defined in the ruleset and command schema. Note: 'Home' is the only pre-existing pose found in the records."
+}
+
     # Example command
-    success, response = sender.send_command("move_forward", {"distance": 1.0})
+    #success, response = sender.send_command("ping", {"message": "Hello from client!"})
+    #success, response = sender.send_command("get_status", {"message": "Hello from client!"})
+    success, response = sender.send_command("execute_sequence", data)
+
     if success:
         print("Received response:", response)
     else:
