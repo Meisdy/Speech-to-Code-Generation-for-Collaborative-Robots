@@ -4,7 +4,7 @@ Configuration for Speech-to-Code Framework
 All values can be edited directly in this file
 """
 
-
+import os
 FRAMEWORK_MODE = "live"              # Add programming / advanced mode later
 
 
@@ -40,6 +40,10 @@ ROBOT_TIMEOUT = 5                           # Connection timeout in seconds
 # =================================================================================
 LOGGING_LEVEL = "INFO"               # Options: DEBUG, INFO, WARNING, ERROR (for gui and console)
 LOGGING_LEVEL_FILE = "DEBUG"         # Log level for file output (can be more verbose than console/gui)
-LOGGING_DIR = "../logs"  # Log output directory
 LOGGING_SAVE_AUDIO = False           # Save audio files for debugging
 LOGGING_SAVE_PARSE = False           # Save parser outputs for debugging
+
+# Get project root (parent of Frontend folder)
+_CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))  # Frontend/
+PROJECT_ROOT = os.path.dirname(_CURRENT_DIR)  # Cobot Code Generation/
+LOGGING_DIR = os.path.join(PROJECT_ROOT, "logs")
