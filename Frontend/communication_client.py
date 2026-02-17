@@ -1,7 +1,7 @@
 import zmq
 
 
-class RobotCommandSender:
+class ClientZeroMQ:
     def __init__(self, connection_string, timeout_ms=5000):
         """
         connection_string: "tcp://192.168.1.10:5555" or "tcp://localhost:5556"
@@ -38,7 +38,7 @@ class RobotCommandSender:
 
 
 def main():
-    sender = RobotCommandSender("tcp://localhost:5555")
+    sender = ClientZeroMQ("tcp://localhost:5555")
 
     # Example command
     success, response = sender.send_command("move_forward", {"distance": 1.0})
@@ -48,6 +48,7 @@ def main():
         print("Failed to send command:", response)
 
     sender.close()
+
 
 if __name__ == "__main__":
     main()
