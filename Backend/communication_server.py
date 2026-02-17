@@ -8,7 +8,7 @@ class ServerZeroMQ:
         message_handler: MessageHandler instance to process commands
         """
         self.bind_address = bind_address
-        self.handler = MessageHandler
+        self.handler = MessageHandler()
         self.running = False
 
         # Initialize ZeroMQ
@@ -27,14 +27,14 @@ class ServerZeroMQ:
             try:
                 # Receive message
                 message = self.socket.recv_json()
-                print(f"Received: {message.get('command', 'unknown')}")
+                print("Received message:", message)
 
                 # Delegate to handler
-                response = self.handler.process(message)
+                response = self.handler.process(message=message)
 
                 # Send response
                 self.socket.send_json(response)
-                print(f"Sent: {response.get('command', 'unknown')}")
+                print('Sent response:', response)
 
             except zmq.Again:
                 # Timeout - loop continues to check self.running
@@ -42,6 +42,8 @@ class ServerZeroMQ:
             except KeyboardInterrupt:
                 print("\nKeyboardInterrupt in server loop")
                 break
+
+        self.close()
 
     def close(self):
         """Clean shutdown"""
