@@ -42,8 +42,4 @@ LOGGING_LEVEL = "INFO"               # Options: DEBUG, INFO, WARNING, ERROR (for
 LOGGING_LEVEL_FILE = "DEBUG"         # Log level for file output (can be more verbose than console/gui)
 LOGGING_SAVE_AUDIO = False           # Save audio files for debugging
 LOGGING_SAVE_PARSE = False           # Save parser outputs for debugging
-
-# Get project root (parent of Frontend folder)
-_CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))  # Frontend/
-PROJECT_ROOT = os.path.dirname(_CURRENT_DIR)  # Cobot Code Generation/
-LOGGING_DIR = os.path.join(PROJECT_ROOT, "logs")
+LOGGING_DIR = "logs"                    # Directory to save logs and optionally audio/parse files
