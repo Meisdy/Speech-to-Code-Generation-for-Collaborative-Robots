@@ -162,7 +162,7 @@ class SpeechRecognizer:
         try:
             # Generate timestamp-based filename
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-            filepath = os.path.join("logs", f"{timestamp}_audio.wav")
+            filepath = os.path.join("../logs", f"{timestamp}_audio.wav")
 
             # Write WAV file
             with wave.open(filepath, 'wb') as wf:

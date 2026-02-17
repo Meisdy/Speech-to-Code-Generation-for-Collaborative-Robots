@@ -488,3 +488,7 @@ KeyError: slice(None, 500, None)
 2026-02-16 15:21:58 [DEBUG] Parser: Parsed JSON after cleanup: {"mode": "live", "robot": "franka", "commands": [{"action": "move", "motion_type": "moveJ", "target": {"type": "named_pose", "name": "position_1"}}, {"action": "gripper", "command": "close"}], "message": ""}
 2026-02-16 15:21:58 [INFO] Parser: Parsing successful
 2026-02-16 15:21:58 [INFO] Parser: Command summary "Move to position_1 pos. → Close gripper"
+2026-02-16 15:33:05 [INFO] Application shutting down
+2026-02-17 10:25:41 [INFO] Application starting
+2026-02-17 10:25:45 [INFO] Application ready
+2026-02-17 10:25:48 [INFO] Application shutting down
