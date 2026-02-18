@@ -58,8 +58,9 @@ def main():
       "command": "open"
     }
   ],
-  "message": "Test command"
+  "message": ""
 }
+
 
     # Example command
     #success, response = sender.send_command("ping", {"message": "Hello from client!"})
