@@ -1,4 +1,5 @@
 from robot_controllers.mock_robot_controller import MockRobotController
+import time
 
 class MessageHandler:
     """Processes commands - no knowledge of communication protocol"""
@@ -55,7 +56,7 @@ class MessageHandler:
             "data": data
         }
 
-    def process(self, message):
+    def process_message(self, message):
         """
         Process incoming message and return response.
 
@@ -105,11 +106,78 @@ class MessageHandler:
 
         # select robot
         robot = self.robots[robot_type]
+        responses = []
+
 
         # execute commands on robot
+        for command in data.get('commands', []):
+            response = self._process_command(command, robot)
+            responses.append(response)
+
+        return self._formatted_response('success', {'responses': responses})
+
+    def _process_command(self, command: dict, robot: MockRobotController) -> dict:
+        """
+        Process a single command
+
+        Args:
+            command: dict with the command details
+            robot: MockRobotController instance
+
+        Returns:
+            dict with the result of the command execution
+        """
+
+        action = command.get('action', '')
+
+        match action:
+            case 'move':
+                motion_type = command.get('motion_type', 'moveJ') # Fix this later
+                target = command['target']
+
+                if target['type'] == 'named_pose':
+                    pose_name = target['name']
+                    response = robot.move_joint(pose_name)
+                else:
+                    response = 'not yet implemented ; Moving offset'
+
+                return response
+
+            case 'gripper':
+                gripper_operation = command['command']
+                match gripper_operation:
+                    case 'open':
+                        response = robot.gripper_open()
+                    case 'close':
+                        response = robot.gripper_close()
+                    case _:
+                        return {"error": f"Unknown gripper command: {gripper_operation}"}
+
+                return response
+
+            case 'wait':
+                duration_s = command.get('duration_s', 1.0)
+                time.sleep(duration_s)
+                return {"message": f"Waited for {duration_s} seconds"}
+
+            case 'pose':
+                mode = command['mode']
+                pose_name = command['pose_name']
+                overwrite = command.get('overwrite', False)
+
+                match mode:
+                    case 'teach':
+                        response = robot.teach_pose(pose_name, overwrite)
+                    case 'delete':
+                        response = robot.delete_pose(pose_name)
+                    case _:
+                        return {"error": f"Unknown pose management mode: {mode}"}
+
+                return response
+            case _:
+                return {"error": f"Unknown action: {action}"}
 
 
-        return self._formatted_response('success', {'message': 'All commands executed'})
 
-    #def _action_handler(self, data):
+
 
