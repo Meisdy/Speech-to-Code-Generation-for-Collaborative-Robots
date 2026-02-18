@@ -1,3 +1,5 @@
+from robot_controllers.mock_robot_controller import MockRobotController
+
 class MessageHandler:
     """Processes commands - no knowledge of communication protocol"""
 
@@ -6,7 +8,52 @@ class MessageHandler:
 
         self.allowed_commands = ['ping', 'get_status', 'execute_sequence']
         self.robot_types = ['franka', 'ur', 'mock']  # Supported robot types
-        self.busy = False  # Flag to indicate if robot is currently executing a command
+        self.robots = self._initialize_robots(config={})  # Placeholder for config
+
+
+    def _initialize_robots(self, config):
+        """Create robot instances based on config"""
+        robots = {}
+
+        # For now, hardcoded - later load from config file
+        robots["mock"] = MockRobotController()
+        robots["mock"].connect()
+
+        # Later add:
+        # robots["franka"] = FrankaController(config["franka"]["ip"])
+        # robots["ur"] = URController(config["ur"]["ip"])
+        # OR
+        ''' 
+        def _initialize_robots(self, config):
+    """Create robot instances based on config"""
+    robots = {}
+
+    for robot_type, settings in config.get('robots', {}).items():
+        match robot_type:
+            case 'mock':
+                robots[robot_type] = MockRobotController()
+                robots[robot_type].connect(settings)
+            case 'franka':
+                robots[robot_type] = FrankaController(ip=settings['ip'])
+                robots[robot_type].connect()
+            case 'ur':
+                robots[robot_type] = URController(ip=settings['ip'])
+                robots[robot_type].connect()
+            case _:
+                continue  # Skip unsupported robot types
+
+    return robots
+
+        '''
+
+        return robots
+
+    def _formatted_response(self, command: str, data: dict) -> dict:
+        """Format response as JSON with standard structure."""
+        return {
+            "command": command,
+            "data": data
+        }
 
     def process(self, message):
         """
@@ -31,64 +78,38 @@ class MessageHandler:
                 case "get_status":
                     return self._send_status()
                 case "execute_sequence":
-                    if self.busy:
-                        return {
-                            "command": "rejected",
-                            "data": {"reason": "Robot is currently busy executing another command"}
-                        }
-                    self.busy = True  # Set busy flag before execution
-                    try:
-                        response = self._execute_sequence(data)
-                    finally:
-                        self.busy = False  # Reset busy flag after execution
-                    return response
-
-
+                    return self._execute_sequence(data)
 
         except Exception as e:
-            return {
-                "command": "error",
-                "data": {"error": str(e)}
-            }
-
+            return self._formatted_response('error', {"error message": str(e)})
 
     def _answer_ping(self) -> dict:
         """Handle ping command"""
-        return {
-            "command": "success",
-            "data": {"message": "Backend alive"}
-        }
+        return self._formatted_response('success', {'message': 'Backend Alive'})
 
     def _unknown_command(self, command):
         """Handle unknown commands"""
-        return {
-            "command": "rejected",
-            "data": {"reason": f"Unknown command: {command}"}
-        }
+        return self._formatted_response('rejected', {"reason": f"Unknown command: {command}"})
 
     def _send_status(self):
         """Handle get_status command"""
-        return {
-            "command": "success",
-            "data": {"busy": self.busy}
-        }
+        return self._formatted_response('success', {"Connected Robots": self.robots})
 
     def _execute_sequence(self, data):
         """Handle execute_sequence command"""
-        # TODO: Call robot controller
 
         #Check robot type in data
         robot_type = data.get("robot", "unknown")
-        print('Executing sequence for robot type:', robot_type)
         if robot_type not in self.robot_types:
-                return {"command": "rejected", "data": {"reason": f"Unsupported robot type: {robot_type}"}}
+                return self._formatted_response('rejected',{"reason": f"Unsupported robot type: {robot_type}"} )
 
-        #
+        # select robot
+        robot = self.robots[robot_type]
 
-        return {
-            "command": "success",
-            "data": {
-                "message": "Sequence executed",
-                "received_data": data
-            }
-        }
+        # execute commands on robot
+
+
+        return self._formatted_response('success', {'message': 'All commands executed'})
+
+    #def _action_handler(self, data):
+
