@@ -20,7 +20,7 @@ Safety: Start with robot powered down or in safe pose.
 
 # Change to your robot IP
 ROBOT_IP = "169.254.70.80"  # e.g., UR5e
-POSITIONS_FILE = "../Frontend/positions.jsonl"
+POSITIONS_FILE = "../Backend/positions.jsonl"
 
 rtde_c = RTDEControlInterface(ROBOT_IP)
 rtde_r = RTDEReceiveInterface(ROBOT_IP)
