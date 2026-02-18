@@ -43,7 +43,7 @@ def main():
 
     data = {
   "mode": "live",
-  "robot": "ur",
+  "robot": "mock",
   "commands": [
     {
       "action": "move",
@@ -56,30 +56,15 @@ def main():
     {
       "action": "gripper",
       "command": "open"
-    },
-    {
-      "action": "gripper",
-      "command": "close"
-    },
-    {
-      "action": "wait",
-      "duration_s": 1.0
-    },
-    {
-      "action": "teach_pose",
-      "pose_name": "position_1",
-    },
-    {
-      "action": "delete_pose",
-      "pose_name": "Home"
     }
   ],
-  "message": "Generated a sequence containing all available command types defined in the ruleset and command schema. Note: 'Home' is the only pre-existing pose found in the records."
+  "message": "Test command"
 }
 
     # Example command
     #success, response = sender.send_command("ping", {"message": "Hello from client!"})
     #success, response = sender.send_command("get_status", {"message": "Hello from client!"})
+    #success, response = sender.send_command("Hallo", {"message": "Hello from client!"})
     success, response = sender.send_command("execute_sequence", data)
 
     if success:
