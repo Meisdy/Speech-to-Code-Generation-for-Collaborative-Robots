@@ -30,7 +30,7 @@ class ServerZeroMQ:
                 print("Received message:", message)
 
                 # Delegate to handler
-                response = self.handler.process(message=message)
+                response = self.handler.process_message(message=message)
 
                 # Send response
                 self.socket.send_json(response)
