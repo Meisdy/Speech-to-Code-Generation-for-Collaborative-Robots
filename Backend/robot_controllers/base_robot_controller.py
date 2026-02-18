@@ -61,11 +61,9 @@ class BaseRobotController(ABC):
         pass
 
     @abstractmethod
-    def gripper_close(self, force=None):
+    def gripper_close(self):
         """
         Close gripper
-        Args:
-            force: optional gripper force parameter
         Returns: dict {"success": bool, "message": str}
         """
         pass
