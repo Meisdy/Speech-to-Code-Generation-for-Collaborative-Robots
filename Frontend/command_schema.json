@@ -11,6 +11,19 @@
       }
     },
     {
+      "action": "move",
+      "motion_type": "moveL",
+      "target": {
+        "type": "offset_from_pose",
+        "name": "Home",
+        "offset": {
+          "x_mm": 0.0,
+          "y_mm": 0.0,
+          "z_mm": 100.0
+        }
+      }
+    },
+    {
       "action": "gripper",
       "command": "open"
     },
@@ -23,14 +36,16 @@
       "duration_s": 1.0
     },
     {
-      "action": "teach_pose",
+      "action": "pose",
+      "command": "teach",
       "pose_name": "position_1",
       "overwrite": false
     },
     {
-      "action": "delete_pose",
-      "pose_name": "Home"
+      "action": "pose",
+      "command": "delete",
+      "pose_name": "position_1"
     }
   ],
-  "message": "Generated a sequence containing all available command types defined in the ruleset and command schema. Note: 'Home' is the only pre-existing pose found in the records."
+  "message": "Optional feedback from LLM here."
 }
