@@ -76,15 +76,15 @@ class MockRobotController(BaseRobotController):
         self.gripper_state = "open"
         return {"success": True, "message": "Mock gripper opened"}
 
-    def gripper_close(self, force=None):
+    def gripper_close(self):
         """Simulate gripper closing"""
         if not self.connected:
             return {"success": False, "message": "Robot not connected"}
 
-        print(f"Mock: Closing gripper with force {force}")
+        print(f"Mock: Closing gripper")
         time.sleep(0.5)
         self.gripper_state = "closed"
-        return {"success": True, "message": f"Mock gripper closed (force={force})"}
+        return {"success": True, "message": f"Mock gripper closed"}
 
     def get_current_state(self):
         """Return current mock state"""
