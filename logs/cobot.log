@@ -612,3 +612,648 @@ KeyError: slice(None, 500, None)
 2026-02-19 10:46:09 [INFO] Parser: Parsing successful
 2026-02-19 10:46:09 [INFO] Parser: Command summary "Move to Home pos."
 2026-02-19 10:51:11 [INFO] Application shutting down
+2026-02-19 16:50:27 [INFO] Application starting
+2026-02-19 16:50:32 [INFO] Application ready
+2026-02-19 16:50:46 [INFO] Recording started
+2026-02-19 16:50:49 [INFO] Recording stopped, starting transcription
+2026-02-19 16:50:50 [INFO] ASR: transcribed text 'Move to home position.', confidence = 0.93
+2026-02-19 16:51:00 [DEBUG] Parser: LLM raw response preview: {
+  "mode": "live",
+  "robot": "franka",
+  "commands": [
+    {
+      "action": "move",
+      "motion_type": "moveJ",
+      "target": {
+        "type": "named_pose",
+        "name": "Home"
+      }
+    }
+  ]
+}
+2026-02-19 16:51:00 [DEBUG] Parser: Parsed JSON after cleanup: {"mode": "live", "robot": "franka", "commands": [{"action": "move", "motion_type": "moveJ", "target": {"type": "named_pose", "name": "Home"}}]}
+2026-02-19 16:51:00 [INFO] Parser: Parsing successful
+2026-02-19 16:51:00 [INFO] Parser: Command summary "Move to Home pos."
+2026-02-19 16:51:58 [INFO] Application shutting down
+2026-02-19 16:52:06 [INFO] Application starting
+2026-02-19 16:52:09 [INFO] Application ready
+2026-02-19 16:52:10 [INFO] Recording started
+2026-02-19 16:52:14 [INFO] Recording stopped, starting transcription
+2026-02-19 16:52:14 [INFO] ASR: transcribed text 'Move to home position.', confidence = 0.83
+2026-02-19 16:52:18 [DEBUG] Parser: LLM raw response preview: {
+  "mode": "live",
+  "robot": "franka",
+  "commands": [
+    {
+      "action": "move",
+      "motion_type": "moveJ",
+      "target": {
+        "type": "named_pose",
+        "name": "Home"
+      }
+    }
+  ]
+}
+2026-02-19 16:52:18 [DEBUG] Parser: Parsed JSON after cleanup: {"mode": "live", "robot": "franka", "commands": [{"action": "move", "motion_type": "moveJ", "target": {"type": "named_pose", "name": "Home"}}]}
+2026-02-19 16:52:18 [INFO] Parser: Parsing successful
+2026-02-19 16:52:18 [INFO] Parser: Command summary "Move to Home pos."
+2026-02-19 16:52:18 [ERROR] Execution failed: {'command': 'rejected', 'data': {'reason': 'Unsupported robot type: Franka Emika'}}
+2026-02-19 16:52:25 [INFO] Recording started
+2026-02-19 16:52:28 [INFO] Recording stopped, starting transcription
+2026-02-19 16:52:28 [INFO] ASR: transcribed text 'Move to home position.', confidence = 0.89
+2026-02-19 16:52:32 [DEBUG] Parser: LLM raw response preview: {
+  "mode": "live",
+  "robot": "mock",
+  "commands": [
+    {
+      "action": "move",
+      "motion_type": "moveJ",
+      "target": {
+        "type": "named_pose",
+        "name": "Home"
+      }
+    }
+  ]
+}
+2026-02-19 16:52:32 [DEBUG] Parser: Parsed JSON after cleanup: {"mode": "live", "robot": "mock", "commands": [{"action": "move", "motion_type": "moveJ", "target": {"type": "named_pose", "name": "Home"}}]}
+2026-02-19 16:52:32 [INFO] Parser: Parsing successful
+2026-02-19 16:52:32 [INFO] Parser: Command summary "Move to Home pos."
+2026-02-19 16:52:32 [ERROR] Execution failed: {'command': 'rejected', 'data': {'reason': 'Unsupported robot type: Mock Adapter'}}
+2026-02-19 16:52:49 [INFO] Application shutting down
+2026-02-19 17:02:36 [INFO] Application starting
+2026-02-19 17:02:40 [INFO] Application ready
+2026-02-19 17:02:43 [INFO] Recording started
+2026-02-19 17:02:45 [INFO] Recording stopped, starting transcription
+2026-02-19 17:02:46 [INFO] ASR: transcribed text 'Move to home position.', confidence = 0.85
+2026-02-19 17:02:50 [DEBUG] Parser: LLM raw response preview: {
+  "mode": "live",
+  "robot": "franka",
+  "commands": [
+    {
+      "action": "move",
+      "motion_type": "moveJ",
+      "target": {
+        "type": "named_pose",
+        "name": "Home"
+      }
+    }
+  ]
+}
+2026-02-19 17:02:50 [DEBUG] Parser: Parsed JSON after cleanup: {"mode": "live", "robot": "franka", "commands": [{"action": "move", "motion_type": "moveJ", "target": {"type": "named_pose", "name": "Home"}}]}
+2026-02-19 17:02:50 [INFO] Parser: Parsing successful
+2026-02-19 17:02:50 [INFO] Parser: Command summary "Move to Home pos."
+2026-02-19 17:02:50 [ERROR] Execution failed: {'command': 'error', 'data': {'error message': "'franka'"}}
+2026-02-19 17:05:27 [INFO] Recording started
+2026-02-19 17:05:29 [INFO] Recording stopped, starting transcription
+2026-02-19 17:05:29 [INFO] ASR: transcribed text 'Move to home position.', confidence = 0.80
+2026-02-19 17:05:33 [DEBUG] Parser: LLM raw response preview: {
+  "mode": "live",
+  "robot": "mock",
+  "commands": [
+    {
+      "action": "move",
+      "motion_type": "moveJ",
+      "target": {
+        "type": "named_pose",
+        "name": "Home"
+      }
+    }
+  ]
+}
+2026-02-19 17:05:33 [DEBUG] Parser: Parsed JSON after cleanup: {"mode": "live", "robot": "mock", "commands": [{"action": "move", "motion_type": "moveJ", "target": {"type": "named_pose", "name": "Home"}}]}
+2026-02-19 17:05:33 [INFO] Parser: Parsing successful
+2026-02-19 17:05:33 [INFO] Parser: Command summary "Move to Home pos."
+2026-02-19 17:05:33 [INFO] Execution successful: {'command': 'success', 'data': {'responses': [{'success': False, 'message': 'Unknown pose: Home'}]}}
+2026-02-19 17:05:54 [INFO] Recording started
+2026-02-19 17:05:57 [INFO] Recording stopped, starting transcription
+2026-02-19 17:05:58 [INFO] ASR: transcribed text 'Teaching the current position as home position.', confidence = 0.94
+2026-02-19 17:06:01 [DEBUG] Parser: LLM raw response preview: {
+  "mode": "live",
+  "robot": "mock",
+  "commands": [
+    {
+      "action": "pose",
+      "command": "teach",
+      "pose_name": "home",
+      "overwrite": true
+    }
+  ]
+}
+2026-02-19 17:06:01 [DEBUG] Parser: Parsed JSON after cleanup: {"mode": "live", "robot": "mock", "commands": [{"action": "pose", "command": "teach", "pose_name": "home", "overwrite": true}]}
+2026-02-19 17:06:01 [INFO] Parser: Parsing successful
+2026-02-19 17:06:01 [INFO] Parser: Command summary "Pose"
+2026-02-19 17:06:01 [INFO] Execution successful: {'command': 'success', 'data': {'responses': [{'success': True, 'message': "Pose 'home' saved"}]}}
+2026-02-19 17:06:08 [INFO] Recording started
+2026-02-19 17:06:11 [INFO] Recording stopped, starting transcription
+2026-02-19 17:06:11 [INFO] ASR: transcribed text 'Move to home position.', confidence = 0.87
+2026-02-19 17:06:15 [DEBUG] Parser: LLM raw response preview: {
+  "mode": "live",
+  "robot": "mock",
+  "commands": [
+    {
+      "action": "move",
+      "motion_type": "moveJ",
+      "target": {
+        "type": "named_pose",
+        "name": "Home"
+      }
+    }
+  ]
+}
+2026-02-19 17:06:15 [DEBUG] Parser: Parsed JSON after cleanup: {"mode": "live", "robot": "mock", "commands": [{"action": "move", "motion_type": "moveJ", "target": {"type": "named_pose", "name": "Home"}}]}
+2026-02-19 17:06:15 [INFO] Parser: Parsing successful
+2026-02-19 17:06:15 [INFO] Parser: Command summary "Move to Home pos."
+2026-02-19 17:06:15 [INFO] Execution successful: {'command': 'success', 'data': {'responses': [{'success': False, 'message': 'Unknown pose: Home'}]}}
+2026-02-19 17:06:25 [INFO] Recording started
+2026-02-19 17:06:28 [INFO] Recording stopped, starting transcription
+2026-02-19 17:06:28 [INFO] ASR: transcribed text 'Teach in position one.', confidence = 0.89
+2026-02-19 17:06:32 [DEBUG] Parser: LLM raw response preview: {
+  "mode": "live",
+  "robot": "mock",
+  "commands": [
+    {
+      "action": "pose",
+      "command": "teach",
+      "pose_name": "position_1"
+    }
+  ],
+  "message": ""
+}
+2026-02-19 17:06:32 [DEBUG] Parser: Parsed JSON after cleanup: {"mode": "live", "robot": "mock", "commands": [{"action": "pose", "command": "teach", "pose_name": "position_1"}], "message": ""}
+2026-02-19 17:06:32 [INFO] Parser: Parsing successful
+2026-02-19 17:06:32 [INFO] Parser: Command summary "Pose"
+2026-02-19 17:06:32 [INFO] Execution successful: {'command': 'success', 'data': {'responses': [{'success': True, 'message': "Pose 'position_1' saved"}]}}
+2026-02-19 17:06:38 [INFO] Recording started
+2026-02-19 17:06:40 [INFO] Recording stopped, starting transcription
+2026-02-19 17:06:41 [INFO] ASR: transcribed text 'Move to position 1.', confidence = 0.85
+2026-02-19 17:06:44 [DEBUG] Parser: LLM raw response preview: {
+  "mode": "live",
+  "robot": "mock",
+  "commands": [
+    {
+      "action": "move",
+      "motion_type": "moveJ",
+      "target": {
+        "type": "named_pose",
+        "name": "position_1"
+      }
+    }
+  ]
+}
+2026-02-19 17:06:44 [DEBUG] Parser: Parsed JSON after cleanup: {"mode": "live", "robot": "mock", "commands": [{"action": "move", "motion_type": "moveJ", "target": {"type": "named_pose", "name": "position_1"}}]}
+2026-02-19 17:06:44 [INFO] Parser: Parsing successful
+2026-02-19 17:06:44 [INFO] Parser: Command summary "Move to position_1 pos."
+2026-02-19 17:06:46 [INFO] Execution successful: {'command': 'success', 'data': {'responses': [{'success': True, 'message': "Mock MoveJ complete to 'position_1'"}]}}
+2026-02-19 17:07:01 [INFO] Application shutting down
+2026-02-19 17:11:09 [INFO] Application starting
+2026-02-19 17:11:13 [INFO] Application ready
+2026-02-19 17:11:33 [INFO] Recording started
+2026-02-19 17:11:36 [INFO] Recording stopped, starting transcription
+2026-02-19 17:11:37 [INFO] ASR: transcribed text 'Add new position to', confidence = 0.93
+2026-02-19 17:11:40 [DEBUG] Parser: LLM raw response preview: {
+  "mode": "live",
+  "robot": "mock",
+  "commands": [
+    {
+      "action": "pose",
+      "command": "teach",
+      "pose_name": "position_1",
+      "overwrite": false
+    }
+  ],
+  "message": ""
+}
+2026-02-19 17:11:40 [DEBUG] Parser: Parsed JSON after cleanup: {"mode": "live", "robot": "mock", "commands": [{"action": "pose", "command": "teach", "pose_name": "position_1", "overwrite": false}], "message": ""}
+2026-02-19 17:11:40 [INFO] Parser: Parsing successful
+2026-02-19 17:11:40 [INFO] Parser: Command summary "Pose"
+2026-02-19 17:11:40 [INFO] Client: Sending data to backend
+2026-02-19 17:11:40 [DEBUG] Sending data: 
+2026-02-19 17:11:45 [ERROR] Execution failed: {'command': 'timeout', 'data': {'error': 'Backend timeout'}}
+2026-02-19 17:11:47 [INFO] Recording started
+2026-02-19 17:11:51 [INFO] Recording stopped, starting transcription
+2026-02-19 17:11:52 [INFO] ASR: transcribed text 'Save the current position as position 2.', confidence = 0.93
+2026-02-19 17:11:55 [DEBUG] Parser: LLM raw response preview: {
+  "mode": "live",
+  "robot": "mock",
+  "commands": [
+    {
+      "action": "pose",
+      "command": "teach",
+      "pose_name": "position_2"
+    }
+  ]
+}
+2026-02-19 17:11:55 [DEBUG] Parser: Parsed JSON after cleanup: {"mode": "live", "robot": "mock", "commands": [{"action": "pose", "command": "teach", "pose_name": "position_2"}]}
+2026-02-19 17:11:55 [INFO] Parser: Parsing successful
+2026-02-19 17:11:55 [INFO] Parser: Command summary "Pose"
+2026-02-19 17:11:55 [INFO] Client: Sending data to backend
+2026-02-19 17:11:55 [DEBUG] Sending data: 
+2026-02-19 17:11:55 [ERROR] Execution failed: {'command': 'error', 'data': {'error': 'Operation cannot be accomplished in current state'}}
+2026-02-19 17:12:52 [INFO] Application shutting down
+2026-02-19 17:13:48 [INFO] Application starting
+2026-02-19 17:13:51 [INFO] Application ready
+2026-02-19 17:13:54 [INFO] Recording started
+2026-02-19 17:13:56 [INFO] Recording stopped, starting transcription
+2026-02-19 17:13:57 [INFO] ASR: transcribed text 'Move to whole position.', confidence = 0.77
+2026-02-19 17:14:00 [DEBUG] Parser: LLM raw response preview: {
+  "mode": "live",
+  "robot": "mock",
+  "commands": [
+    {
+      "action": "move",
+      "motion_type": "moveJ",
+      "target": {
+        "type": "named_pose"
+      }
+    }
+  ],
+  "message": ""
+}
+2026-02-19 17:14:00 [DEBUG] Parser: Parsed JSON after cleanup: {"mode": "live", "robot": "mock", "commands": [{"action": "move", "motion_type": "moveJ", "target": {"type": "named_pose"}}], "message": ""}
+2026-02-19 17:14:00 [ERROR] Parser: Validation failed - Move target missing name
+2026-02-19 17:14:00 [ERROR] Parsing failed: Invalid command structure: Move target missing name
+2026-02-19 17:14:09 [INFO] Recording started
+2026-02-19 17:14:12 [INFO] Recording stopped, starting transcription
+2026-02-19 17:14:12 [INFO] ASR: transcribed text 'Move to position 1.', confidence = 0.87
+2026-02-19 17:14:16 [DEBUG] Parser: LLM raw response preview: {
+  "mode": "live",
+  "robot": "mock",
+  "commands": [
+    {
+      "action": "move",
+      "motion_type": "moveJ",
+      "target": {
+        "type": "named_pose",
+        "name": "position_1"
+      }
+    }
+  ]
+}
+2026-02-19 17:14:16 [DEBUG] Parser: Parsed JSON after cleanup: {"mode": "live", "robot": "mock", "commands": [{"action": "move", "motion_type": "moveJ", "target": {"type": "named_pose", "name": "position_1"}}]}
+2026-02-19 17:14:16 [INFO] Parser: Parsing successful
+2026-02-19 17:14:16 [INFO] Parser: Command summary "Move to position_1 pos."
+2026-02-19 17:14:16 [INFO] Client: Sending data to backend
+2026-02-19 17:14:16 [DEBUG] Sending data: 
+2026-02-19 17:14:18 [INFO] Execution successful: {'command': 'success', 'data': {'responses': [{'success': True, 'message': "Mock MoveJ complete to 'position_1'"}]}}
+2026-02-19 17:14:47 [INFO] Recording started
+2026-02-19 17:14:51 [INFO] Recording stopped, starting transcription
+2026-02-19 17:14:54 [INFO] ASR: transcribed text 'The same time 1nd Is the base position.', confidence = 0.85
+2026-02-19 17:14:58 [DEBUG] Parser: LLM raw response preview: {
+  "mode": "live",
+  "robot": "mock",
+  "commands": [
+    {
+      "action": "move",
+      "motion_type": "moveJ",
+      "target": {
+        "type": "named_pose",
+        "name": "base"
+      }
+    },
+    {
+      "action": "wait",
+      "duration_s": 1.0
+    }
+  ],
+  "message": ""
+}
+2026-02-19 17:14:58 [DEBUG] Parser: Parsed JSON after cleanup: {"mode": "live", "robot": "mock", "commands": [{"action": "move", "motion_type": "moveJ", "target": {"type": "named_pose", "name": "base"}}, {"action": "wait", "duration_s": 1.0}], "message": ""}
+2026-02-19 17:14:58 [INFO] Parser: Parsing successful
+2026-02-19 17:14:58 [INFO] Parser: Command summary "Move to base pos. → Wait ?s"
+2026-02-19 17:14:58 [INFO] Client: Sending data to backend
+2026-02-19 17:14:58 [DEBUG] Sending data: 
+2026-02-19 17:14:59 [INFO] Execution successful: {'command': 'success', 'data': {'responses': [{'success': False, 'message': 'Unknown pose: base'}, {'message': 'Waited for 1.0 seconds'}]}}
+2026-02-19 17:15:13 [INFO] Recording started
+2026-02-19 17:15:18 [INFO] Recording stopped, starting transcription
+2026-02-19 17:15:18 [INFO] ASR: transcribed text 'Save the current position as position 2.', confidence = 0.95
+2026-02-19 17:15:21 [DEBUG] Parser: LLM raw response preview: {
+  "mode": "live",
+  "robot": "mock",
+  "commands": [
+    {
+      "action": "pose",
+      "command": "teach",
+      "pose_name": "position_2"
+    }
+  ]
+}
+2026-02-19 17:15:21 [DEBUG] Parser: Parsed JSON after cleanup: {"mode": "live", "robot": "mock", "commands": [{"action": "pose", "command": "teach", "pose_name": "position_2"}]}
+2026-02-19 17:15:21 [INFO] Parser: Parsing successful
+2026-02-19 17:15:21 [INFO] Parser: Command summary "Pose"
+2026-02-19 17:15:21 [INFO] Client: Sending data to backend
+2026-02-19 17:15:21 [DEBUG] Sending data: 
+2026-02-19 17:15:21 [INFO] Execution successful: {'command': 'success', 'data': {'responses': [{'success': True, 'message': "Pose 'position_2' saved"}]}}
+2026-02-19 17:17:10 [INFO] Application shutting down
+2026-02-19 17:17:17 [INFO] Application starting
+2026-02-19 17:17:20 [INFO] Application ready
+2026-02-19 17:17:42 [INFO] Recording started
+2026-02-19 17:17:44 [INFO] Recording stopped, starting transcription
+2026-02-19 17:17:45 [INFO] ASR: transcribed text 'Delete position 2.', confidence = 0.88
+2026-02-19 17:17:48 [DEBUG] Parser: LLM raw response preview: {
+  "mode": "live",
+  "robot": "mock",
+  "commands": [
+    {
+      "action": "pose",
+      "command": "delete",
+      "pose_name": "position_2"
+    }
+  ]
+}
+2026-02-19 17:17:48 [DEBUG] Parser: Parsed JSON after cleanup: {"mode": "live", "robot": "mock", "commands": [{"action": "pose", "command": "delete", "pose_name": "position_2"}]}
+2026-02-19 17:17:48 [INFO] Parser: Parsing successful
+2026-02-19 17:17:48 [INFO] Parser: Command summary "Pose"
+2026-02-19 17:17:48 [INFO] Client: Sending data to backend
+2026-02-19 17:17:48 [INFO] Execution successful: {'command': 'success', 'data': {'responses': [{'success': True, 'message': "Pose 'position_2' deleted"}]}}
+2026-02-19 17:19:29 [INFO] Application shutting down
+2026-02-19 17:19:37 [INFO] Application starting
+2026-02-19 17:19:40 [INFO] Application ready
+2026-02-19 17:19:43 [INFO] Recording started
+2026-02-19 17:19:46 [INFO] Recording stopped, starting transcription
+2026-02-19 17:19:47 [INFO] ASR: transcribed text 'Safety's position as position Q.', confidence = 0.94
+2026-02-19 17:19:50 [DEBUG] Parser: LLM raw response preview: {
+  "mode": "live",
+  "robot": "franka",
+  "commands": [
+    {
+      "action": "pose",
+      "command": "teach",
+      "pose_name": "position_Q",
+      "overwrite": false
+    }
+  ]
+}
+2026-02-19 17:19:50 [DEBUG] Parser: Parsed JSON after cleanup: {"mode": "live", "robot": "franka", "commands": [{"action": "pose", "command": "teach", "pose_name": "position_Q", "overwrite": false}]}
+2026-02-19 17:19:50 [INFO] Parser: Parsing successful
+2026-02-19 17:19:50 [INFO] Parser: Command summary "Pose"
+2026-02-19 17:19:50 [INFO] Client: Sending data to backend
+2026-02-19 17:19:50 [DEBUG] Sending data: {"mode": "live", "robot": "franka", "commands": [{"action": "pose", "command": "teach", "pose_name": "position_Q", "overwrite": false}], "message": ""}
+2026-02-19 17:19:50 [ERROR] Execution failed: {'command': 'error', 'data': {'error message': "'franka'"}}
+2026-02-19 17:19:52 [INFO] Recording started
+2026-02-19 17:19:56 [INFO] Recording stopped, starting transcription
+2026-02-19 17:19:56 [INFO] ASR: transcribed text 'Save the current position as position 2.', confidence = 0.95
+2026-02-19 17:20:00 [DEBUG] Parser: LLM raw response preview: {
+  "mode": "live",
+  "robot": "franka",
+  "commands": [
+    {
+      "action": "pose",
+      "command": "teach",
+      "pose_name": "position_2"
+    }
+  ]
+}
+2026-02-19 17:20:00 [DEBUG] Parser: Parsed JSON after cleanup: {"mode": "live", "robot": "franka", "commands": [{"action": "pose", "command": "teach", "pose_name": "position_2"}]}
+2026-02-19 17:20:00 [INFO] Parser: Parsing successful
+2026-02-19 17:20:00 [INFO] Parser: Command summary "Pose"
+2026-02-19 17:20:00 [INFO] Client: Sending data to backend
+2026-02-19 17:20:00 [DEBUG] Sending data: {"mode": "live", "robot": "franka", "commands": [{"action": "pose", "command": "teach", "pose_name": "position_2"}], "message": ""}
+2026-02-19 17:20:00 [ERROR] Execution failed: {'command': 'error', 'data': {'error message': "'franka'"}}
+2026-02-19 17:20:11 [INFO] Recording started
+2026-02-19 17:20:15 [INFO] Recording stopped, starting transcription
+2026-02-19 17:20:15 [INFO] ASR: transcribed text 'Save the current position as position 2.', confidence = 0.93
+2026-02-19 17:20:19 [DEBUG] Parser: LLM raw response preview: {
+  "mode": "live",
+  "robot": "mock",
+  "commands": [
+    {
+      "action": "pose",
+      "command": "teach",
+      "pose_name": "position_2"
+    }
+  ]
+}
+2026-02-19 17:20:19 [DEBUG] Parser: Parsed JSON after cleanup: {"mode": "live", "robot": "mock", "commands": [{"action": "pose", "command": "teach", "pose_name": "position_2"}]}
+2026-02-19 17:20:19 [INFO] Parser: Parsing successful
+2026-02-19 17:20:19 [INFO] Parser: Command summary "Pose"
+2026-02-19 17:20:19 [INFO] Client: Sending data to backend
+2026-02-19 17:20:19 [DEBUG] Sending data: {"mode": "live", "robot": "mock", "commands": [{"action": "pose", "command": "teach", "pose_name": "position_2"}], "message": ""}
+2026-02-19 17:20:19 [INFO] Execution successful: {'command': 'success', 'data': {'responses': [{'success': True, 'message': "Pose 'position_2' saved"}]}}
+2026-02-19 17:20:22 [INFO] Recording started
+2026-02-19 17:20:25 [INFO] Recording stopped, starting transcription
+2026-02-19 17:20:25 [INFO] ASR: transcribed text 'Delete position 2.', confidence = 0.71
+2026-02-19 17:20:29 [DEBUG] Parser: LLM raw response preview: {
+  "mode": "live",
+  "robot": "mock",
+  "commands": [
+    {
+      "action": "pose",
+      "command": "delete",
+      "pose_name": "position_2"
+    }
+  ]
+}
+2026-02-19 17:20:29 [DEBUG] Parser: Parsed JSON after cleanup: {"mode": "live", "robot": "mock", "commands": [{"action": "pose", "command": "delete", "pose_name": "position_2"}]}
+2026-02-19 17:20:29 [INFO] Parser: Parsing successful
+2026-02-19 17:20:29 [INFO] Parser: Command summary "Pose"
+2026-02-19 17:20:29 [INFO] Client: Sending data to backend
+2026-02-19 17:20:29 [DEBUG] Sending data: {"mode": "live", "robot": "mock", "commands": [{"action": "pose", "command": "delete", "pose_name": "position_2"}], "message": ""}
+2026-02-19 17:20:29 [INFO] Execution successful: {'command': 'success', 'data': {'responses': [{'success': True, 'message': "Pose 'position_2' deleted"}]}}
+2026-02-19 17:20:48 [INFO] Recording started
+2026-02-19 17:20:52 [INFO] Recording stopped, starting transcription
+2026-02-19 17:20:53 [INFO] ASR: transcribed text 'Safe disposition as position free.', confidence = 0.91
+2026-02-19 17:20:56 [DEBUG] Parser: LLM raw response preview: {
+  "mode": "live",
+  "robot": "mock",
+  "commands": [
+    {
+      "action": "pose",
+      "command": "delete",
+      "pose_name": "position_free"
+    }
+  ]
+}
+2026-02-19 17:20:56 [DEBUG] Parser: Parsed JSON after cleanup: {"mode": "live", "robot": "mock", "commands": [{"action": "pose", "command": "delete", "pose_name": "position_free"}]}
+2026-02-19 17:20:56 [INFO] Parser: Parsing successful
+2026-02-19 17:20:56 [INFO] Parser: Command summary "Pose"
+2026-02-19 17:20:56 [INFO] Client: Sending data to backend
+2026-02-19 17:20:56 [DEBUG] Sending data: {"mode": "live", "robot": "mock", "commands": [{"action": "pose", "command": "delete", "pose_name": "position_free"}], "message": ""}
+2026-02-19 17:20:56 [INFO] Execution successful: {'command': 'success', 'data': {'responses': [{'success': False, 'message': "Pose 'position_free' not found"}]}}
+2026-02-19 17:21:02 [INFO] Recording started
+2026-02-19 17:21:07 [INFO] Recording stopped, starting transcription
+2026-02-19 17:21:07 [INFO] ASR: transcribed text 'Save this position as position 3.', confidence = 0.90
+2026-02-19 17:21:11 [DEBUG] Parser: LLM raw response preview: {
+  "mode": "live",
+  "robot": "mock",
+  "commands": [
+    {
+      "action": "pose",
+      "command": "teach",
+      "pose_name": "position_3",
+      "overwrite": false
+    }
+  ]
+}
+2026-02-19 17:21:11 [DEBUG] Parser: Parsed JSON after cleanup: {"mode": "live", "robot": "mock", "commands": [{"action": "pose", "command": "teach", "pose_name": "position_3", "overwrite": false}]}
+2026-02-19 17:21:11 [INFO] Parser: Parsing successful
+2026-02-19 17:21:11 [INFO] Parser: Command summary "Pose"
+2026-02-19 17:21:11 [INFO] Client: Sending data to backend
+2026-02-19 17:21:11 [DEBUG] Sending data: {"mode": "live", "robot": "mock", "commands": [{"action": "pose", "command": "teach", "pose_name": "position_3", "overwrite": false}], "message": ""}
+2026-02-19 17:21:11 [INFO] Execution successful: {'command': 'success', 'data': {'responses': [{'success': True, 'message': "Pose 'position_3' saved"}]}}
+2026-02-19 17:21:19 [INFO] Recording started
+2026-02-19 17:21:23 [INFO] Recording stopped, starting transcription
+2026-02-19 17:21:23 [INFO] ASR: transcribed text 'Delete position 3', confidence = 0.84
+2026-02-19 17:21:26 [DEBUG] Parser: LLM raw response preview: {
+  "mode": "live",
+  "robot": "mock",
+  "commands": [
+    {
+      "action": "pose",
+      "command": "delete",
+      "pose_name": "position_3"
+    }
+  ]
+}
+2026-02-19 17:21:26 [DEBUG] Parser: Parsed JSON after cleanup: {"mode": "live", "robot": "mock", "commands": [{"action": "pose", "command": "delete", "pose_name": "position_3"}]}
+2026-02-19 17:21:26 [INFO] Parser: Parsing successful
+2026-02-19 17:21:26 [INFO] Parser: Command summary "Pose"
+2026-02-19 17:21:26 [INFO] Client: Sending data to backend
+2026-02-19 17:21:26 [DEBUG] Sending data: {"mode": "live", "robot": "mock", "commands": [{"action": "pose", "command": "delete", "pose_name": "position_3"}], "message": ""}
+2026-02-19 17:21:26 [INFO] Execution successful: {'command': 'success', 'data': {'responses': [{'success': True, 'message': "Pose 'position_3' deleted"}]}}
+2026-02-19 17:22:39 [INFO] Application shutting down
+2026-02-19 17:22:47 [INFO] Application starting
+2026-02-19 17:22:50 [INFO] Application ready
+2026-02-19 17:22:57 [INFO] Recording started
+2026-02-19 17:23:00 [INFO] Recording stopped, starting transcription
+2026-02-19 17:23:01 [INFO] ASR: transcribed text 'Safety's position as joint K.', confidence = 0.96
+2026-02-19 17:23:05 [DEBUG] Parser: LLM raw response preview: {
+  "mode": "live",
+  "robot": "mock",
+  "commands": [
+    {
+      "action": "move",
+      "motion_type": "moveJ",
+      "target": {
+        "type": "named_pose",
+        "name": "Safety's position as joint K"
+      }
+    }
+  ]
+}
+2026-02-19 17:23:05 [DEBUG] Parser: Parsed JSON after cleanup: {"mode": "live", "robot": "mock", "commands": [{"action": "move", "motion_type": "moveJ", "target": {"type": "named_pose", "name": "Safety's position as joint K"}}]}
+2026-02-19 17:23:05 [INFO] Parser: Parsing successful
+2026-02-19 17:23:05 [INFO] Parser: Command summary "Move to Safety's position as joint K pos."
+2026-02-19 17:23:05 [INFO] Client: Sending data to backend
+2026-02-19 17:23:05 [DEBUG] Sending data: {"mode": "live", "robot": "mock", "commands": [{"action": "move", "motion_type": "moveJ", "target": {"type": "named_pose", "name": "Safety's position as joint K"}}], "message": ""}
+2026-02-19 17:23:05 [DEBUG] Execution successful: {'command': 'success', 'data': {'responses': [{'success': False, 'message': "Unknown pose: Safety's position as joint K"}]}}
+2026-02-19 17:23:08 [INFO] Recording started
+2026-02-19 17:23:13 [INFO] Recording stopped, starting transcription
+2026-02-19 17:23:13 [INFO] ASR: transcribed text 'Save the current position as home.', confidence = 0.95
+2026-02-19 17:23:16 [DEBUG] Parser: LLM raw response preview: {
+  "mode": "live",
+  "robot": "mock",
+  "commands": [
+    {
+      "action": "pose",
+      "command": "teach",
+      "pose_name": "Home",
+      "overwrite": true
+    }
+  ]
+}
+2026-02-19 17:23:16 [DEBUG] Parser: Parsed JSON after cleanup: {"mode": "live", "robot": "mock", "commands": [{"action": "pose", "command": "teach", "pose_name": "Home", "overwrite": true}]}
+2026-02-19 17:23:16 [INFO] Parser: Parsing successful
+2026-02-19 17:23:16 [INFO] Parser: Command summary "Pose"
+2026-02-19 17:23:16 [INFO] Client: Sending data to backend
+2026-02-19 17:23:16 [DEBUG] Sending data: {"mode": "live", "robot": "mock", "commands": [{"action": "pose", "command": "teach", "pose_name": "Home", "overwrite": true}], "message": ""}
+2026-02-19 17:23:16 [DEBUG] Execution successful: {'command': 'success', 'data': {'responses': [{'success': True, 'message': "Pose 'Home' saved"}]}}
+2026-02-19 17:24:06 [INFO] Application shutting down
+2026-02-19 17:24:17 [INFO] Application starting
+2026-02-19 17:24:20 [INFO] Application ready
+2026-02-19 17:24:22 [INFO] Recording started
+2026-02-19 17:24:25 [INFO] Recording stopped, starting transcription
+2026-02-19 17:24:25 [INFO] ASR: transcribed text 'Move to position 2.', confidence = 0.87
+2026-02-19 17:24:29 [DEBUG] Parser: LLM raw response preview: {
+  "mode": "live",
+  "robot": "franka",
+  "commands": [
+    {
+      "action": "move",
+      "motion_type": "moveJ",
+      "target": {
+        "type": "named_pose",
+        "name": "position_2"
+      }
+    }
+  ]
+}
+2026-02-19 17:24:29 [DEBUG] Parser: Parsed JSON after cleanup: {"mode": "live", "robot": "franka", "commands": [{"action": "move", "motion_type": "moveJ", "target": {"type": "named_pose", "name": "position_2"}}]}
+2026-02-19 17:24:29 [INFO] Parser: Parsing successful
+2026-02-19 17:24:29 [INFO] Parser: Command summary "Move to position_2 pos."
+2026-02-19 17:24:29 [INFO] Client: Sending data to backend
+2026-02-19 17:24:29 [DEBUG] Sending data: {"mode": "live", "robot": "franka", "commands": [{"action": "move", "motion_type": "moveJ", "target": {"type": "named_pose", "name": "position_2"}}], "message": ""}
+2026-02-19 17:24:29 [ERROR] Execution failed: {'command': 'error', 'data': {'error message': "'franka'"}}
+2026-02-19 17:24:35 [INFO] Recording started
+2026-02-19 17:24:37 [INFO] Recording stopped, starting transcription
+2026-02-19 17:24:38 [INFO] ASR: transcribed text 'Move to position 2.', confidence = 0.89
+2026-02-19 17:24:42 [DEBUG] Parser: LLM raw response preview: {
+  "mode": "live",
+  "robot": "mock",
+  "commands": [
+    {
+      "action": "move",
+      "motion_type": "moveJ",
+      "target": {
+        "type": "named_pose",
+        "name": "position_2"
+      }
+    }
+  ]
+}
+2026-02-19 17:24:42 [DEBUG] Parser: Parsed JSON after cleanup: {"mode": "live", "robot": "mock", "commands": [{"action": "move", "motion_type": "moveJ", "target": {"type": "named_pose", "name": "position_2"}}]}
+2026-02-19 17:24:42 [INFO] Parser: Parsing successful
+2026-02-19 17:24:42 [INFO] Parser: Command summary "Move to position_2 pos."
+2026-02-19 17:24:42 [INFO] Client: Sending data to backend
+2026-02-19 17:24:42 [DEBUG] Sending data: {"mode": "live", "robot": "mock", "commands": [{"action": "move", "motion_type": "moveJ", "target": {"type": "named_pose", "name": "position_2"}}], "message": ""}
+2026-02-19 17:24:42 [DEBUG] Execution successful: {'command': 'success', 'data': {'responses': [{'success': False, 'message': 'Unknown pose: position_2'}]}}
+2026-02-19 17:24:42 [INFO] Execution successful: success
+2026-02-19 17:25:48 [INFO] Application shutting down
+2026-02-19 17:25:56 [INFO] Application starting
+2026-02-19 17:25:59 [INFO] Application ready
+2026-02-19 17:26:01 [INFO] Recording started
+2026-02-19 17:26:03 [INFO] Recording stopped, starting transcription
+2026-02-19 17:26:04 [INFO] ASR: transcribed text 'Move to position 2.', confidence = 0.89
+2026-02-19 17:26:07 [DEBUG] Parser: LLM raw response preview: {
+  "mode": "live",
+  "robot": "franka",
+  "commands": [
+    {
+      "action": "move",
+      "motion_type": "moveJ",
+      "target": {
+        "type": "named_pose",
+        "name": "position_2"
+      }
+    }
+  ]
+}
+2026-02-19 17:26:07 [DEBUG] Parser: Parsed JSON after cleanup: {"mode": "live", "robot": "franka", "commands": [{"action": "move", "motion_type": "moveJ", "target": {"type": "named_pose", "name": "position_2"}}]}
+2026-02-19 17:26:07 [INFO] Parser: Parsing successful
+2026-02-19 17:26:07 [INFO] Parser: Command summary "Move to position_2 pos."
+2026-02-19 17:26:07 [INFO] Client: Sending data to backend
+2026-02-19 17:26:07 [DEBUG] Sending data: {"mode": "live", "robot": "franka", "commands": [{"action": "move", "motion_type": "moveJ", "target": {"type": "named_pose", "name": "position_2"}}], "message": ""}
+2026-02-19 17:26:07 [ERROR] Execution failed: {'command': 'error', 'data': {'error message': "'franka'"}}
+2026-02-19 17:26:11 [INFO] Recording started
+2026-02-19 17:26:14 [INFO] Recording stopped, starting transcription
+2026-02-19 17:26:14 [INFO] ASR: transcribed text 'Move to position 2.', confidence = 0.84
+2026-02-19 17:26:18 [DEBUG] Parser: LLM raw response preview: {
+  "mode": "live",
+  "robot": "mock",
+  "commands": [
+    {
+      "action": "move",
+      "motion_type": "moveJ",
+      "target": {
+        "type": "named_pose",
+        "name": "position_2"
+      }
+    }
+  ]
+}
+2026-02-19 17:26:18 [DEBUG] Parser: Parsed JSON after cleanup: {"mode": "live", "robot": "mock", "commands": [{"action": "move", "motion_type": "moveJ", "target": {"type": "named_pose", "name": "position_2"}}]}
+2026-02-19 17:26:18 [INFO] Parser: Parsing successful
+2026-02-19 17:26:18 [INFO] Parser: Command summary "Move to position_2 pos."
+2026-02-19 17:26:18 [INFO] Client: Sending data to backend
+2026-02-19 17:26:18 [DEBUG] Sending data: {"mode": "live", "robot": "mock", "commands": [{"action": "move", "motion_type": "moveJ", "target": {"type": "named_pose", "name": "position_2"}}], "message": ""}
+2026-02-19 17:26:18 [DEBUG] Execution successful: {'command': 'success', 'data': {'responses': [{'success': False, 'message': 'Unknown pose: position_2'}]}}
+2026-02-19 17:26:18 [INFO] Execution successful. Details in logfile
