@@ -1,9 +1,11 @@
 import config
 import threading
 import logging
+import json
 from enum import Enum, auto
 from parsing_module import CodeParser
 from ASR_module import SpeechRecognizer
+from communication_client import ClientZeroMQ
 
 
 logger = logging.getLogger("cobot")
@@ -15,6 +17,7 @@ class State(Enum):
     RECORDING = auto()
     TRANSCRIBING = auto()
     PARSING = auto()
+    EXECUTING = auto()
 
 
 class Controller:
@@ -30,6 +33,7 @@ class Controller:
         self.state = State.IDLE
         self.asr = SpeechRecognizer()
         self.parser = CodeParser()
+        self.client = ClientZeroMQ(config.BACKEND_IP)
         self.gui = None
         self.confidence_threshold = config.ASR_CONFIDENCE_THRESHOLD
 
@@ -152,12 +156,42 @@ class Controller:
             self.gui.set_gui_status_line("✅ Command parsed successfully", "success")
             logger.info(f'Parser: Command summary \"{command_as_string}\"')
 
+            # Execute Backend now
+            threading.Thread(
+                target=lambda: self._send_command(parse_result["command"]),
+                daemon=True
+            ).start()
+
         else:
             error_msg = parse_result.get("error", "Unknown parsing error")
             self.gui.set_gui_status_line(f"❌ Parsing error", "danger")
             logger.error("Parsing failed: %s", error_msg)
 
         # Return to idle state
+        self.state = State.IDLE
+        self._set_button_state()
+
+    def _send_command(self, command: dict):
+        data = {
+            "mode": "live",
+            "robot": command["robot"],
+            "commands": command.get("commands", []),
+            "message": ""
+        }
+        logger.info('Client: Sending data to backend')
+        logger.debug('Sending data: %s', json.dumps(data)[:500])
+
+        success, response = self.client.send_command("execute_sequence", data)
+        self.gui.root.after(0, lambda: self._display_execution_result(success, response))
+
+    def _display_execution_result(self, success: bool, response: dict):
+        if success and response.get("command") == "success":
+            self.gui.set_gui_status_line("✅ Execution complete", "success")
+            logger.debug("Execution: Backend executed command successfully: %s", response)
+            logger.info("Execution: Backend executed command successfully. Details available in logfile")
+        else:
+            self.gui.set_gui_status_line("❌ Execution failed", "danger")
+            logger.error("Execution: Backend failed to execute command: %s", response)
         self.state = State.IDLE
         self._set_button_state()
 
@@ -208,5 +242,6 @@ class Controller:
             # Now actually close the stream
             if self.asr.is_listening():
                 self.asr.close()
+            self.asr.close()
         except Exception as e:
             logger.warning(f"Cleanup error: {e}")
