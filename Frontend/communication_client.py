@@ -50,7 +50,7 @@ def main():
                 "motion_type": "moveJ",
                 "target": {
                     "type": "named_pose",
-                    "name": "Home"
+                    "name": "home"
                 }
             },
             {
@@ -64,8 +64,8 @@ def main():
             {
                 "action": "pose",
                 "command": "teach",
-                "pose_name": "position_1",
-                "overwrite": False
+                "pose_name": "home",
+                "overwrite": True
             }
         ],
         "message": ""
