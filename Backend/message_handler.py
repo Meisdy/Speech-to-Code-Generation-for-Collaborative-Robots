@@ -1,4 +1,7 @@
-from robot_controllers.mock_robot_controller import MockRobotController
+from Backend.robot_controllers.base_robot_controller import BaseRobotController
+from Backend.robot_controllers.mock_robot_controller import MockRobotController
+from Backend.robot_controllers.franka_controller import FrankaController
+from Backend.robot_controllers.ur_controller import URController
 import time
 
 class MessageHandler:
@@ -11,41 +14,24 @@ class MessageHandler:
         self.robot_types = ['franka', 'ur', 'mock']  # Supported robot types
         self.robots = self._initialize_robots(config={})  # Placeholder for config
 
-
     def _initialize_robots(self, config):
-        """Create robot instances based on config"""
         robots = {}
+        candidates = {
+            "mock": (MockRobotController, "Backend/poses/mock_poses.jsonl"),
+            "franka": (FrankaController, "Backend/poses/franka_poses.jsonl"),
+            "ur": (URController, "Backend/poses/ur_poses.jsonl"),
+        }
 
-        # For now, hardcoded - later load from config file
-        robots["mock"] = MockRobotController()
-        robots["mock"].connect()
-
-        # Later add:
-        # robots["franka"] = FrankaController(config["franka"]["ip"])
-        # robots["ur"] = URController(config["ur"]["ip"])
-        # OR
-        ''' 
-        def _initialize_robots(self, config):
-    """Create robot instances based on config"""
-    robots = {}
-
-    for robot_type, settings in config.get('robots', {}).items():
-        match robot_type:
-            case 'mock':
-                robots[robot_type] = MockRobotController()
-                robots[robot_type].connect(settings)
-            case 'franka':
-                robots[robot_type] = FrankaController(ip=settings['ip'])
-                robots[robot_type].connect()
-            case 'ur':
-                robots[robot_type] = URController(ip=settings['ip'])
-                robots[robot_type].connect()
-            case _:
-                continue  # Skip unsupported robot types
-
-    return robots
-
-        '''
+        for name, (cls, poses_file) in candidates.items():
+            try:
+                robot = cls(poses_file)
+                result = robot.connect()
+                if result["success"]:
+                    robots[name] = robot
+                else:
+                    print(f"Warning: {name} failed to connect: {result['message']}")
+            except Exception as e:
+                print(f"Warning: {name} could not be initialized: {e}")
 
         return robots
 
@@ -108,7 +94,6 @@ class MessageHandler:
         robot = self.robots[robot_type]
         responses = []
 
-
         # execute commands on robot
         for command in data.get('commands', []):
             response = self._process_command(command, robot)
@@ -116,7 +101,7 @@ class MessageHandler:
 
         return self._formatted_response('success', {'responses': responses})
 
-    def _process_command(self, command: dict, robot: MockRobotController) -> dict:
+    def _process_command(self, command: dict, robot: BaseRobotController) -> dict:
         """
         Process a single command
 
@@ -133,16 +118,18 @@ class MessageHandler:
         match action:
             case 'move':
                 motion_type = command.get('motion_type', 'moveJ')
-                target = command['target']
-                pose_name = target['name']
-                target_type = target['type']
+                pose_name = command['target']['name']
+                offset = command.get('offset')
+                speed = command.get('speed')
+
+                entry = robot.get_pose(pose_name)
+                if entry is None:
+                    return {"success": False, "message": f"Unknown pose: {pose_name}"}
 
                 if motion_type == 'moveJ':
-                    response = robot.move_joint(pose_name)
+                    return robot.move_joint(entry, speed, offset)
                 else:
-                    response = robot.move_linear(pose_name)
-
-                return response
+                    return robot.move_linear(entry, speed, offset)
 
             case 'gripper':
                 gripper_operation = command['command']
@@ -168,13 +155,12 @@ class MessageHandler:
 
                 match mode:
                     case 'teach':
-                        response = robot.teach_pose(pose_name, overwrite)
+                        return robot.save_pose(pose_name, overwrite)
                     case 'delete':
-                        response = robot.delete_pose(pose_name)
+                        return robot.delete_pose(pose_name)
                     case _:
                         return {"error": f"Unknown pose management mode: {mode}"}
 
-                return response
             case _:
                 return {"error": f"Unknown action: {action}"}
 
