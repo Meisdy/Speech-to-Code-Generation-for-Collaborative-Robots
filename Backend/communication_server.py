@@ -27,14 +27,15 @@ class ServerZeroMQ:
             try:
                 # Receive message
                 message = self.socket.recv_json()
-                print("Received message:", message)
+                print(100 * '=')
+                print("Received message:\n", message)
 
                 # Delegate to handler
                 response = self.handler.process_message(message=message)
 
                 # Send response
                 self.socket.send_json(response)
-                print('Sent response:', response)
+                print('\nSent response:\n', response)
 
             except zmq.Again:
                 # Timeout - loop continues to check self.running
