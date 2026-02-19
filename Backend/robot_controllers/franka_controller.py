@@ -2,7 +2,7 @@ from .base_robot_controller import BaseRobotController
 
 
 class FrankaController(BaseRobotController):
-    def __init__(self, poses_file: str = "poses/mock_poses.jsonl"):
+    def __init__(self, poses_file: str = 'Backend/poses/franka_poses.jsonl'):
         super().__init__(poses_file)
         self.joint_angles = None
         self.positions = None
