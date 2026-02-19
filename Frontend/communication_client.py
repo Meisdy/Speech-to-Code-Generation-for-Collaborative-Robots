@@ -42,25 +42,34 @@ def main():
     sender = ClientZeroMQ("tcp://localhost:5555")
 
     data = {
-  "mode": "live",
-  "robot": "mock",
-  "commands": [
-    {
-      "action": "move",
-      "motion_type": "moveJ",
-      "target": {
-        "type": "named_pose",
-        "name": "Home"
-      }
-    },
-    {
-      "action": "gripper",
-      "command": "open"
+        "mode": "live",
+        "robot": "mock",
+        "commands": [
+            {
+                "action": "move",
+                "motion_type": "moveJ",
+                "target": {
+                    "type": "named_pose",
+                    "name": "Home"
+                }
+            },
+            {
+                "action": "gripper",
+                "command": "open"
+            },
+            {
+                "action": "wait",
+                "duration_s": 0.5
+            },
+            {
+                "action": "pose",
+                "command": "teach",
+                "pose_name": "position_1",
+                "overwrite": False
+            }
+        ],
+        "message": ""
     }
-  ],
-  "message": ""
-}
-
 
     # Example command
     #success, response = sender.send_command("ping", {"message": "Hello from client!"})
