@@ -132,14 +132,15 @@ class MessageHandler:
 
         match action:
             case 'move':
-                motion_type = command.get('motion_type', 'moveJ') # Fix this later
+                motion_type = command.get('motion_type', 'moveJ')
                 target = command['target']
+                pose_name = target['name']
+                target_type = target['type']
 
-                if target['type'] == 'named_pose':
-                    pose_name = target['name']
+                if motion_type == 'moveJ':
                     response = robot.move_joint(pose_name)
                 else:
-                    response = 'not yet implemented ; Moving offset'
+                    response = robot.move_linear(pose_name)
 
                 return response
 
@@ -161,7 +162,7 @@ class MessageHandler:
                 return {"message": f"Waited for {duration_s} seconds"}
 
             case 'pose':
-                mode = command['mode']
+                mode = command['command']
                 pose_name = command['pose_name']
                 overwrite = command.get('overwrite', False)
 
