@@ -566,3 +566,49 @@ KeyError: slice(None, 500, None)
 2026-02-18 11:32:34 [INFO] Parser: Parsing successful
 2026-02-18 11:32:34 [INFO] Parser: Command summary "Move to Home pos."
 2026-02-18 11:35:11 [INFO] Application shutting down
+2026-02-19 10:33:04 [INFO] Application starting
+2026-02-19 10:33:09 [INFO] Application ready
+2026-02-19 10:33:16 [INFO] Recording started
+2026-02-19 10:33:18 [INFO] Recording stopped, starting transcription
+2026-02-19 10:33:19 [INFO] ASR: transcribed text 'Move to home position.', confidence = 0.86
+2026-02-19 10:33:27 [DEBUG] Parser: LLM raw response preview: {
+  "mode": "live",
+  "robot": "franka",
+  "commands": [
+    {
+      "action": "move",
+      "motion_type": "moveJ",
+      "target": {
+        "type": "named_pose",
+        "name": "Home"
+      }
+    }
+  ]
+}
+2026-02-19 10:33:27 [DEBUG] Parser: Parsed JSON after cleanup: {"mode": "live", "robot": "franka", "commands": [{"action": "move", "motion_type": "moveJ", "target": {"type": "named_pose", "name": "Home"}}]}
+2026-02-19 10:33:27 [INFO] Parser: Parsing successful
+2026-02-19 10:33:28 [INFO] Parser: Command summary "Move to Home pos."
+2026-02-19 10:37:12 [INFO] Application shutting down
+2026-02-19 10:45:56 [INFO] Application starting
+2026-02-19 10:46:00 [INFO] Application ready
+2026-02-19 10:46:02 [INFO] Recording started
+2026-02-19 10:46:05 [INFO] Recording stopped, starting transcription
+2026-02-19 10:46:06 [INFO] ASR: transcribed text 'Move linearly to home position.', confidence = 0.86
+2026-02-19 10:46:09 [DEBUG] Parser: LLM raw response preview: {
+  "mode": "live",
+  "robot": "franka",
+  "commands": [
+    {
+      "action": "move",
+      "motion_type": "moveL",
+      "target": {
+        "type": "named_pose",
+        "name": "Home"
+      }
+    }
+  ]
+}
+2026-02-19 10:46:09 [DEBUG] Parser: Parsed JSON after cleanup: {"mode": "live", "robot": "franka", "commands": [{"action": "move", "motion_type": "moveL", "target": {"type": "named_pose", "name": "Home"}}]}
+2026-02-19 10:46:09 [INFO] Parser: Parsing successful
+2026-02-19 10:46:09 [INFO] Parser: Command summary "Move to Home pos."
+2026-02-19 10:51:11 [INFO] Application shutting down
