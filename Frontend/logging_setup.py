@@ -3,6 +3,7 @@ import logging
 from logging.handlers import RotatingFileHandler
 import config
 
+LOG_DIR = os.path.join(os.path.dirname(__file__), "logs")
 
 class GuiHandler(logging.Handler):
     """Forward formatted log records into the Tk GUI safely via root.after.
@@ -53,7 +54,7 @@ def setup_logging() -> logging.Logger:
     - Creates a rotating file handler (DEBUG/LOGGING_LEVEL_FILE) and
       a colored console handler (LOGGING_LEVEL).
     """
-    os.makedirs(config.LOGGING_DIR, exist_ok=True)
+    os.makedirs(LOG_DIR, exist_ok=True)
 
     logger = logging.getLogger("cobot")
     if logger.handlers:
@@ -71,7 +72,7 @@ def setup_logging() -> logging.Logger:
     datefmt = "%Y-%m-%d %H:%M:%S"
 
     # File handler (plain, verbose)
-    fh = RotatingFileHandler(os.path.join(config.LOGGING_DIR, "cobot.log"), maxBytes=500_000, backupCount=3, encoding="utf-8")
+    fh = RotatingFileHandler(os.path.join(LOG_DIR, "cobot.log"), maxBytes=500_000, backupCount=3, encoding="utf-8")
     fh.setLevel(file_level)
     fh.setFormatter(logging.Formatter(fmt, datefmt=datefmt))
     logger.addHandler(fh)
