@@ -42,7 +42,7 @@ class CodeParser:
 
         # Logging configuration
         self.log_parsing: bool = config.LOGGING_SAVE_PARSE
-        self.log_path: str = config.LOGGING_DIR
+        self.log_path: str = config.DATA_DIR
 
     def _load_json(self, filename: str) -> Any | None:
         """
