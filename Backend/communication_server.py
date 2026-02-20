@@ -1,5 +1,5 @@
 import zmq
-from message_handler import MessageHandler
+from .message_handler import MessageHandler
 
 class ServerZeroMQ:
     def __init__(self, bind_address):

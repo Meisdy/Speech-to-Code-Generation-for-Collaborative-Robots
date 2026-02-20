@@ -9,7 +9,7 @@ class BaseRobotController(ABC):
         self.poses = self._load_poses()
         self.connected : bool = False
         self.gripper_state : str = 'open'
-        self.joint_angles : list | None = None
+        self.joint_angles = None
         self.positions = None
 
 
@@ -26,7 +26,7 @@ class BaseRobotController(ABC):
                 poses[entry["name"]] = entry
         return poses
 
-    def get_pose(self, name: str) -> dict | None:
+    def get_pose(self, name: str):
         return self.poses.get(name)
 
     def save_pose(self, name: str, overwrite: bool = False) -> dict:

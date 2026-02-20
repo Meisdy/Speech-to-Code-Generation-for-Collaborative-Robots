@@ -43,16 +43,8 @@ def main():
 
     data = {
         "mode": "live",
-        "robot": "mock",
+        "robot": "franka",
         "commands": [
-            {
-                "action": "move",
-                "motion_type": "moveJ",
-                "target": {
-                    "type": "named_pose",
-                    "name": "home"
-                }
-            },
             {
                 "action": "gripper",
                 "command": "open"

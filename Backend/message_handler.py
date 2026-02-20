@@ -1,11 +1,16 @@
-from Backend.robot_controllers.base_robot_controller import BaseRobotController
-from Backend.robot_controllers.mock_robot_controller import MockRobotController
-from Backend.robot_controllers.ur_controller import URController
+from .robot_controllers.base_robot_controller import BaseRobotController
+from .robot_controllers.mock_robot_controller import MockRobotController
 
 try:
-    from Backend.robot_controllers.franka_controller import FrankaController
+    from .robot_controllers.franka_controller import FrankaController
 except ImportError:
     FrankaController = None
+
+try:
+    from .robot_controllers.ur_controller import URController
+
+except ImportError:
+    URController = None
 
 import time
 
@@ -17,7 +22,7 @@ class MessageHandler:
 
         self.allowed_commands : list = ['ping', 'get_status', 'execute_sequence']
         self.robot_types : list = ['franka', 'ur', 'mock']  # Supported robot types
-        self.robot : BaseRobotController | None = None
+        self.robot = None
 
     def _load_robot_adapter(self, robot_type: str = "mock") -> dict:
         expected = {"ur": "URController", "franka": "FrankaController", "mock": "MockRobotController"}
@@ -28,15 +33,18 @@ class MessageHandler:
         if self.robot:
             self.robot.disconnect()
 
-        match robot_type:
-            case "ur":
-                self.robot = URController()
-            case "franka":
-                if FrankaController is None:
-                    return {"success": False, "message": "FrankaController dependencies not installed"}
-                self.robot = FrankaController()
-            case "mock":
-                self.robot = MockRobotController()
+        if robot_type == "ur":
+            self.robot = URController()
+
+        elif robot_type == "franka":
+            if FrankaController is None:
+                return {
+                    "success": False,
+                    "message": "FrankaController dependencies not installed"
+                }
+            self.robot = FrankaController()
+        elif robot_type == "mock":
+            self.robot = MockRobotController()
 
         return self.robot.connect()
 
@@ -64,13 +72,13 @@ class MessageHandler:
             if command not in self.allowed_commands:
                 return self._unknown_command(command)
 
-            match command:
-                case "ping":
-                    return self._answer_ping()
-                case "get_status":
-                    return self._send_status()
-                case "execute_sequence":
-                    return self._execute_sequence(data)
+            if command == "ping":
+                return self._answer_ping()
+            elif command == "get_status":
+                return self._send_status()
+            elif command == "execute_sequence":
+                return self._execute_sequence(data)
+
 
         except Exception as e:
             return self._formatted_response('error', {"error message": str(e)})
@@ -113,54 +121,49 @@ class MessageHandler:
 
         action = command.get('action', '')
 
-        match action:
-            case 'move':
-                motion_type = command.get('motion_type', 'moveJ')
-                pose_name = command['target']['name']
-                offset = command.get('offset')
-                speed = command.get('speed')
 
-                entry = robot.get_pose(pose_name)
-                if entry is None:
-                    return {"success": False, "message": f"Unknown pose: {pose_name}"}
+        if action == "move":
+            motion_type = command.get('motion_type', 'moveJ')
+            pose_name = command['target']['name']
+            offset = command.get('offset')
+            speed = command.get('speed')
 
-                if motion_type == 'moveJ':
-                    return robot.move_joint(entry, speed, offset)
-                else:
-                    return robot.move_linear(entry, speed, offset)
+            entry = robot.get_pose(pose_name)
+            if entry is None:
+                return {"success": False, "message": f"Unknown pose: {pose_name}"}
 
-            case 'gripper':
-                gripper_operation = command['command']
-                match gripper_operation:
-                    case 'open':
-                        response = robot.gripper_open()
-                    case 'close':
-                        response = robot.gripper_close()
-                    case _:
-                        return {"error": f"Unknown gripper command: {gripper_operation}"}
+            if motion_type == 'moveJ':
+                return robot.move_joint(entry, speed, offset)
+            else:
+                return robot.move_linear(entry, speed, offset)
+        elif action == "gripper":
+            gripper_operation = command['command']
+            if gripper_operation == "open":
+                return robot.gripper_open()
+            elif gripper_operation == "close":
+                return robot.gripper_close()
+            else:
+                return {"error": f"Unknown gripper command: {gripper_operation}"}
 
-                return response
+        elif action == "wait":
+            duration_s = command.get('duration_s', 1.0)
+            time.sleep(duration_s)
+            return {"message": f"Waited for {duration_s} seconds"}
+        
+        elif action == "pose":
+            mode = command['command']
+            pose_name = command['pose_name']
+            overwrite = command.get('overwrite', False)
 
-            case 'wait':
-                duration_s = command.get('duration_s', 1.0)
-                time.sleep(duration_s)
-                return {"message": f"Waited for {duration_s} seconds"}
+            if mode == "teach":
+                return robot.save_pose(pose_name, overwrite)
+            elif mode == "delete":
+                return robot.delete_pose(pose_name)
+            else:
+                return {"error": f"Unknown pose management mode: {mode}"}
+        else:
+            return {"error": f"Unknown action: {action}"}
 
-            case 'pose':
-                mode = command['command']
-                pose_name = command['pose_name']
-                overwrite = command.get('overwrite', False)
-
-                match mode:
-                    case 'teach':
-                        return robot.save_pose(pose_name, overwrite)
-                    case 'delete':
-                        return robot.delete_pose(pose_name)
-                    case _:
-                        return {"error": f"Unknown pose management mode: {mode}"}
-
-            case _:
-                return {"error": f"Unknown action: {action}"}
 
 
 

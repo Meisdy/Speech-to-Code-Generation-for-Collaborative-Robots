@@ -1,4 +1,4 @@
-from communication_server import ServerZeroMQ
+from .communication_server import ServerZeroMQ
 
 BINDING_ADDRESS = "tcp://*:5555"  # Changed from localhost - binds to all interfaces
 
