@@ -21,10 +21,11 @@ MAX_LINEAR_ACCEL = 0.5       # m/s²
 DEFAULT_SPEED = 0.5          # fraction 0.0–1.0
 
 DEFAULT_ROBOT_IP = "169.254.70.80"
+POSES_FILE = "Backend/poses/ur_poses.jsonl"
 
 class URController(BaseRobotController):
 
-    def __init__(self, robot_ip: str = DEFAULT_ROBOT_IP, poses_file: str = 'Backend/poses/ur_poses.jsonl', gripper_id: int = 0):
+    def __init__(self, robot_ip: str = DEFAULT_ROBOT_IP, poses_file: str = POSES_FILE, gripper_id: int = 0):
         super().__init__(poses_file)
         self.robot_ip   = robot_ip
         self.gripper_id = gripper_id
