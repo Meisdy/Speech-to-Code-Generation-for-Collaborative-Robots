@@ -32,7 +32,7 @@ class SpeechRecognizer:
         self.sample_rate: int = config.ASR_SAMPLE_RATE
         self.use_fp16: bool = config.ASR_FP16
         self.log_audio: bool = config.LOGGING_SAVE_AUDIO
-        self.log_path: str = config.LOGGING_DIR
+        self.log_path: str = config.DATA_DIR
 
         # Recording data
         self.stream: pyaudio.Stream | None = None
@@ -161,8 +161,9 @@ class SpeechRecognizer:
         """Save recorded audio to logs folder for debugging."""
         try:
             # Generate timestamp-based filename
-            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-            filepath = os.path.join("../logs", f"{timestamp}_audio.wav")
+            os.makedirs(self.log_path, exist_ok=True)  # ensure dir exists
+            timestamp = datetime.now().strftime("%y%m%d_%H%M%S")
+            filepath = os.path.join(self.log_path, f"{timestamp}_audio.wav")
 
             # Write WAV file
             with wave.open(filepath, 'wb') as wf:
