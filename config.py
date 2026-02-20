@@ -43,4 +43,4 @@ LOGGING_LEVEL = "INFO"               # Options: DEBUG, INFO, WARNING, ERROR (for
 LOGGING_LEVEL_FILE = "DEBUG"         # Log level for file output (can be more verbose than console/gui)
 LOGGING_SAVE_AUDIO = False           # Save audio files for debugging
 LOGGING_SAVE_PARSE = False           # Save parser outputs for debugging
-LOGGING_DIR = "logs"                    # Directory to save logs and optionally audio/parse files
+DATA_DIR = "data"
