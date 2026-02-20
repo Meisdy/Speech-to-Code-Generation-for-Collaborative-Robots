@@ -2,7 +2,7 @@ from Backend.robot_controllers.base_robot_controller import BaseRobotController
 from Backend.robot_controllers.mock_robot_controller import MockRobotController
 from Backend.robot_controllers.franka_controller import FrankaController
 from Backend.robot_controllers.ur_controller import URController
-import time
+import time, json
 
 class MessageHandler:
     """Processes commands - no knowledge of communication protocol"""
@@ -12,27 +12,27 @@ class MessageHandler:
 
         self.allowed_commands = ['ping', 'get_status', 'execute_sequence']
         self.robot_types = ['franka', 'ur', 'mock']  # Supported robot types
-        self.robots = self._initialize_robots(config={})  # Placeholder for config
+        self.robots = self._initialize_robots()
 
-    def _initialize_robots(self, config):
+    def _initialize_robots(self):
         robots = {}
-        candidates = {
-            "mock": (MockRobotController, "Backend/poses/mock_poses.jsonl"),
-            "franka": (FrankaController, "Backend/poses/franka_poses.jsonl"),
-            "ur": (URController, "Backend/poses/ur_poses.jsonl"),
-        }
 
-        for name, (cls, poses_file) in candidates.items():
+        for name, cls in {
+            "mock": MockRobotController,
+            "franka": FrankaController,
+            "ur": URController,
+        }.items():
             try:
-                robot = cls(poses_file)
+                robot = cls()
                 result = robot.connect()
                 if result["success"]:
                     robots[name] = robot
                 else:
-                    print(f"Warning: {name} failed to connect: {result['message']}")
+                    print(f"{name} skipped: {result['message']}")
             except Exception as e:
-                print(f"Warning: {name} could not be initialized: {e}")
+                print(f"{name} skipped: {e}")
 
+        print(f"Loaded robots: {list(robots.keys())}")
         return robots
 
     def _formatted_response(self, command: str, data: dict) -> dict:
@@ -80,7 +80,7 @@ class MessageHandler:
 
     def _send_status(self):
         """Handle get_status command"""
-        return self._formatted_response('success', {"Connected Robots": self.robots})
+        return self._formatted_response('success', {"Connected Robots": 'unknown' })
 
     def _execute_sequence(self, data):
         """Handle execute_sequence command"""
