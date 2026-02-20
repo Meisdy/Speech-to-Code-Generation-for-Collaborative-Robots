@@ -81,7 +81,8 @@ RULES:
 - Use defaults from ruleset when parameters not specified
 - Always include "mode", "robot", and "commands" fields
 - Robot field allows for 'franka' XOR 'ur' XOR 'mock'
-- use numbers whenever possible, not words (e.g. "move 10 cm", not "move ten centimeters, move to position_1, not "move to position_one")
+- use numbers whenever possible, not words (e.g. "move 10 cm", not "move ten centimeters)
+- for names of positions, use snakecase notation
 - If you want to add feedback, add it to the "message" field
 """
 
