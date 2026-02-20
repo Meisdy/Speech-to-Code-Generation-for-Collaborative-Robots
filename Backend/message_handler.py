@@ -1,8 +1,13 @@
 from Backend.robot_controllers.base_robot_controller import BaseRobotController
 from Backend.robot_controllers.mock_robot_controller import MockRobotController
-from Backend.robot_controllers.franka_controller import FrankaController
 from Backend.robot_controllers.ur_controller import URController
-import time, json
+
+try:
+    from Backend.robot_controllers.franka_controller import FrankaController
+except ImportError:
+    FrankaController = None
+
+import time
 
 class MessageHandler:
     """Processes commands - no knowledge of communication protocol"""
@@ -10,30 +15,30 @@ class MessageHandler:
     def __init__(self):
         """Initialize handler - later will include robot controller, logger"""
 
-        self.allowed_commands = ['ping', 'get_status', 'execute_sequence']
-        self.robot_types = ['franka', 'ur', 'mock']  # Supported robot types
-        self.robots = self._initialize_robots()
+        self.allowed_commands : list = ['ping', 'get_status', 'execute_sequence']
+        self.robot_types : list = ['franka', 'ur', 'mock']  # Supported robot types
+        self.robot : BaseRobotController | None = None
 
-    def _initialize_robots(self):
-        robots = {}
+    def _load_robot_adapter(self, robot_type: str = "mock") -> dict:
+        expected = {"ur": "URController", "franka": "FrankaController", "mock": "MockRobotController"}
 
-        for name, cls in {
-            "mock": MockRobotController,
-            "franka": FrankaController,
-            "ur": URController,
-        }.items():
-            try:
-                robot = cls()
-                result = robot.connect()
-                if result["success"]:
-                    robots[name] = robot
-                else:
-                    print(f"{name} skipped: {result['message']}")
-            except Exception as e:
-                print(f"{name} skipped: {e}")
+        if self.robot and type(self.robot).__name__ == expected[robot_type] and self.robot.is_connected():
+            return {"success": True, "message": "Already connected"}
 
-        print(f"Loaded robots: {list(robots.keys())}")
-        return robots
+        if self.robot:
+            self.robot.disconnect()
+
+        match robot_type:
+            case "ur":
+                self.robot = URController()
+            case "franka":
+                if FrankaController is None:
+                    return {"success": False, "message": "FrankaController dependencies not installed"}
+                self.robot = FrankaController()
+            case "mock":
+                self.robot = MockRobotController()
+
+        return self.robot.connect()
 
     def _formatted_response(self, command: str, data: dict) -> dict:
         """Format response as JSON with standard structure."""
@@ -83,22 +88,15 @@ class MessageHandler:
         return self._formatted_response('success', {"Connected Robots": 'unknown' })
 
     def _execute_sequence(self, data):
-        """Handle execute_sequence command"""
-
-        #Check robot type in data
-        robot_type = data.get("robot", "unknown")
+        robot_type = data['robot']
         if robot_type not in self.robot_types:
-                return self._formatted_response('rejected',{"reason": f"Unsupported robot type: {robot_type}"} )
+            return self._formatted_response('rejected', {"reason": f"Unsupported robot type: {robot_type}"})
 
-        # select robot
-        robot = self.robots[robot_type]
-        responses = []
+        result = self._load_robot_adapter(robot_type)
+        if not result["success"]:
+            return self._formatted_response('rejected', {"reason": f"Could not connect to {robot_type}: {result['message']}"})
 
-        # execute commands on robot
-        for command in data.get('commands', []):
-            response = self._process_command(command, robot)
-            responses.append(response)
-
+        responses = [self._process_command(cmd, self.robot) for cmd in data.get('commands', [])]
         return self._formatted_response('success', {'responses': responses})
 
     def _process_command(self, command: dict, robot: BaseRobotController) -> dict:
