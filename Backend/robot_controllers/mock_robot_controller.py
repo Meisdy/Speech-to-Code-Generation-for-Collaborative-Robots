@@ -5,7 +5,7 @@ import time
 class MockRobotController(BaseRobotController):
     """Mock robot controller for testing without hardware"""
 
-    def __init__(self, poses_file: str = "poses/mock_poses.jsonl"):
+    def __init__(self, poses_file: str = "Backend/poses/mock_poses.jsonl"):
         super().__init__(poses_file)
         self.joint_angles = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
         self.positions = [0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0]  # pos + identity quat
