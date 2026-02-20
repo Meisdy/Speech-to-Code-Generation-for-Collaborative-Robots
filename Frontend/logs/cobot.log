@@ -1482,3 +1482,72 @@ KeyError: slice(None, 500, None)
 2026-02-20 15:02:35 [DEBUG] Sending data: {"mode": "live", "robot": "mock", "commands": [{"action": "pose", "command": "teach", "pose_name": "position_4", "overwrite": false}], "message": ""}
 2026-02-20 15:02:35 [DEBUG] Execution: Backend executed command successfully: {'command': 'success', 'data': {'responses': [{'success': True, 'message': "Pose 'position_4' saved"}]}}
 2026-02-20 15:02:35 [INFO] Execution: Backend executed command successfully. Details available in logfile
+2026-02-20 15:09:23 [INFO] Application shutting down
+2026-02-20 15:34:03 [INFO] Application starting
+2026-02-20 15:34:06 [INFO] Application ready
+2026-02-20 15:34:08 [INFO] Application shutting down
+2026-02-20 15:34:22 [INFO] Application starting
+2026-02-20 15:34:24 [INFO] Application ready
+2026-02-20 15:34:27 [INFO] Recording started
+2026-02-20 15:34:30 [INFO] Recording stopped, starting transcription
+2026-02-20 15:34:30 [ERROR] Failed to save debug audio: [Errno 2] No such file or directory: '../logs\\20260220_153430_audio.wav'
+2026-02-20 15:34:30 [INFO] ASR: transcribed text 'Move to home position.', confidence = 0.77
+2026-02-20 15:35:32 [ERROR] Parser: LLM request timed out
+2026-02-20 15:35:32 [ERROR] Parsing failed: LLM request timed out after 60s
+2026-02-20 15:37:25 [INFO] Application starting
+2026-02-20 15:37:27 [INFO] Application ready
+2026-02-20 15:37:28 [INFO] Recording started
+2026-02-20 15:37:31 [INFO] Recording stopped, starting transcription
+2026-02-20 15:37:31 [INFO] Saved audio to data\20260220_153731_audio.wav
+2026-02-20 15:37:32 [INFO] ASR: transcribed text 'Move to home.', confidence = 0.68
+2026-02-20 15:37:32 [WARNING] ASR confidence low: 0.68 - parsing may fail
+2026-02-20 15:37:45 [DEBUG] Parser: LLM raw response preview: {
+  "mode": "live",
+  "robot": "franka",
+  "commands": [
+    {
+      "action": "move",
+      "motion_type": "moveJ",
+      "target": {
+        "type": "named_pose",
+        "name": "home"
+      }
+    }
+  ]
+}
+2026-02-20 15:37:45 [DEBUG] Parser: Parsed JSON after cleanup: {"mode": "live", "robot": "franka", "commands": [{"action": "move", "motion_type": "moveJ", "target": {"type": "named_pose", "name": "home"}}]}
+2026-02-20 15:37:45 [INFO] Parser: Parsing successful
+2026-02-20 15:37:45 [INFO] Parser: Saved parsed command to data/260220_153745_parse_result.json
+2026-02-20 15:37:45 [INFO] Parser: Command summary "Move to home pos."
+2026-02-20 15:37:45 [INFO] Client: Sending data to backend
+2026-02-20 15:37:45 [DEBUG] Sending data: {"mode": "live", "robot": "franka", "commands": [{"action": "move", "motion_type": "moveJ", "target": {"type": "named_pose", "name": "home"}}], "message": ""}
+2026-02-20 15:37:50 [ERROR] Execution: Backend failed to execute command: {'command': 'timeout', 'data': {'error': 'Backend timeout'}}
+2026-02-20 15:37:52 [INFO] Application shutting down
+2026-02-20 15:41:02 [INFO] Application starting
+2026-02-20 15:41:04 [INFO] Application ready
+2026-02-20 15:41:14 [INFO] Recording started
+2026-02-20 15:41:17 [INFO] Recording stopped, starting transcription
+2026-02-20 15:41:17 [INFO] Saved audio to data\260220_154117_audio.wav
+2026-02-20 15:41:18 [INFO] ASR: transcribed text 'Move to home position.', confidence = 0.80
+2026-02-20 15:41:31 [DEBUG] Parser: LLM raw response preview: {
+  "mode": "live",
+  "robot": "franka",
+  "commands": [
+    {
+      "action": "move",
+      "motion_type": "moveJ",
+      "target": {
+        "type": "named_pose",
+        "name": "home"
+      }
+    }
+  ]
+}
+2026-02-20 15:41:31 [DEBUG] Parser: Parsed JSON after cleanup: {"mode": "live", "robot": "franka", "commands": [{"action": "move", "motion_type": "moveJ", "target": {"type": "named_pose", "name": "home"}}]}
+2026-02-20 15:41:31 [INFO] Parser: Parsing successful
+2026-02-20 15:41:31 [INFO] Parser: Saved parsed command to data/260220_154131_parse_result.json
+2026-02-20 15:41:31 [INFO] Parser: Command summary "Move to home pos."
+2026-02-20 15:41:31 [INFO] Client: Sending data to backend
+2026-02-20 15:41:31 [DEBUG] Sending data: {"mode": "live", "robot": "franka", "commands": [{"action": "move", "motion_type": "moveJ", "target": {"type": "named_pose", "name": "home"}}], "message": ""}
+2026-02-20 15:41:36 [ERROR] Execution: Backend failed to execute command: {'command': 'timeout', 'data': {'error': 'Backend timeout'}}
+2026-02-20 15:41:41 [INFO] Application shutting down
