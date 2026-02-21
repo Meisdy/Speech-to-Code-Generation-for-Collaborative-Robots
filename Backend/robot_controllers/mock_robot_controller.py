@@ -1,4 +1,4 @@
-from .base_robot_controller import BaseRobotController
+from Backend.robot_controllers.base_robot_controller import BaseRobotController
 import time
 
 
