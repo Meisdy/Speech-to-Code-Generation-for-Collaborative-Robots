@@ -10,7 +10,6 @@ logger = logging.getLogger("cobot_backend")
 try:
     from Backend.robot_controllers.franka_controller import FrankaController
 except ImportError:
-    logger.warning("Could not import franka dependencies")
     FrankaController = None
 
 class MessageHandler:
@@ -36,6 +35,7 @@ class MessageHandler:
             self.robot = URController()
         elif robot_type == "franka":
             if FrankaController is None:
+                logger.warning("Could not load franka adapter due to missing franka dependencies")
                 return {"success": False, "message": "FrankaController dependencies not installed"}
             self.robot = FrankaController()
         elif robot_type == "mock":
