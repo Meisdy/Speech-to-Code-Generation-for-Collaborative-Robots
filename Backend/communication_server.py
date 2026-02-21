@@ -41,7 +41,6 @@ class ServerZeroMQ:
                 logger.debug('Sent response: %s', response)
 
             except zmq.Again:
-                logger.warning('ZeroMQ timeout occured')
                 continue
             except KeyboardInterrupt:
                 logger.info('Keyboard interrupt in server loop occured')
