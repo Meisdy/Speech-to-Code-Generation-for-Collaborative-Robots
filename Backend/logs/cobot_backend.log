@@ -1,0 +1,25 @@
+2026-02-21 14:15:38 [INFO] Starting backend server on tcp://*:5555
+2026-02-21 14:18:56 [INFO] Starting backend server on tcp://*:5555
+2026-02-21 14:20:23 [INFO] Starting backend server on tcp://*:5555
+2026-02-21 14:20:46 [INFO] Starting backend server on tcp://*:5555
+2026-02-21 14:20:46 [INFO] Server ready and listening on tcp://*:5555
+2026-02-21 14:21:10 [INFO] Keyboard interrupt in server loop occured
+2026-02-21 14:21:10 [INFO] Shutting down server
+2026-02-21 14:22:03 [INFO] Starting backend server on tcp://*:5555
+2026-02-21 14:22:04 [INFO] Server ready and listening
+2026-02-21 14:22:16 [INFO] Message received
+2026-02-21 14:22:16 [DEBUG] Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'mock', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}, {'action': 'gripper', 'command': 'open'}, {'action': 'wait', 'duration_s': 0.5}, {'action': 'pose', 'command': 'teach', 'pose_name': 'home', 'overwrite': True}], 'message': ''}}
+2026-02-21 14:22:17 [INFO] Response sent
+2026-02-21 14:22:17 [DEBUG] Sent response: {'command': 'success', 'data': {'responses': [{'success': False, 'message': 'Unknown pose: home'}, {'success': True, 'message': 'Mock gripper opened'}, {'message': 'Waited for 0.5 seconds'}, {'success': True, 'message': "Pose 'home' saved"}]}}
+2026-02-21 14:22:37 [INFO] Keyboard interrupt in server loop occured
+2026-02-21 14:22:37 [INFO] Shutting down server
+2026-02-21 14:38:51 [INFO] Starting backend server on tcp://*:5555
+2026-02-21 14:38:51 [INFO] Server ready and listening
+2026-02-21 14:39:04 [INFO] Message received
+2026-02-21 14:39:04 [DEBUG] Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'mock', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}, {'action': 'gripper', 'command': 'open'}, {'action': 'wait', 'duration_s': 0.5}, {'action': 'pose', 'command': 'teach', 'pose_name': 'home', 'overwrite': True}], 'message': ''}}
+2026-02-21 14:39:04 [INFO] Mock adapter: Connecting to robot
+2026-02-21 14:39:04 [INFO] Mock: MoveJ to 'home' offset=None speed=None
+2026-02-21 14:39:07 [INFO] Response sent
+2026-02-21 14:39:07 [DEBUG] Sent response: {'command': 'success', 'data': {'responses': [{'success': True, 'message': "Mock MoveJ complete to 'home'"}, {'success': True, 'message': 'Mock gripper opened'}, {'message': 'Waited for 0.5 seconds'}, {'success': True, 'message': "Pose 'home' saved"}]}}
+2026-02-21 14:39:28 [INFO] Keyboard interrupt in server loop occured
+2026-02-21 14:39:28 [INFO] Shutting down server
