@@ -1,5 +1,7 @@
 from abc import ABC, abstractmethod
 import os, json
+from typing import Optional
+
 
 class BaseRobotController(ABC):
     """Abstract base class defining common robot controller interface"""
@@ -26,7 +28,7 @@ class BaseRobotController(ABC):
                 poses[entry["name"]] = entry
         return poses
 
-    def get_pose(self, name: str) -> dict | None:
+    def get_pose(self, name: str) -> Optional[dict]:
         return self.poses.get(name)
 
     def save_pose(self, name: str, overwrite: bool = False) -> dict:
