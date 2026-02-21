@@ -3,10 +3,12 @@ import time
 import subprocess
 import rospy
 import moveit_commander
+import logging
 
 from .base_robot_controller import BaseRobotController
 from .franka_robot import FrankaRobot
 
+logger = logging.getLogger("cobot_backend")
 
 ROBOT_IP     = "192.168.1.100"
 POSES_FILE   = "Backend/poses/franka_poses.jsonl"
@@ -26,13 +28,16 @@ class FrankaController(BaseRobotController):
 
     def connect(self) -> dict:
         try:
+            logger.debug('Trying to connect to franka now')
             self._ros_process = subprocess.Popen([
                 "bash", "-c",
                 f"source ~/ws_moveit/devel/setup.bash && "
                 f"roslaunch panda_moveit_config franka_control.launch "
                 f"robot_ip:={ROBOT_IP} load_gripper:=true use_rviz:=false"
             ])
+
             time.sleep(LAUNCH_DELAY)
+            logger.debug('Terminal should be idle now and ready. Init rospy node now')
 
             rospy.init_node("speech_to_code_franka", anonymous=True)
             moveit_commander.roscpp_initialize([])

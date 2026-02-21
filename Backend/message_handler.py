@@ -2,13 +2,16 @@ from Backend.robot_controllers.base_robot_controller import BaseRobotController
 from Backend.robot_controllers.mock_robot_controller import MockRobotController
 from Backend.robot_controllers.ur_controller import URController
 from typing import Optional # Needed for old py version of ROS / Franka
+import logging
+import time
+
+logger = logging.getLogger("cobot_backend")
 
 try:
     from Backend.robot_controllers.franka_controller import FrankaController
 except ImportError:
+    logger.warning("Could not import franka dependencies")
     FrankaController = None
-
-import time
 
 class MessageHandler:
     """Processes commands - no knowledge of communication protocol"""
@@ -75,6 +78,7 @@ class MessageHandler:
             return commands[command]()
 
         except Exception as e:
+            logger.error(f'Error occured while processing message: {e}')
             return self._formatted_response('error', {"error message": str(e)})
 
     def _answer_ping(self) -> dict:

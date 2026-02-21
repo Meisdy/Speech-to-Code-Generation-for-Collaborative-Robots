@@ -1,5 +1,8 @@
 import zmq
 from message_handler import MessageHandler
+import logging
+
+logger = logging.getLogger("cobot_backend")
 
 class ServerZeroMQ:
     def __init__(self, bind_address):
@@ -20,35 +23,37 @@ class ServerZeroMQ:
     def start(self):
         """Main server loop - receives messages and delegates to handler"""
         self.running = True
-        print(f"Server listening on {self.bind_address}")
-        print("Ready to receive commands...")
+        logger.info('Server ready and listening')
 
         while self.running:
             try:
                 # Receive message
                 message = self.socket.recv_json()
-                print(100 * '=')
-                print("Received message:\n", message)
+                logger.info('Message received')
+                logger.debug('Received message: %s', message)
 
                 # Delegate to handler
                 response = self.handler.process_message(message=message)
 
                 # Send response
                 self.socket.send_json(response)
-                print('\nSent response:\n', response)
+                logger.info('Response sent')
+                logger.debug('Sent response: %s', response)
 
             except zmq.Again:
-                # Timeout - loop continues to check self.running
+                logger.warning('ZeroMQ timeout occured')
                 continue
             except KeyboardInterrupt:
-                print("\nKeyboardInterrupt in server loop")
+                logger.info('Keyboard interrupt in server loop occured')
                 break
+            except Exception as e:
+                logger.error('Error in main server loop: %s', e)
 
         self.close()
 
     def close(self):
         """Clean shutdown"""
-        print("Closing server...")
+        logger.info('Shutting down server')
         self.running = False
         self.socket.close()
         self.context.term()
