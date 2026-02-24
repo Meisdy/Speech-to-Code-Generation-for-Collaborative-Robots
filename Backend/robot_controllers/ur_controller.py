@@ -5,7 +5,7 @@ from rtde_control import RTDEControlInterface
 from rtde_receive import RTDEReceiveInterface
 import onRobot.gripper as onrobot_gripper
 
-from .base_robot_controller import BaseRobotController
+from Backend.robot_controllers.base_robot_controller import BaseRobotController
 
 
 GRIPPER_OPEN_WIDTH  = 100.0  # mm
