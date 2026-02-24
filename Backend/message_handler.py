@@ -1,6 +1,5 @@
 from .robot_controllers.base_robot_controller import BaseRobotController
 from .robot_controllers.mock_robot_controller import MockRobotController
-from .robot_controllers.ur_controller import URController
 from typing import Optional # Needed for old py version of ROS / Franka
 import logging
 import time
@@ -11,6 +10,12 @@ try:
     from .robot_controllers.franka_controller import FrankaController
 except ImportError:
     FrankaController = None 
+
+try:
+    from .robot_controllers.ur_controller import URController
+except ImportError:
+    URController = None
+
 
 class MessageHandler:
     """Processes commands - no knowledge of communication protocol"""
