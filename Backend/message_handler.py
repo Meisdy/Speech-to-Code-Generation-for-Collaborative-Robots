@@ -52,7 +52,8 @@ class MessageHandler:
 
     def disconnect_robot(self) -> None:
         """Wraper to disconnect robot"""
-        self.robot.disconnect()
+        if self.robot:
+            self.robot.disconnect()
 
     def _formatted_response(self, command: str, data: dict) -> dict:
         """Format response as JSON with standard structure."""
