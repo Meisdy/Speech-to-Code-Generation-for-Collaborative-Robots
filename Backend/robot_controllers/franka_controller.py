@@ -28,25 +28,31 @@ class FrankaController(BaseRobotController):
 
     def connect(self) -> dict:
         try:
-            logger.debug('Trying to connect to franka now')
+            # Open a new terminal and run the ROS launch command
+            logger.debug("Executing bash commands for franka moveit startup")
             self._ros_process = subprocess.Popen([
-                "bash", "-c",
+                "gnome-terminal", "--", "bash", "-c",
                 f"source ~/ws_moveit/devel/setup.bash && "
                 f"roslaunch panda_moveit_config franka_control.launch "
-                f"robot_ip:={ROBOT_IP} load_gripper:=true use_rviz:=false"
+                f"robot_ip:={ROBOT_IP} load_gripper:=true use_rviz:=false; "
+                f"exec bash"  # Keep the terminal open after the command finishes
             ])
 
+            # Give some time for the terminal and ROS to start
             time.sleep(LAUNCH_DELAY)
-            logger.debug('Terminal should be idle now and ready. Init rospy node now')
-            input("Press Enter to continue...")
 
             rospy.init_node("speech_to_code_franka", anonymous=True)
             moveit_commander.roscpp_initialize([])
 
+            logger.debug("moveit commander initialized")
+
             self._robot    = FrankaRobot("panda_arm", "panda_hand", moveit_commander, POSES_FILE)
             self.connected = True
+
+            logger.info("Franka: Connected successfully")
             return {"success": True, "message": "Franka connected"}
         except Exception as e:
+            logger.error(f"Franka: Error while connecting to Franka - {e}")
             return {"success": False, "message": str(e)}
 
     def disconnect(self) -> dict:
@@ -58,7 +64,9 @@ class FrankaController(BaseRobotController):
             self._robot       = None
             self._ros_process = None
             self.connected    = False
+            logger.info("Franka: Disconnected successfully")
             return {"success": True, "message": "Franka disconnected"}
+            
         except Exception as e:
             return {"success": False, "message": str(e)}
 
@@ -145,15 +153,3 @@ class FrankaController(BaseRobotController):
             }
         except Exception as e:
             return {"success": False, "message": str(e)}
-
-
-def main():
-    franka = FrankaController()
-    print(franka.connect())
-    time.sleep(2)
-    print(franka.get_current_state())
-    franka.disconnect()
-
-
-if __name__ == "__main__":
-    main()
