@@ -1,6 +1,12 @@
 import time
 from scipy.spatial.transform import Rotation
+
+from rtde_control import RTDEControlInterface
+from rtde_receive import RTDEReceiveInterface
+import onRobot.gripper as onrobot_gripper
+
 from .base_robot_controller import BaseRobotController
+
 
 GRIPPER_OPEN_WIDTH  = 100.0  # mm
 GRIPPER_CLOSE_WIDTH = 0.0    # mm
@@ -23,30 +29,54 @@ class URController(BaseRobotController):
         super().__init__(poses_file)
         self.robot_ip   = robot_ip
         self.gripper_id = gripper_id
-        self.connected  = False
-        self.gripper_state = "unknown"
+        self._rtde_c    = None
+        self._rtde_r    = None
+        self._gripper   = None
 
     # ------------------------------------------------------------------ #
     # Connection
     # ------------------------------------------------------------------ #
 
     def connect(self) -> dict:
-        self.connected = True
-        return {"success": True, "message": "Connected (RTDE and gripper disabled)"}
+        try:
+            self._rtde_c  = RTDEControlInterface(self.robot_ip)
+            self._rtde_r  = RTDEReceiveInterface(self.robot_ip)
+            self._gripper = onrobot_gripper.RG2(self.gripper_id)
+            self.connected = True
+            return {"success": True, "message": "Connected"}
+        except Exception as e:
+            return {"success": False, "message": str(e)}
 
     def disconnect(self) -> dict:
-        self.connected = False
-        return {"success": True, "message": "Disconnected (RTDE and gripper disabled)"}
+        try:
+            if self._rtde_c:
+                self._rtde_c.stopScript()
+                self._rtde_c.disconnect()
+            if self._rtde_r:
+                self._rtde_r.disconnect()
+            self._rtde_c = self._rtde_r = self._gripper = None
+            self.connected = False
+            return {"success": True, "message": "Disconnected"}
+        except Exception as e:
+            return {"success": False, "message": str(e)}
 
     def is_connected(self) -> bool:
-        return self.connected
+        if not (self._rtde_c and self._rtde_r):
+            return False
+        if not (self._rtde_c.isConnected() and self._rtde_r.isConnected()):
+            return False
+        try:
+            self._gripper.rg_get_width()
+        except Exception:
+            return False
+        return True
 
     # ------------------------------------------------------------------ #
     # Motion helpers
     # ------------------------------------------------------------------ #
 
     def _pose_to_rotvec(self, pose: dict, offset: list = None) -> list:
-        """Convert stored pose (pos + quat) to TCP format [x,y,z,rx,ry,rz]."""
+        """Convert stored pose (pos + quat) to RTDE TCP format [x,y,z,rx,ry,rz]."""
         pos    = list(pose["pos"])
         rotvec = Rotation.from_quat(pose["quat"]).as_rotvec().tolist()
         if offset:
@@ -60,28 +90,73 @@ class URController(BaseRobotController):
     # ------------------------------------------------------------------ #
 
     def move_joint(self, pose: dict, speed: float = None, offset: list = None) -> dict:
-        return {"success": False, "message": "moveJ not implemented (RTDE disabled)"}
+        try:
+            spd = (speed or DEFAULT_SPEED) * MAX_JOINT_SPEED
+            acc = (speed or DEFAULT_SPEED) * MAX_JOINT_ACCEL
+            if offset:
+                target = self._pose_to_rotvec(pose, offset)
+                self._rtde_c.moveJ_IK(target, spd, acc)
+            else:
+                self._rtde_c.moveJ(list(pose["joints"]), spd, acc)
+            return {"success": True, "message": "moveJ complete"}
+        except Exception as e:
+            return {"success": False, "message": str(e)}
 
     def move_linear(self, pose: dict, speed: float = None, offset: list = None) -> dict:
-        return {"success": False, "message": "moveL not implemented (RTDE disabled)"}
+        try:
+            target = self._pose_to_rotvec(pose, offset)
+            spd    = (speed or DEFAULT_SPEED) * MAX_LINEAR_SPEED
+            acc    = (speed or DEFAULT_SPEED) * MAX_LINEAR_ACCEL
+            self._rtde_c.moveL(target, spd, acc)
+            return {"success": True, "message": "moveL complete"}
+        except Exception as e:
+            return {"success": False, "message": str(e)}
 
     # ------------------------------------------------------------------ #
     # Gripper
     # ------------------------------------------------------------------ #
 
+    def _wait_gripper_idle(self):
+        deadline = time.time() + GRIPPER_TIMEOUT
+        while time.time() < deadline:
+            if not self._gripper.rg_get_busy():
+                return
+            time.sleep(0.05)
+        raise TimeoutError("Gripper did not finish within timeout")
+
     def gripper_open(self) -> dict:
-        return {"success": False, "message": "Gripper not implemented (RTDE disabled)"}
+        try:
+            self._gripper.rg_grip(GRIPPER_OPEN_WIDTH, GRIPPER_FORCE)
+            self._wait_gripper_idle()
+            self.gripper_state = "open"
+            return {"success": True, "message": "Gripper opened"}
+        except Exception as e:
+            return {"success": False, "message": str(e)}
 
     def gripper_close(self) -> dict:
-        return {"success": False, "message": "Gripper not implemented (RTDE disabled)"}
+        try:
+            self._gripper.rg_grip(GRIPPER_CLOSE_WIDTH, GRIPPER_FORCE)
+            self._wait_gripper_idle()
+            self.gripper_state = "closed"
+            return {"success": True, "message": "Gripper closed"}
+        except Exception as e:
+            return {"success": False, "message": str(e)}
 
     # ------------------------------------------------------------------ #
     # State
     # ------------------------------------------------------------------ #
 
     def get_current_state(self) -> dict:
-        return {
-            "success": False,
-            "message": "State not available (RTDE disabled)",
-            "gripper_state": self.gripper_state,
-        }
+        try:
+            joints   = self._rtde_r.getActualQ()
+            tcp      = self._rtde_r.getActualTCPPose()
+            quat     = Rotation.from_rotvec(tcp[3:]).as_quat().tolist()
+            return {
+                "success":         True,
+                "joint_positions": list(joints),
+                "pose":            list(tcp[:3]) + quat,
+                "gripper_state":   self.gripper_state,
+                "gripper_width_mm": self._gripper.rg_get_width(),
+            }
+        except Exception as e:
+            return {"success": False, "message": str(e)}
