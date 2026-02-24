@@ -307,3 +307,96 @@
 2026-02-24 20:13:05 [INFO] main.py:16  Starting backend server on tcp://*:5555
 2026-02-24 20:13:05 [INFO] communication_server.py:46  Server ready and listening on tcp://*:5555
 2026-02-24 20:13:05 [INFO] communication_server.py:29  Server thread started
+2026-02-24 20:24:11 [INFO] main.py:16  Starting backend server on tcp://*:5555
+2026-02-24 20:24:11 [INFO] communication_server.py:46  Server ready and listening on tcp://*:5555
+2026-02-24 20:24:11 [INFO] communication_server.py:29  Server thread started
+2026-02-24 20:24:53 [INFO] main.py:16  Starting backend server on tcp://*:5555
+2026-02-24 20:24:53 [INFO] communication_server.py:46  Server ready and listening on tcp://*:5555
+2026-02-24 20:24:53 [INFO] communication_server.py:28  Server thread started
+2026-02-24 20:25:58 [INFO] main.py:16  Starting backend server on tcp://*:5555
+2026-02-24 20:25:58 [INFO] communication_server.py:47  Server ready and listening on tcp://*:5555
+2026-02-24 20:25:58 [INFO] communication_server.py:29  Server thread started
+2026-02-24 20:26:57 [INFO] communication_server.py:42  Signal 2 received, shutting down
+2026-02-24 20:26:59 [INFO] main.py:16  Starting backend server on tcp://*:5555
+2026-02-24 20:26:59 [INFO] communication_server.py:50  Server ready and listening on tcp://*:5555
+2026-02-24 20:31:30 [INFO] main.py:16  Starting backend server on tcp://*:5555
+2026-02-24 20:31:30 [INFO] communication_server.py:26  Server ready and listening
+2026-02-24 20:31:47 [INFO] main.py:16  Starting backend server on tcp://*:5555
+2026-02-24 20:31:47 [INFO] communication_server.py:26  Server ready and listening
+2026-02-24 20:32:28 [INFO] main.py:16  Starting backend server on tcp://*:5555
+2026-02-24 20:32:28 [INFO] communication_server.py:26  Server ready and listening
+2026-02-24 20:32:58 [INFO] main.py:16  Starting backend server on tcp://*:5555
+2026-02-24 20:32:58 [INFO] communication_server.py:25  Server ready and listening
+2026-02-24 20:33:05 [INFO] communication_server.py:39  Keyboard interrupt received, shutting down
+2026-02-24 20:33:05 [INFO] communication_server.py:45  Shutting down server
+2026-02-24 20:33:09 [INFO] main.py:16  Starting backend server on tcp://*:5555
+2026-02-24 20:33:09 [INFO] communication_server.py:25  Server ready and listening
+2026-02-24 20:34:01 [INFO] communication_server.py:39  Keyboard interrupt received, shutting down
+2026-02-24 20:34:01 [INFO] communication_server.py:45  Shutting down server
+2026-02-24 20:34:30 [INFO] main.py:16  Starting backend server on tcp://*:5555
+2026-02-24 20:34:30 [INFO] communication_server.py:29  Server ready and listening
+2026-02-24 20:34:32 [INFO] communication_server.py:48  Signal 2 received, shutting down
+2026-02-24 20:34:32 [INFO] communication_server.py:53  Shutting down server
+2026-02-24 20:34:34 [INFO] main.py:16  Starting backend server on tcp://*:5555
+2026-02-24 20:34:34 [INFO] communication_server.py:29  Server ready and listening
+2026-02-24 20:35:56 [INFO] communication_server.py:48  Signal 2 received, shutting down
+2026-02-24 20:35:56 [INFO] communication_server.py:53  Shutting down server
+2026-02-24 20:36:03 [INFO] main.py:16  Starting backend server on tcp://*:5555
+2026-02-24 20:36:03 [INFO] communication_server.py:29  Server ready and listening
+2026-02-24 20:36:16 [INFO] communication_server.py:34  Message received
+2026-02-24 20:36:16 [INFO] mock_robot_controller.py:16  Mock robot: Connecting to robot
+2026-02-24 20:36:17 [INFO] mock_robot_controller.py:34  Mock robot: MoveJ to 'home' offset=None speed=None
+2026-02-24 20:36:19 [INFO] mock_robot_controller.py:50  Mock robot: Opening gripper
+2026-02-24 20:36:20 [INFO] communication_server.py:37  Response sent
+2026-02-24 20:36:24 [INFO] communication_server.py:48  Signal 2 received, shutting down
+2026-02-24 20:36:24 [INFO] communication_server.py:53  Shutting down server
+2026-02-24 20:37:31 [INFO] main.py:16  Starting backend server on tcp://*:5555
+2026-02-24 20:37:31 [INFO] communication_server.py:29  Server ready and listening
+2026-02-24 20:37:35 [INFO] communication_server.py:34  Message received
+2026-02-24 20:37:35 [INFO] mock_robot_controller.py:16  Mock robot: Connecting to robot
+2026-02-24 20:37:35 [INFO] mock_robot_controller.py:34  Mock robot: MoveJ to 'home' offset=None speed=None
+2026-02-24 20:37:37 [INFO] mock_robot_controller.py:50  Mock robot: Opening gripper
+2026-02-24 20:37:38 [INFO] communication_server.py:37  Response sent
+2026-02-24 20:37:47 [INFO] communication_server.py:48  Signal 2 received, shutting down
+2026-02-24 20:37:47 [INFO] communication_server.py:53  Shutting down server
+2026-02-24 20:37:47 [INFO] mock_robot_controller.py:22  Mock robot: Disconnecting from robot
+2026-02-24 20:38:45 [INFO] main.py:16  Starting backend server on tcp://*:5555
+2026-02-24 20:38:45 [INFO] communication_server.py:29  Server ready and listening
+2026-02-24 20:39:00 [INFO] communication_server.py:48  Signal 2 received, shutting down
+2026-02-24 20:39:00 [INFO] communication_server.py:53  Shutting down server
+2026-02-24 20:39:00 [ERROR] main.py:25  Server error: 'NoneType' object has no attribute 'disconnect'
+Traceback (most recent call last):
+  File "C:\Users\Sandy\Desktop\Cobot Code Generation\Backend\main.py", line 23, in main
+    server.start()  # Should block here
+    ^^^^^^^^^^^^^^
+  File "C:\Users\Sandy\Desktop\Cobot Code Generation\Backend\communication_server.py", line 45, in start
+    self.close()
+  File "C:\Users\Sandy\Desktop\Cobot Code Generation\Backend\communication_server.py", line 54, in close
+    self.handler.disconnect_robot()
+  File "C:\Users\Sandy\Desktop\Cobot Code Generation\Backend\message_handler.py", line 55, in disconnect_robot
+    self.robot.disconnect()
+    ^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'disconnect'
+2026-02-24 20:39:00 [INFO] communication_server.py:53  Shutting down server
+2026-02-24 20:39:06 [INFO] main.py:16  Starting backend server on tcp://*:5555
+2026-02-24 20:39:06 [INFO] communication_server.py:29  Server ready and listening
+2026-02-24 20:39:27 [INFO] communication_server.py:48  Signal 2 received, shutting down
+2026-02-24 20:39:27 [INFO] communication_server.py:53  Shutting down server
+2026-02-24 20:39:27 [ERROR] main.py:25  Server error: 'NoneType' object has no attribute 'disconnect'
+Traceback (most recent call last):
+  File "C:\Users\Sandy\Desktop\Cobot Code Generation\Backend\main.py", line 23, in main
+    server.start()  # Should block here
+    ^^^^^^^^^^^^^^
+  File "C:\Users\Sandy\Desktop\Cobot Code Generation\Backend\communication_server.py", line 45, in start
+    self.close()
+  File "C:\Users\Sandy\Desktop\Cobot Code Generation\Backend\communication_server.py", line 54, in close
+    self.handler.disconnect_robot()
+  File "C:\Users\Sandy\Desktop\Cobot Code Generation\Backend\message_handler.py", line 55, in disconnect_robot
+    self.robot.disconnect()
+    ^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'disconnect'
+2026-02-24 20:39:27 [INFO] communication_server.py:53  Shutting down server
+2026-02-24 20:39:55 [INFO] main.py:16  Starting backend server on tcp://*:5555
+2026-02-24 20:39:55 [INFO] communication_server.py:29  Server ready and listening
+2026-02-24 20:39:56 [INFO] communication_server.py:48  Signal 2 received, shutting down
+2026-02-24 20:39:56 [INFO] communication_server.py:53  Shutting down server
