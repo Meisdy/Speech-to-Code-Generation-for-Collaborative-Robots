@@ -41,7 +41,7 @@ def setup_logging(logger_name: str = "cobot_backend") -> logging.Logger:
 
     logger.setLevel(min(console_level, file_level))
 
-    fmt = "%(asctime)s [%(levelname)s] %(message)s"
+    fmt = "%(asctime)s [%(levelname)s] %(filename)s:%(lineno)d  %(message)s"
     datefmt = "%Y-%m-%d %H:%M:%S"
 
     # File handler
