@@ -1,7 +1,11 @@
-from .communication_server import ServerZeroMQ
-from .logging_setup import setup_logging
-
+import sys
+import os
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 BINDING_ADDRESS = "tcp://*:5555"  # Changed from localhost - binds to all interfaces
+
+
+from Backend.communication_server import ServerZeroMQ
+from Backend.logging_setup import setup_logging
 
 
 def main():

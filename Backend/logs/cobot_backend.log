@@ -280,3 +280,30 @@
 2026-02-24 16:08:27 [INFO] communication_server.py:28  Server thread started
 2026-02-24 16:08:28 [INFO] communication_server.py:40  Signal 2 received, shutting down
 2026-02-24 16:08:29 [INFO] communication_server.py:61  Shutting down server
+2026-02-24 19:54:15 [INFO] main.py:12  Starting backend server on tcp://*:5555
+2026-02-24 19:54:15 [INFO] communication_server.py:46  Server ready and listening on tcp://*:5555
+2026-02-24 19:54:15 [INFO] communication_server.py:29  Server thread started
+2026-02-24 19:58:46 [INFO] main.py:12  Starting backend server on tcp://*:5555
+2026-02-24 19:58:46 [INFO] communication_server.py:46  Server ready and listening on tcp://*:5555
+2026-02-24 19:58:46 [INFO] communication_server.py:29  Server thread started
+2026-02-24 19:59:20 [INFO] main.py:16  Starting backend server on tcp://*:5555
+2026-02-24 19:59:20 [INFO] communication_server.py:46  Server ready and listening on tcp://*:5555
+2026-02-24 19:59:20 [INFO] communication_server.py:29  Server thread started
+2026-02-24 20:06:45 [INFO] main.py:16  Starting backend server on tcp://*:5555
+2026-02-24 20:06:45 [INFO] communication_server.py:46  Server ready and listening on tcp://*:5555
+2026-02-24 20:06:45 [INFO] communication_server.py:29  Server thread started
+2026-02-24 20:08:25 [INFO] main.py:16  Starting backend server on tcp://*:5555
+2026-02-24 20:08:25 [INFO] communication_server.py:46  Server ready and listening on tcp://*:5555
+2026-02-24 20:08:25 [INFO] communication_server.py:29  Server thread started
+2026-02-24 20:10:13 [INFO] main.py:16  Starting backend server on tcp://*:5555
+2026-02-24 20:10:13 [INFO] communication_server.py:46  Server ready and listening on tcp://*:5555
+2026-02-24 20:10:13 [INFO] communication_server.py:29  Server thread started
+2026-02-24 20:11:09 [INFO] main.py:16  Starting backend server on tcp://*:5555
+2026-02-24 20:11:09 [INFO] communication_server.py:46  Server ready and listening on tcp://*:5555
+2026-02-24 20:11:09 [INFO] communication_server.py:29  Server thread started
+2026-02-24 20:12:41 [INFO] main.py:16  Starting backend server on tcp://*:5555
+2026-02-24 20:12:41 [INFO] communication_server.py:46  Server ready and listening on tcp://*:5555
+2026-02-24 20:12:41 [INFO] communication_server.py:29  Server thread started
+2026-02-24 20:13:05 [INFO] main.py:16  Starting backend server on tcp://*:5555
+2026-02-24 20:13:05 [INFO] communication_server.py:46  Server ready and listening on tcp://*:5555
+2026-02-24 20:13:05 [INFO] communication_server.py:29  Server thread started

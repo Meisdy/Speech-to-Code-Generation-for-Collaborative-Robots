@@ -1,5 +1,5 @@
-from .robot_controllers.base_robot_controller import BaseRobotController
-from .robot_controllers.mock_robot_controller import MockRobotController
+from Backend.robot_controllers.base_robot_controller import BaseRobotController
+from Backend.robot_controllers.mock_robot_controller import MockRobotController
 from typing import Optional # Needed for old py version of ROS / Franka
 import logging
 import time
@@ -7,12 +7,12 @@ import time
 logger = logging.getLogger("cobot_backend")
 
 try:
-    from .robot_controllers.franka_controller import FrankaController
+    from Backend.robot_controllers.franka_controller import FrankaController
 except ImportError:
     FrankaController = None 
 
 try:
-    from .robot_controllers.ur_controller import URController
+    from Backend.robot_controllers.ur_controller import URController
 except ImportError:
     URController = None
 
@@ -49,6 +49,10 @@ class MessageHandler:
             return {"success": False, "message": f"Unknown robot type: {robot_type}"}
 
         return self.robot.connect()
+
+    def disconnect_robot(self) -> None:
+        """Wraper to disconnect robot"""
+        self.robot.disconnect()
 
     def _formatted_response(self, command: str, data: dict) -> dict:
         """Format response as JSON with standard structure."""
