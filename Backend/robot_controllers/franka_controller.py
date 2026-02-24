@@ -5,8 +5,8 @@ import rospy
 import moveit_commander
 import logging
 
-from .base_robot_controller import BaseRobotController
-from .franka_robot import FrankaRobot
+from Backend.robot_controllers.base_robot_controller import BaseRobotController
+from Backend.robot_controllers.franka_robot import FrankaRobot
 
 logger = logging.getLogger("cobot_backend")
 

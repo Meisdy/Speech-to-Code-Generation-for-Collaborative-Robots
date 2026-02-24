@@ -2,7 +2,7 @@ import zmq
 import signal
 import logging
 import threading
-from .message_handler import MessageHandler
+from Backend.message_handler import MessageHandler
  
 
 logger = logging.getLogger("cobot_backend")
@@ -56,10 +56,10 @@ class ServerZeroMQ:
         except Exception as e:
             logger.error("Error in server loop: %s", e)
         finally:
-            self._close()
+            self.close()
 
-    def _close(self):
+    def close(self):
         logger.info("Shutting down server")
-
+        self.handler.disconnect_robot()
         self.socket.close()
         self.context.term()
