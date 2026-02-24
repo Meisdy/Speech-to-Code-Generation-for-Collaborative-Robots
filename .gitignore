@@ -1,0 +1,10 @@
+/.venv
+/.idea/copilot.data.migration.agent.xml
+/.idea/copilot.data.migration.ask.xml
+/.idea/copilot.data.migration.ask2agent.xml
+/.idea/copilot.data.migration.edit.xml
+/Testing/testrecording.mp3
+/Testing/api_key_gemini.txt
+/.idea/
+/__pycache__/
+/Backend/__pycache__/

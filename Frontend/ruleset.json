@@ -1,0 +1,67 @@
+{
+  "version": 2,
+  "poses": {
+    "allow_dynamic_poses": true,
+    "source": "positions.jsonl"
+  },
+  "defaults": {
+    "motion_type": "moveJ",
+    "frame": "base",
+    "units": "mm",
+    "wait_time_s": 1.0,
+    "overwrite": false
+  },
+  "primitives": {
+    "move": {
+      "description": "Move the robot to a target pose.",
+      "motion_types": ["moveJ", "moveL"],
+      "targets": {
+        "named_pose": {
+          "description": "Move to a stored named pose.",
+          "parameters": {
+            "name": {"type": "string", "required": true}
+          }
+        },
+        "offset_from_pose": {
+          "description": "Move relative to a named pose.",
+          "parameters": {
+            "name": {"type": "string", "required": true},
+            "offset": {
+              "x_mm": {"type": "float", "default": 0.0},
+              "y_mm": {"type": "float", "default": 0.0},
+              "z_mm": {"type": "float", "default": 0.0}
+            }
+          }
+        }
+      }
+    },
+    "gripper": {
+      "description": "Control the gripper state.",
+      "commands": ["open", "close"]
+    },
+    "wait": {
+      "description": "Wait for a given duration.",
+      "parameters": {
+        "duration_s": {
+          "type": "float",
+          "default": 1.0
+        }
+      }
+    },
+    "pose": {
+      "description": "Manage named poses.",
+      "commands": ["teach", "delete"],
+      "parameters": {
+        "pose_name": {
+          "type": "string",
+          "required": true
+        },
+        "overwrite": {
+          "type": "bool",
+          "default": false,
+          "applicable": ["teach"]
+        }
+      }
+    }
+  }
+}

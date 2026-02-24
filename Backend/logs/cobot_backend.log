@@ -1,0 +1,246 @@
+2026-02-21 14:15:38 [INFO] Starting backend server on tcp://*:5555
+2026-02-21 14:18:56 [INFO] Starting backend server on tcp://*:5555
+2026-02-21 14:20:23 [INFO] Starting backend server on tcp://*:5555
+2026-02-21 14:20:46 [INFO] Starting backend server on tcp://*:5555
+2026-02-21 14:20:46 [INFO] Server ready and listening on tcp://*:5555
+2026-02-21 14:21:10 [INFO] Keyboard interrupt in server loop occured
+2026-02-21 14:21:10 [INFO] Shutting down server
+2026-02-21 14:22:03 [INFO] Starting backend server on tcp://*:5555
+2026-02-21 14:22:04 [INFO] Server ready and listening
+2026-02-21 14:22:16 [INFO] Message received
+2026-02-21 14:22:16 [DEBUG] Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'mock', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}, {'action': 'gripper', 'command': 'open'}, {'action': 'wait', 'duration_s': 0.5}, {'action': 'pose', 'command': 'teach', 'pose_name': 'home', 'overwrite': True}], 'message': ''}}
+2026-02-21 14:22:17 [INFO] Response sent
+2026-02-21 14:22:17 [DEBUG] Sent response: {'command': 'success', 'data': {'responses': [{'success': False, 'message': 'Unknown pose: home'}, {'success': True, 'message': 'Mock gripper opened'}, {'message': 'Waited for 0.5 seconds'}, {'success': True, 'message': "Pose 'home' saved"}]}}
+2026-02-21 14:22:37 [INFO] Keyboard interrupt in server loop occured
+2026-02-21 14:22:37 [INFO] Shutting down server
+2026-02-21 14:38:51 [INFO] Starting backend server on tcp://*:5555
+2026-02-21 14:38:51 [INFO] Server ready and listening
+2026-02-21 14:39:04 [INFO] Message received
+2026-02-21 14:39:04 [DEBUG] Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'mock', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}, {'action': 'gripper', 'command': 'open'}, {'action': 'wait', 'duration_s': 0.5}, {'action': 'pose', 'command': 'teach', 'pose_name': 'home', 'overwrite': True}], 'message': ''}}
+2026-02-21 14:39:04 [INFO] Mock adapter: Connecting to robot
+2026-02-21 14:39:04 [INFO] Mock: MoveJ to 'home' offset=None speed=None
+2026-02-21 14:39:07 [INFO] Response sent
+2026-02-21 14:39:07 [DEBUG] Sent response: {'command': 'success', 'data': {'responses': [{'success': True, 'message': "Mock MoveJ complete to 'home'"}, {'success': True, 'message': 'Mock gripper opened'}, {'message': 'Waited for 0.5 seconds'}, {'success': True, 'message': "Pose 'home' saved"}]}}
+2026-02-21 14:39:28 [INFO] Keyboard interrupt in server loop occured
+2026-02-21 14:39:28 [INFO] Shutting down server
+2026-02-21 15:33:43 [INFO] Starting backend server on tcp://*:5555
+2026-02-21 15:33:43 [INFO] Server ready and listening
+2026-02-21 15:33:44 [WARNING] ZeroMQ timeout occured
+2026-02-21 15:33:45 [WARNING] ZeroMQ timeout occured
+2026-02-21 15:33:46 [WARNING] ZeroMQ timeout occured
+2026-02-21 15:33:47 [WARNING] ZeroMQ timeout occured
+2026-02-21 15:33:48 [WARNING] ZeroMQ timeout occured
+2026-02-21 15:33:49 [WARNING] ZeroMQ timeout occured
+2026-02-21 15:33:50 [WARNING] ZeroMQ timeout occured
+2026-02-21 15:33:51 [WARNING] ZeroMQ timeout occured
+2026-02-21 15:33:52 [WARNING] ZeroMQ timeout occured
+2026-02-21 15:33:53 [WARNING] ZeroMQ timeout occured
+2026-02-21 15:33:54 [WARNING] ZeroMQ timeout occured
+2026-02-21 15:33:55 [WARNING] ZeroMQ timeout occured
+2026-02-21 15:35:13 [INFO] Starting backend server on tcp://*:5555
+2026-02-21 15:35:13 [INFO] Server ready and listening
+2026-02-21 15:36:23 [INFO] Message received
+2026-02-21 15:36:23 [DEBUG] Received message: {'command': 'get_status', 'data': {}}
+2026-02-21 15:36:23 [INFO] Response sent
+2026-02-21 15:36:23 [DEBUG] Sent response: {'command': 'success', 'data': {'Connected Robots': 'unknown'}}
+2026-02-21 15:36:24 [INFO] Message received
+2026-02-21 15:36:24 [DEBUG] Received message: {'command': 'execute', 'data': {'action': 'gripper', 'command': 'open'}}
+2026-02-21 15:36:24 [INFO] Response sent
+2026-02-21 15:36:24 [DEBUG] Sent response: {'command': 'rejected', 'data': {'reason': 'Unknown command: execute'}}
+2026-02-21 15:36:24 [INFO] Message received
+2026-02-21 15:36:24 [DEBUG] Received message: {'command': 'execute', 'data': {'mode': 'live', 'robot': 'mock', 'action': 'move', 'motion_type': 'moveJ', 'target_type': 'named_pose', 'name': 'home'}}
+2026-02-21 15:36:24 [INFO] Response sent
+2026-02-21 15:36:24 [DEBUG] Sent response: {'command': 'rejected', 'data': {'reason': 'Unknown command: execute'}}
+2026-02-21 15:36:24 [INFO] Message received
+2026-02-21 15:36:24 [DEBUG] Received message: {'command': 'ping', 'data': {'message': 'test'}}
+2026-02-21 15:36:24 [INFO] Response sent
+2026-02-21 15:36:24 [DEBUG] Sent response: {'command': 'success', 'data': {'message': 'Backend Alive'}}
+2026-02-21 15:36:24 [INFO] Message received
+2026-02-21 15:36:24 [DEBUG] Received message: {'command': 'execute_sequence', 'data': [{'action': 'move', 'motion_type': 'moveJ', 'target_type': 'named_pose', 'name': 'home'}, {'action': 'gripper', 'command': 'open'}, {'action': 'wait', 'duration': 0.5}]}
+2026-02-21 15:36:24 [ERROR] Error occured while processing message: list indices must be integers or slices, not str
+2026-02-21 15:36:24 [INFO] Response sent
+2026-02-21 15:36:24 [DEBUG] Sent response: {'command': 'error', 'data': {'error message': 'list indices must be integers or slices, not str'}}
+2026-02-21 15:38:07 [INFO] Keyboard interrupt in server loop occured
+2026-02-21 15:38:07 [INFO] Shutting down server
+2026-02-21 15:38:12 [INFO] Starting backend server on tcp://*:5555
+2026-02-21 15:38:12 [INFO] Server ready and listening
+2026-02-21 15:39:19 [INFO] Message received
+2026-02-21 15:39:19 [DEBUG] Received message: {'command': 'execute_sequence', 'data': {'robot': 'mock', 'commands': [{'action': 'gripper', 'command': 'open'}, {'action': 'wait', 'duration_s': 0.1}, {'action': 'gripper', 'command': 'close'}]}}
+2026-02-21 15:39:19 [INFO] Mock robot: Connecting to robot
+2026-02-21 15:39:20 [INFO] Mock robot: Opening gripper
+2026-02-21 15:39:20 [INFO] Mock robot: Closing gripper
+2026-02-21 15:39:21 [INFO] Response sent
+2026-02-21 15:39:21 [DEBUG] Sent response: {'command': 'success', 'data': {'responses': [{'success': True, 'message': 'Mock gripper opened'}, {'message': 'Waited for 0.1 seconds'}, {'success': True, 'message': 'Mock gripper closed'}]}}
+2026-02-21 15:39:21 [INFO] Message received
+2026-02-21 15:39:21 [DEBUG] Received message: {'command': 'execute_sequence', 'data': {'robot': 'mock', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'name': 'home'}, 'speed': 0.5}]}}
+2026-02-21 15:39:21 [INFO] Mock robot: MoveJ to 'home' offset=None speed=0.5
+2026-02-21 15:39:23 [INFO] Response sent
+2026-02-21 15:39:23 [DEBUG] Sent response: {'command': 'success', 'data': {'responses': [{'success': True, 'message': "Mock MoveJ complete to 'home'"}]}}
+2026-02-21 15:39:23 [INFO] Message received
+2026-02-21 15:39:23 [DEBUG] Received message: {'command': 'get_status', 'data': {}}
+2026-02-21 15:39:23 [INFO] Response sent
+2026-02-21 15:39:23 [DEBUG] Sent response: {'command': 'success', 'data': {'Connected Robots': 'unknown'}}
+2026-02-21 15:39:23 [INFO] Message received
+2026-02-21 15:39:23 [DEBUG] Received message: {'command': 'ping', 'data': {}}
+2026-02-21 15:39:23 [INFO] Response sent
+2026-02-21 15:39:23 [DEBUG] Sent response: {'command': 'success', 'data': {'message': 'Backend Alive'}}
+2026-02-21 15:39:23 [INFO] Message received
+2026-02-21 15:39:23 [DEBUG] Received message: {'command': 'execute_sequence', 'data': {'robot': 'mock', 'commands': [{'action': 'pose', 'command': 'teach', 'pose_name': 'test_pose', 'overwrite': True}]}}
+2026-02-21 15:39:23 [INFO] Response sent
+2026-02-21 15:39:23 [DEBUG] Sent response: {'command': 'success', 'data': {'responses': [{'success': True, 'message': "Pose 'test_pose' saved"}]}}
+2026-02-21 15:39:23 [INFO] Message received
+2026-02-21 15:39:23 [DEBUG] Received message: {'command': 'invalid', 'data': {}}
+2026-02-21 15:39:23 [INFO] Response sent
+2026-02-21 15:39:23 [DEBUG] Sent response: {'command': 'rejected', 'data': {'reason': 'Unknown command: invalid'}}
+2026-02-21 15:44:04 [INFO] Message received
+2026-02-21 15:44:04 [DEBUG] Received message: {'command': 'execute_sequence', 'data': {'robot': 'mock', 'commands': [{'action': 'gripper', 'command': 'open'}, {'action': 'wait', 'duration_s': 0.1}, {'action': 'gripper', 'command': 'close'}]}}
+2026-02-21 15:44:04 [INFO] Mock robot: Opening gripper
+2026-02-21 15:44:05 [INFO] Mock robot: Closing gripper
+2026-02-21 15:44:05 [INFO] Response sent
+2026-02-21 15:44:05 [DEBUG] Sent response: {'command': 'success', 'data': {'responses': [{'success': True, 'message': 'Mock gripper opened'}, {'message': 'Waited for 0.1 seconds'}, {'success': True, 'message': 'Mock gripper closed'}]}}
+2026-02-21 15:44:05 [INFO] Message received
+2026-02-21 15:44:05 [DEBUG] Received message: {'command': 'execute_sequence', 'data': {'robot': 'mock', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'name': 'home'}, 'speed': 0.5}]}}
+2026-02-21 15:44:05 [INFO] Mock robot: MoveJ to 'home' offset=None speed=0.5
+2026-02-21 15:44:07 [INFO] Response sent
+2026-02-21 15:44:07 [DEBUG] Sent response: {'command': 'success', 'data': {'responses': [{'success': True, 'message': "Mock MoveJ complete to 'home'"}]}}
+2026-02-21 15:44:07 [INFO] Message received
+2026-02-21 15:44:07 [DEBUG] Received message: {'command': 'get_status', 'data': {}}
+2026-02-21 15:44:07 [INFO] Response sent
+2026-02-21 15:44:07 [DEBUG] Sent response: {'command': 'success', 'data': {'Connected Robots': 'unknown'}}
+2026-02-21 15:44:07 [INFO] Message received
+2026-02-21 15:44:07 [DEBUG] Received message: {'command': 'ping', 'data': {}}
+2026-02-21 15:44:07 [INFO] Response sent
+2026-02-21 15:44:07 [DEBUG] Sent response: {'command': 'success', 'data': {'message': 'Backend Alive'}}
+2026-02-21 15:44:07 [INFO] Message received
+2026-02-21 15:44:07 [DEBUG] Received message: {'command': 'execute_sequence', 'data': {'robot': 'mock', 'commands': [{'action': 'pose', 'command': 'teach', 'pose_name': 'test_pose', 'overwrite': True}]}}
+2026-02-21 15:44:07 [INFO] Response sent
+2026-02-21 15:44:07 [DEBUG] Sent response: {'command': 'success', 'data': {'responses': [{'success': True, 'message': "Pose 'test_pose' saved"}]}}
+2026-02-21 15:44:07 [INFO] Message received
+2026-02-21 15:44:07 [DEBUG] Received message: {'command': 'invalid', 'data': {}}
+2026-02-21 15:44:07 [INFO] Response sent
+2026-02-21 15:44:07 [DEBUG] Sent response: {'command': 'rejected', 'data': {'reason': 'Unknown command: invalid'}}
+2026-02-21 15:47:24 [INFO] Message received
+2026-02-21 15:47:24 [DEBUG] Received message: {'command': 'execute_sequence', 'data': {'robot': 'mock', 'commands': [{'action': 'gripper', 'command': 'open'}, {'action': 'wait', 'duration_s': 0.1}, {'action': 'gripper', 'command': 'close'}]}}
+2026-02-21 15:47:24 [INFO] Mock robot: Opening gripper
+2026-02-21 15:47:25 [INFO] Mock robot: Closing gripper
+2026-02-21 15:47:25 [INFO] Response sent
+2026-02-21 15:47:25 [DEBUG] Sent response: {'command': 'success', 'data': {'responses': [{'success': True, 'message': 'Mock gripper opened'}, {'message': 'Waited for 0.1 seconds'}, {'success': True, 'message': 'Mock gripper closed'}]}}
+2026-02-21 15:47:25 [INFO] Message received
+2026-02-21 15:47:25 [DEBUG] Received message: {'command': 'execute_sequence', 'data': {'robot': 'mock', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'name': 'home'}, 'speed': 0.5}]}}
+2026-02-21 15:47:25 [INFO] Mock robot: MoveJ to 'home' offset=None speed=0.5
+2026-02-21 15:47:27 [INFO] Response sent
+2026-02-21 15:47:27 [DEBUG] Sent response: {'command': 'success', 'data': {'responses': [{'success': True, 'message': "Mock MoveJ complete to 'home'"}]}}
+2026-02-21 15:47:27 [INFO] Message received
+2026-02-21 15:47:27 [DEBUG] Received message: {'command': 'get_status', 'data': {}}
+2026-02-21 15:47:27 [INFO] Response sent
+2026-02-21 15:47:27 [DEBUG] Sent response: {'command': 'success', 'data': {'Connected Robots': 'unknown'}}
+2026-02-21 15:47:27 [INFO] Message received
+2026-02-21 15:47:27 [DEBUG] Received message: {'command': 'ping', 'data': {}}
+2026-02-21 15:47:27 [INFO] Response sent
+2026-02-21 15:47:27 [DEBUG] Sent response: {'command': 'success', 'data': {'message': 'Backend Alive'}}
+2026-02-21 15:47:27 [INFO] Message received
+2026-02-21 15:47:27 [DEBUG] Received message: {'command': 'execute_sequence', 'data': {'robot': 'mock', 'commands': [{'action': 'pose', 'command': 'teach', 'pose_name': 'test_pose', 'overwrite': True}]}}
+2026-02-21 15:47:27 [INFO] Response sent
+2026-02-21 15:47:27 [DEBUG] Sent response: {'command': 'success', 'data': {'responses': [{'success': True, 'message': "Pose 'test_pose' saved"}]}}
+2026-02-21 15:47:27 [INFO] Message received
+2026-02-21 15:47:27 [DEBUG] Received message: {'command': 'invalid', 'data': {}}
+2026-02-21 15:47:27 [INFO] Response sent
+2026-02-21 15:47:27 [DEBUG] Sent response: {'command': 'rejected', 'data': {'reason': 'Unknown command: invalid'}}
+2026-02-21 15:47:55 [INFO] Message received
+2026-02-21 15:47:55 [DEBUG] Received message: {'command': 'execute_sequence', 'data': {'robot': 'ur', 'commands': [{'action': 'gripper', 'command': 'open'}, {'action': 'wait', 'duration_s': 0.1}, {'action': 'gripper', 'command': 'close'}]}}
+2026-02-21 15:47:55 [INFO] Mock robot: Disconnecting from robot
+2026-02-21 15:47:55 [INFO] Response sent
+2026-02-21 15:47:55 [DEBUG] Sent response: {'command': 'rejected', 'data': {'reason': 'Could not connect to ur: Error: Could not connect to: 169.254.70.80 at 30004, verify the IP'}}
+2026-02-21 15:47:55 [INFO] Message received
+2026-02-21 15:47:55 [DEBUG] Received message: {'command': 'execute_sequence', 'data': {'robot': 'ur', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'name': 'home'}, 'speed': 0.5}]}}
+2026-02-21 15:47:55 [INFO] Response sent
+2026-02-21 15:47:55 [DEBUG] Sent response: {'command': 'rejected', 'data': {'reason': 'Could not connect to ur: Error: Could not connect to: 169.254.70.80 at 30004, verify the IP'}}
+2026-02-21 15:47:55 [INFO] Message received
+2026-02-21 15:47:55 [DEBUG] Received message: {'command': 'get_status', 'data': {}}
+2026-02-21 15:47:55 [INFO] Response sent
+2026-02-21 15:47:55 [DEBUG] Sent response: {'command': 'success', 'data': {'Connected Robots': 'unknown'}}
+2026-02-21 15:47:55 [INFO] Message received
+2026-02-21 15:47:55 [DEBUG] Received message: {'command': 'ping', 'data': {}}
+2026-02-21 15:47:55 [INFO] Response sent
+2026-02-21 15:47:55 [DEBUG] Sent response: {'command': 'success', 'data': {'message': 'Backend Alive'}}
+2026-02-21 15:47:55 [INFO] Message received
+2026-02-21 15:47:55 [DEBUG] Received message: {'command': 'execute_sequence', 'data': {'robot': 'ur', 'commands': [{'action': 'pose', 'command': 'teach', 'pose_name': 'test_pose', 'overwrite': True}]}}
+2026-02-21 15:47:55 [INFO] Response sent
+2026-02-21 15:47:55 [DEBUG] Sent response: {'command': 'rejected', 'data': {'reason': 'Could not connect to ur: Error: Could not connect to: 169.254.70.80 at 30004, verify the IP'}}
+2026-02-21 15:47:55 [INFO] Message received
+2026-02-21 15:47:55 [DEBUG] Received message: {'command': 'invalid', 'data': {}}
+2026-02-21 15:47:55 [INFO] Response sent
+2026-02-21 15:47:55 [DEBUG] Sent response: {'command': 'rejected', 'data': {'reason': 'Unknown command: invalid'}}
+2026-02-21 15:50:47 [INFO] Message received
+2026-02-21 15:50:47 [DEBUG] Received message: {'command': 'execute_sequence', 'data': {'robot': 'mock', 'commands': [{'action': 'gripper', 'command': 'open'}, {'action': 'wait', 'duration_s': 0.1}, {'action': 'gripper', 'command': 'close'}]}}
+2026-02-21 15:50:47 [INFO] Mock robot: Connecting to robot
+2026-02-21 15:50:48 [INFO] Mock robot: Opening gripper
+2026-02-21 15:50:48 [INFO] Mock robot: Closing gripper
+2026-02-21 15:50:49 [INFO] Response sent
+2026-02-21 15:50:49 [DEBUG] Sent response: {'command': 'success', 'data': {'responses': [{'success': True, 'message': 'Mock gripper opened'}, {'message': 'Waited for 0.1 seconds'}, {'success': True, 'message': 'Mock gripper closed'}]}}
+2026-02-21 15:50:49 [INFO] Message received
+2026-02-21 15:50:49 [DEBUG] Received message: {'command': 'execute_sequence', 'data': {'robot': 'mock', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'name': 'home'}, 'speed': 0.5}]}}
+2026-02-21 15:50:49 [INFO] Mock robot: MoveJ to 'home' offset=None speed=0.5
+2026-02-21 15:50:51 [INFO] Response sent
+2026-02-21 15:50:51 [DEBUG] Sent response: {'command': 'success', 'data': {'responses': [{'success': True, 'message': "Mock MoveJ complete to 'home'"}]}}
+2026-02-21 15:50:51 [INFO] Message received
+2026-02-21 15:50:51 [DEBUG] Received message: {'command': 'execute_sequence', 'data': {'robot': 'mock', 'commands': [{'action': 'move', 'motion_type': 'moveL', 'target': {'name': 'home'}, 'speed': 0.5}]}}
+2026-02-21 15:50:51 [INFO] Mock robot: MoveL to 'home' offset=None speed=0.5
+2026-02-21 15:50:53 [INFO] Response sent
+2026-02-21 15:50:53 [DEBUG] Sent response: {'command': 'success', 'data': {'responses': [{'success': True, 'message': "Mock MoveL complete to 'home'"}]}}
+2026-02-21 15:50:53 [INFO] Message received
+2026-02-21 15:50:53 [DEBUG] Received message: {'command': 'get_status', 'data': {}}
+2026-02-21 15:50:53 [INFO] Response sent
+2026-02-21 15:50:53 [DEBUG] Sent response: {'command': 'success', 'data': {'Connected Robots': 'unknown'}}
+2026-02-21 15:50:53 [INFO] Message received
+2026-02-21 15:50:53 [DEBUG] Received message: {'command': 'ping', 'data': {}}
+2026-02-21 15:50:53 [INFO] Response sent
+2026-02-21 15:50:53 [DEBUG] Sent response: {'command': 'success', 'data': {'message': 'Backend Alive'}}
+2026-02-21 15:50:53 [INFO] Message received
+2026-02-21 15:50:53 [DEBUG] Received message: {'command': 'execute_sequence', 'data': {'robot': 'mock', 'commands': [{'action': 'pose', 'command': 'teach', 'pose_name': 'test_pose', 'overwrite': True}]}}
+2026-02-21 15:50:53 [INFO] Response sent
+2026-02-21 15:50:53 [DEBUG] Sent response: {'command': 'success', 'data': {'responses': [{'success': True, 'message': "Pose 'test_pose' saved"}]}}
+2026-02-21 15:50:53 [INFO] Message received
+2026-02-21 15:50:53 [DEBUG] Received message: {'command': 'invalid', 'data': {}}
+2026-02-21 15:50:53 [INFO] Response sent
+2026-02-21 15:50:53 [DEBUG] Sent response: {'command': 'rejected', 'data': {'reason': 'Unknown command: invalid'}}
+2026-02-21 15:52:31 [INFO] Message received
+2026-02-21 15:52:31 [DEBUG] Received message: {'command': 'execute_sequence', 'data': {'robot': 'mock', 'commands': [{'action': 'pose', 'command': 'delete', 'pose_name': 'test_pose'}]}}
+2026-02-21 15:52:31 [INFO] Response sent
+2026-02-21 15:52:31 [DEBUG] Sent response: {'command': 'success', 'data': {'responses': [{'success': True, 'message': "Pose 'test_pose' deleted"}]}}
+2026-02-21 15:52:31 [INFO] Message received
+2026-02-21 15:52:31 [DEBUG] Received message: {'command': 'execute_sequence', 'data': {'robot': 'mock', 'commands': [{'action': 'gripper', 'command': 'open'}, {'action': 'wait', 'duration_s': 0.1}, {'action': 'gripper', 'command': 'close'}]}}
+2026-02-21 15:52:31 [INFO] Mock robot: Opening gripper
+2026-02-21 15:52:32 [INFO] Mock robot: Closing gripper
+2026-02-21 15:52:32 [INFO] Response sent
+2026-02-21 15:52:32 [DEBUG] Sent response: {'command': 'success', 'data': {'responses': [{'success': True, 'message': 'Mock gripper opened'}, {'message': 'Waited for 0.1 seconds'}, {'success': True, 'message': 'Mock gripper closed'}]}}
+2026-02-21 15:52:32 [INFO] Message received
+2026-02-21 15:52:32 [DEBUG] Received message: {'command': 'execute_sequence', 'data': {'robot': 'mock', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'name': 'home'}, 'speed': 0.5}]}}
+2026-02-21 15:52:32 [INFO] Mock robot: MoveJ to 'home' offset=None speed=0.5
+2026-02-21 15:52:34 [INFO] Response sent
+2026-02-21 15:52:34 [DEBUG] Sent response: {'command': 'success', 'data': {'responses': [{'success': True, 'message': "Mock MoveJ complete to 'home'"}]}}
+2026-02-21 15:52:34 [INFO] Message received
+2026-02-21 15:52:34 [DEBUG] Received message: {'command': 'execute_sequence', 'data': {'robot': 'mock', 'commands': [{'action': 'move', 'motion_type': 'moveL', 'target': {'name': 'home'}, 'speed': 0.5}]}}
+2026-02-21 15:52:34 [INFO] Mock robot: MoveL to 'home' offset=None speed=0.5
+2026-02-21 15:52:36 [INFO] Response sent
+2026-02-21 15:52:36 [DEBUG] Sent response: {'command': 'success', 'data': {'responses': [{'success': True, 'message': "Mock MoveL complete to 'home'"}]}}
+2026-02-21 15:52:36 [INFO] Message received
+2026-02-21 15:52:36 [DEBUG] Received message: {'command': 'get_status', 'data': {}}
+2026-02-21 15:52:36 [INFO] Response sent
+2026-02-21 15:52:36 [DEBUG] Sent response: {'command': 'success', 'data': {'Connected Robots': 'unknown'}}
+2026-02-21 15:52:36 [INFO] Message received
+2026-02-21 15:52:36 [DEBUG] Received message: {'command': 'ping', 'data': {}}
+2026-02-21 15:52:36 [INFO] Response sent
+2026-02-21 15:52:36 [DEBUG] Sent response: {'command': 'success', 'data': {'message': 'Backend Alive'}}
+2026-02-21 15:52:36 [INFO] Message received
+2026-02-21 15:52:36 [DEBUG] Received message: {'command': 'execute_sequence', 'data': {'robot': 'mock', 'commands': [{'action': 'pose', 'command': 'teach', 'pose_name': 'test_pose', 'overwrite': True}]}}
+2026-02-21 15:52:36 [INFO] Response sent
+2026-02-21 15:52:36 [DEBUG] Sent response: {'command': 'success', 'data': {'responses': [{'success': True, 'message': "Pose 'test_pose' saved"}]}}
+2026-02-21 15:52:36 [INFO] Message received
+2026-02-21 15:52:36 [DEBUG] Received message: {'command': 'invalid', 'data': {}}
+2026-02-21 15:52:36 [INFO] Response sent
+2026-02-21 15:52:36 [DEBUG] Sent response: {'command': 'rejected', 'data': {'reason': 'Unknown command: invalid'}}
+2026-02-24 10:32:49 [INFO] Starting backend server on tcp://*:5555
+2026-02-24 10:32:49 [INFO] Server ready and listening
+2026-02-24 10:32:52 [INFO] Keyboard interrupt in server loop occured
+2026-02-24 10:32:52 [INFO] Shutting down server

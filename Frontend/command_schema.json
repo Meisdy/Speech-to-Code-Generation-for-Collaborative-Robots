@@ -1,0 +1,51 @@
+{
+  "mode": "live",
+  "robot": "franka",
+  "commands": [
+    {
+      "action": "move",
+      "motion_type": "moveJ",
+      "target": {
+        "type": "named_pose",
+        "name": "Home"
+      }
+    },
+    {
+      "action": "move",
+      "motion_type": "moveL",
+      "target": {
+        "type": "offset_from_pose",
+        "name": "Home",
+        "offset": {
+          "x_mm": 0.0,
+          "y_mm": 0.0,
+          "z_mm": 100.0
+        }
+      }
+    },
+    {
+      "action": "gripper",
+      "command": "open"
+    },
+    {
+      "action": "gripper",
+      "command": "close"
+    },
+    {
+      "action": "wait",
+      "duration_s": 1.0
+    },
+    {
+      "action": "pose",
+      "command": "teach",
+      "pose_name": "position_1",
+      "overwrite": false
+    },
+    {
+      "action": "pose",
+      "command": "delete",
+      "pose_name": "position_1"
+    }
+  ],
+  "message": "Optional feedback from LLM here."
+}
