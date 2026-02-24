@@ -1,58 +1,55 @@
 import zmq
-from .message_handler import MessageHandler
+import threading
 import logging
+from .message_handler import MessageHandler
 
 logger = logging.getLogger("cobot_backend")
 
 class ServerZeroMQ:
     def __init__(self, bind_address):
-        """
-        bind_address: "tcp://*:5555"
-        message_handler: MessageHandler instance to process commands
-        """
         self.bind_address = bind_address
         self.handler = MessageHandler()
         self.running = False
-
-        # Initialize ZeroMQ
         self.context = zmq.Context()
         self.socket = self.context.socket(zmq.REP)
         self.socket.bind(bind_address)
-        self.socket.setsockopt(zmq.RCVTIMEO, 1000)  # 1 sec timeout for interruptibility
+        self.server_thread = None
 
-    def start(self):
-        """Main server loop - receives messages and delegates to handler"""
-        self.running = True
-        logger.info('Server ready and listening')
-
+    def _server_loop(self):
+        """Internal server loop running in a thread."""
         while self.running:
             try:
-                # Receive message
                 message = self.socket.recv_json()
                 logger.info('Message received')
-                logger.debug('Received message: %s', message)
-
-                # Delegate to handler
                 response = self.handler.process_message(message=message)
-
-                # Send response
                 self.socket.send_json(response)
                 logger.info('Response sent')
-                logger.debug('Sent response: %s', response)
-
             except zmq.Again:
                 continue
-            except KeyboardInterrupt:
-                logger.info('Keyboard interrupt in server loop occured')
-                break
             except Exception as e:
-                logger.error('Error in main server loop: %s', e)
+                logger.error('Error in server loop: %s', e)
+
+    def start(self):
+        """Starts the server in a background thread."""
+        self.running = True
+        logger.info('Server ready and listening')
+        self.server_thread = threading.Thread(target=self._server_loop, daemon=True)
+        self.server_thread.start()
+
+        # Block the main thread until KeyboardInterrupt
+        try:
+            while self.running:
+                self.server_thread.join(timeout=1)
+        except KeyboardInterrupt:
+            logger.info('Keyboard interrupt received')
 
         self.close()
 
     def close(self):
-        """Clean shutdown"""
+        """Clean shutdown."""
         logger.info('Shutting down server')
         self.running = False
+        if self.server_thread and self.server_thread.is_alive():
+            self.server_thread.join(timeout=1)
         self.socket.close()
         self.context.term()
