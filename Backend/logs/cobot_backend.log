@@ -244,3 +244,39 @@
 2026-02-24 10:32:49 [INFO] Server ready and listening
 2026-02-24 10:32:52 [INFO] Keyboard interrupt in server loop occured
 2026-02-24 10:32:52 [INFO] Shutting down server
+2026-02-24 15:27:22 [INFO] Starting backend server on tcp://*:5555
+2026-02-24 15:27:22 [INFO] Server ready and listening
+2026-02-24 15:27:30 [INFO] Message received
+2026-02-24 15:27:30 [INFO] Mock robot: Connecting to robot
+2026-02-24 15:27:31 [INFO] Mock robot: MoveJ to 'home' offset=None speed=None
+2026-02-24 15:27:33 [INFO] Mock robot: Opening gripper
+2026-02-24 15:27:34 [INFO] Response sent
+2026-02-24 15:28:02 [INFO] Message received
+2026-02-24 15:28:02 [INFO] Mock robot: Disconnecting from robot
+2026-02-24 15:28:02 [DEBUG] Executing bash commands for franka moveit startup
+2026-02-24 15:28:12 [DEBUG] moveit commander initialized
+2026-02-24 15:28:14 [INFO] Franka: Connected successfully
+2026-02-24 15:28:16 [INFO] Response sent
+2026-02-24 15:39:25 [INFO] Starting backend server on tcp://*:5555
+2026-02-24 15:39:25 [INFO] Server ready and listening on tcp://*:5555
+2026-02-24 15:39:25 [INFO] Server thread started
+2026-02-24 15:39:45 [INFO] Message received
+2026-02-24 15:39:45 [DEBUG] Executing bash commands for franka moveit startup
+2026-02-24 15:39:55 [ERROR] Franka: Error while connecting to Franka - signal only works in main thread
+2026-02-24 15:39:55 [INFO] Response sent
+2026-02-24 15:47:20 [INFO] Signal 2 received, shutting down
+2026-02-24 15:47:21 [INFO] Shutting down server
+2026-02-24 15:47:34 [INFO] main.py:12  Starting backend server on tcp://*:5555
+2026-02-24 15:47:34 [INFO] communication_server.py:45  Server ready and listening on tcp://*:5555
+2026-02-24 15:47:34 [INFO] communication_server.py:28  Server thread started
+2026-02-24 15:47:44 [INFO] communication_server.py:51  Message received
+2026-02-24 15:47:44 [DEBUG] franka_controller.py:32  Executing bash commands for franka moveit startup
+2026-02-24 15:47:54 [ERROR] franka_controller.py:55  Franka: Error while connecting to Franka - signal only works in main thread
+2026-02-24 15:47:54 [INFO] communication_server.py:54  Response sent
+2026-02-24 15:49:32 [INFO] communication_server.py:40  Signal 2 received, shutting down
+2026-02-24 15:49:33 [INFO] communication_server.py:61  Shutting down server
+2026-02-24 16:08:27 [INFO] main.py:12  Starting backend server on tcp://*:5555
+2026-02-24 16:08:27 [INFO] communication_server.py:45  Server ready and listening on tcp://*:5555
+2026-02-24 16:08:27 [INFO] communication_server.py:28  Server thread started
+2026-02-24 16:08:28 [INFO] communication_server.py:40  Signal 2 received, shutting down
+2026-02-24 16:08:29 [INFO] communication_server.py:61  Shutting down server

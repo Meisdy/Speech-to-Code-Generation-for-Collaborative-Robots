@@ -2,6 +2,8 @@ import zmq
 import signal
 import logging
 import threading
+from .message_handler import MessageHandler
+ 
 
 logger = logging.getLogger("cobot_backend")
 
@@ -58,5 +60,6 @@ class ServerZeroMQ:
 
     def _close(self):
         logger.info("Shutting down server")
+
         self.socket.close()
         self.context.term()
