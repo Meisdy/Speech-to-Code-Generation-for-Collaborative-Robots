@@ -1,0 +1,2 @@
+sudo lsof -i :5555 # to see active open 5555 ports
+kill -9 <ID>
