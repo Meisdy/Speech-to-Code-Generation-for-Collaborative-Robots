@@ -37,7 +37,7 @@ from Backend.robot_controllers.base_robot_controller import BaseRobotController
 
 # ── Constants ─────────────────────────────────────────────────────────────────
 
-DEFAULT_ROBOT_IP  = "169.254.70.80"
+DEFAULT_ROBOT_IP  = "192.168.1.100"
 POSES_FILE        = "Backend/poses/ur_poses.jsonl"
 
 DASHBOARD_PORT    = 29999   # text, admin
@@ -79,8 +79,8 @@ class URController(BaseRobotController):
 
     Connections maintained while connected:
       - self._dash_sock  : Dashboard Server (29999) – kept open for status queries
-      - self._state_sock : Real-Time stream (30003)  – kept open for state polling
     URScript commands open a short-lived connection to port 30002 per command.
+    State is read by opening a fresh connection to port 30003 per call.
     """
 
     def __init__(
@@ -91,23 +91,17 @@ class URController(BaseRobotController):
         super().__init__(poses_file)
         self.robot_ip    = robot_ip
         self._dash_sock  : socket.socket | None = None
-        self._state_sock : socket.socket | None = None
+        self._freedrive_sock : socket.socket | None = None
 
     # ── Connection ────────────────────────────────────────────────────────────
 
     def connect(self) -> dict:
         try:
-            # Dashboard socket (persistent)
             self._dash_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             self._dash_sock.settimeout(SOCKET_TIMEOUT)
             self._dash_sock.connect((self.robot_ip, DASHBOARD_PORT))
             # Consume the welcome banner ("Connected: Universal Robots …\n")
             self._dash_sock.recv(1024)
-
-            # Real-time state socket (persistent, non-blocking recv later)
-            self._state_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            self._state_sock.settimeout(SOCKET_TIMEOUT)
-            self._state_sock.connect((self.robot_ip, STATE_PORT))
 
             self.connected = True
             return {"success": True, "message": "Connected"}
@@ -133,7 +127,7 @@ class URController(BaseRobotController):
             return False
 
     def _close_sockets(self):
-        for attr in ("_dash_sock", "_state_sock"):
+        for attr in ("_dash_sock", "_freedrive_sock"):
             sock = getattr(self, attr, None)
             if sock:
                 try:
@@ -154,7 +148,7 @@ class URController(BaseRobotController):
     def _send_script(self, script: str):
         """
         Open a fresh connection to port 30002, send *script*, then close.
-        Each script must end with '\\n'.  The connection is closed immediately
+        Each script must end with '\\n'. The connection is closed immediately
         after sending; UR executes the commands asynchronously.
         """
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
@@ -163,7 +157,6 @@ class URController(BaseRobotController):
             if not script.endswith("\n"):
                 script += "\n"
             s.sendall(script.encode("utf-8"))
-            # Small delay so the robot starts receiving before we close
             time.sleep(0.05)
 
     # ── Motion helpers ────────────────────────────────────────────────────────
@@ -179,6 +172,7 @@ class URController(BaseRobotController):
             pos[2] += offset[2]
         return pos + rotvec
 
+
     # ── Motion ────────────────────────────────────────────────────────────────
 
     def move_joint(self, pose: dict, speed: float = None, offset: list = None) -> dict:
@@ -193,7 +187,6 @@ class URController(BaseRobotController):
 
             if offset:
                 target = self._pose_to_rotvec(pose, offset)
-                # moveJ with a pose argument (UR does IK internally)
                 script = (
                     f"movej(p[{target[0]:.6f},{target[1]:.6f},{target[2]:.6f},"
                     f"{target[3]:.6f},{target[4]:.6f},{target[5]:.6f}],"
@@ -229,17 +222,111 @@ class URController(BaseRobotController):
         except Exception as e:
             return {"success": False, "message": str(e)}
 
-    # ── Gripper (stub) ────────────────────────────────────────────────────────
+    # ── Freedrive ─────────────────────────────────────────────────────────────
+
+    def enable_freedrive(self) -> dict:
+        try:
+            mode = self._dashboard_cmd("robotmode")
+            print(f"robot mode: {repr(mode)}")
+
+            safety = self._dashboard_cmd("safetystatus")
+            print(f"safety status: {repr(safety)}")
+
+            if "RUNNING" not in mode.upper():
+                self._dashboard_cmd("power on")
+                time.sleep(3)
+                self._dashboard_cmd("brake release")
+                time.sleep(2)
+
+            self._freedrive_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            self._freedrive_sock.settimeout(SOCKET_TIMEOUT)
+            self._freedrive_sock.connect((self.robot_ip, SCRIPT_PORT))
+
+            script = (
+                "def freedrive():\n"
+                "  freedrive_mode()\n"
+                "  while True:\n"
+                "    sync()\n"
+                "  end\n"
+                "end\n"
+                "freedrive()\n"
+            )
+            self._freedrive_sock.sendall(script.encode("utf-8"))
+            print(f"script sent")
+
+            time.sleep(0.5)
+            mode_after = self._dashboard_cmd("programstate")
+            print(f"program state after: {repr(mode_after)}")
+
+            return {"success": True, "message": "Freedrive enabled"}
+        except Exception as e:
+            if self._freedrive_sock:
+                self._freedrive_sock.close()
+                self._freedrive_sock = None
+            return {"success": False, "message": str(e)}
+
+    def disable_freedrive(self) -> dict:
+        try:
+            if self._freedrive_sock:
+                self._freedrive_sock.close()
+                self._freedrive_sock = None
+            reply = self._dashboard_cmd("stop")
+            if "error" in reply.lower():
+                return {"success": False, "message": f"Failed to stop freedrive: {reply}"}
+            return {"success": True, "message": "Freedrive disabled"}
+        except Exception as e:
+            return {"success": False, "message": str(e)}
+
+    # ── Gripper ───────────────────────────────────────────────────────────────
+
+    GRIPPER_OPEN_PROGRAM  = "open_UG2_Gripper.urp"
+    GRIPPER_CLOSE_PROGRAM = "close_UG2_Gripper.urp"
+    GRIPPER_TIMEOUT       = 10.0   # seconds to wait for program completion
+    GRIPPER_POLL_INTERVAL = 0.1    # seconds between programstate polls
+    GRIPPER_ACTUATE_TIME  = 5.0  # seconds to wait for physical actuation
+
+    def _run_gripper_program(self, program: str) -> dict:
+        try:
+            reply = self._dashboard_cmd(f"load {program}")
+            if "error" in reply.lower():
+                return {"success": False, "message": f"Failed to load {program}: {reply}"}
+
+            reply = self._dashboard_cmd("play")
+            if "error" in reply.lower():
+                return {"success": False, "message": f"Failed to play {program}: {reply}"}
+
+            # Poll until STOPPED, but force-stop after actuation time if still running
+            deadline = time.time() + self.GRIPPER_TIMEOUT
+            actuate_after = time.time() + self.GRIPPER_ACTUATE_TIME
+            forced_stop = False
+
+            while time.time() < deadline:
+                state = self._dashboard_cmd("programstate")
+                if "STOPPED" in state.upper():
+                    return {"success": True}
+                if not forced_stop and time.time() >= actuate_after:
+                    # Gripper has had enough time to actuate — stop the program
+                    self._dashboard_cmd("stop")
+                    forced_stop = True
+                time.sleep(self.GRIPPER_POLL_INTERVAL)
+
+            return {"success": False, "message": f"Gripper program timed out after {self.GRIPPER_TIMEOUT}s"}
+        except Exception as e:
+            return {"success": False, "message": str(e)}
 
     def gripper_open(self) -> dict:
-        """TODO: implement gripper open for your hardware."""
-        self.gripper_state = "open"
-        return {"success": True, "message": "Gripper open (stub — not implemented)"}
+        result = self._run_gripper_program(self.GRIPPER_OPEN_PROGRAM)
+        if result["success"]:
+            self.gripper_state = "open"
+            return {"success": True, "message": "Gripper opened"}
+        return result
 
     def gripper_close(self) -> dict:
-        """TODO: implement gripper close for your hardware."""
-        self.gripper_state = "closed"
-        return {"success": True, "message": "Gripper close (stub — not implemented)"}
+        result = self._run_gripper_program(self.GRIPPER_CLOSE_PROGRAM)
+        if result["success"]:
+            self.gripper_state = "closed"
+            return {"success": True, "message": "Gripper closed"}
+        return result
 
     # ── State ─────────────────────────────────────────────────────────────────
 
@@ -248,55 +335,45 @@ class URController(BaseRobotController):
         Read one state packet from the real-time interface (port 30003) and
         decode joint positions and TCP pose.
 
-        The 125 Hz stream delivers packets continuously; we flush the socket
-        buffer and grab the most recent complete packet.
+        Opens a fresh connection each call to avoid mid-stream misalignment.
+        Reads a large buffer and scans for a confirmed packet boundary by
+        verifying two consecutive packet headers.
 
         Packet layout (big-endian doubles):
             offset 252 : 6 joint positions [rad]
             offset 444 : TCP pose [x, y, z, rx, ry, rz]  (rotvec, metres)
         """
         try:
-            # Drain everything in the buffer and keep only the last full packet.
-            # Set a short timeout so we don't block forever.
-            self._state_sock.settimeout(0.1)
-            raw = b""
-            try:
-                while True:
-                    chunk = self._state_sock.recv(STATE_RECV_BYTES * 2)
-                    if chunk:
-                        raw += chunk
-            except socket.timeout:
-                pass
-            finally:
-                self._state_sock.settimeout(SOCKET_TIMEOUT)
+            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+                s.settimeout(SOCKET_TIMEOUT)
+                s.connect((self.robot_ip, STATE_PORT))
+                # Read enough for ~5 packets to guarantee we capture at least
+                # two consecutive complete ones for reliable boundary detection
+                buf = _recv_exactly(s, STATE_RECV_BYTES * 5)
 
-            if len(raw) < STATE_RECV_BYTES:
-                # Buffer was empty or incomplete — do a blocking read for one packet
-                self._state_sock.settimeout(SOCKET_TIMEOUT)
-                raw = _recv_exactly(self._state_sock, STATE_RECV_BYTES)
+            # Scan for a confirmed packet boundary by checking two consecutive
+            # packet length headers. This handles connecting mid-stream.
+            packet = None
+            for i in range(len(buf) - 4):
+                pkt_len = struct.unpack("!I", buf[i:i+4])[0]
+                if not (1060 <= pkt_len <= STATE_RECV_BYTES):
+                    continue
+                next_pkt = i + pkt_len
+                if next_pkt + 4 > len(buf):
+                    continue
+                next_len = struct.unpack("!I", buf[next_pkt:next_pkt+4])[0]
+                if 1060 <= next_len <= STATE_RECV_BYTES:
+                    # Two consecutive valid headers — we're aligned
+                    packet = buf[i:i+pkt_len]
+                    break
 
-            # Use the LAST complete packet in the buffer
-            pkt_len = STATE_RECV_BYTES  # 1220 for e-Series, works as upper bound
-            # Detect actual packet size from the first 4-byte big-endian int header
-            if len(raw) >= 4:
-                pkt_len = struct.unpack("!I", raw[:4])[0]
-                # Clamp to sensible range
-                pkt_len = max(1060, min(pkt_len, STATE_RECV_BYTES))
+            if packet is None:
+                return {"success": False, "message": "Could not find confirmed packet boundary"}
 
-            # Align to the last complete packet
-            if len(raw) >= pkt_len:
-                offset = ((len(raw) - pkt_len) // pkt_len) * pkt_len
-                packet = raw[offset: offset + pkt_len]
-            else:
-                packet = raw  # best effort
-
-            # Decode joints (6 × double starting at byte 252)
             joints = list(struct.unpack_from("!6d", packet, RT_JOINT_OFFSET))
-
-            # Decode TCP rotvec (6 × double starting at byte 444)
             tcp_rv = list(struct.unpack_from("!6d", packet, RT_TCP_OFFSET))
             quat   = Rotation.from_rotvec(tcp_rv[3:]).as_quat().tolist()
-            pose   = tcp_rv[:3] + quat  # [x, y, z, qx, qy, qz, qw]
+            pose   = tcp_rv[:3] + quat
 
             return {
                 "success":         True,
