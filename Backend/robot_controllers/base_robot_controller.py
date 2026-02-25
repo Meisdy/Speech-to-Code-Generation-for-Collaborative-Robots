@@ -34,7 +34,7 @@ class BaseRobotController(ABC):
     def save_pose(self, name: str, overwrite: bool = False) -> dict:
         if name in self.poses and not overwrite:
             return {"success": False, "message": f"Pose '{name}' already exists"}
-        state = self.get_current_state()
+        state = self.get_current_pose()
         if not state.get("success"):
             return {"success": False, "message": f"Could not read robot state: {state.get('message', 'unknown error')}"}
         entry = {
@@ -123,7 +123,7 @@ class BaseRobotController(ABC):
         pass
 
     @abstractmethod
-    def get_current_state(self):
+    def get_current_pose(self):
         """
         Get current robot state
         Returns: dict {

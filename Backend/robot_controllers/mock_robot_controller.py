@@ -58,7 +58,7 @@ class MockRobotController(BaseRobotController):
         self.gripper_state = "closed"
         return {"success": True, "message": "Mock gripper closed"}
 
-    def get_current_state(self):
+    def get_current_pose(self):
         return {
             "success": True,
             "joint_positions": self.joint_angles,
