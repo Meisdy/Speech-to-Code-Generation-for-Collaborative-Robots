@@ -400,3 +400,13 @@ AttributeError: 'NoneType' object has no attribute 'disconnect'
 2026-02-24 20:39:55 [INFO] communication_server.py:29  Server ready and listening
 2026-02-24 20:39:56 [INFO] communication_server.py:48  Signal 2 received, shutting down
 2026-02-24 20:39:56 [INFO] communication_server.py:53  Shutting down server
+2026-02-25 10:11:59 [INFO] main.py:16  Starting backend server on tcp://*:5555
+2026-02-25 10:11:59 [INFO] communication_server.py:29  Server ready and listening
+2026-02-25 10:12:02 [INFO] communication_server.py:48  Signal 2 received, shutting down
+2026-02-25 10:12:02 [INFO] communication_server.py:53  Shutting down server
+2026-02-25 10:12:05 [INFO] main.py:16  Starting backend server on tcp://*:5555
+2026-02-25 10:12:05 [INFO] communication_server.py:29  Server ready and listening
+2026-02-25 10:12:33 [INFO] communication_server.py:34  Message received
+2026-02-25 10:12:38 [INFO] communication_server.py:37  Response sent
+2026-02-25 10:12:52 [INFO] communication_server.py:48  Signal 2 received, shutting down
+2026-02-25 10:12:52 [INFO] communication_server.py:53  Shutting down server
