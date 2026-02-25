@@ -128,20 +128,26 @@ class MessageHandler:
         """
         action = command.get('action', '')
 
-        if action == 'move':
-            motion_type = command['motion_type']
-            pose_name = command['target']['name']
-            offset = command.get('offset')
-            speed = command.get('speed')
+        if action == "move":
+            motion_type = command["motion_type"]
+            target = command["target"]
+            pose_name = target["name"]
+            speed = command.get("speed")
 
             pose = robot.get_pose(pose_name)
             if pose is None:
-                return {"success": False, "message": f"Unknown pose: {pose_name}"}
+                return {"success": False, "message": f"Unknown pose {pose_name}"}
 
-            if motion_type == 'moveJ':
+            offset = None
+            if target.get("type") == "offset_from_pose":
+                raw = target["offset"]
+                offset = [raw["x_mm"], raw["y_mm"], raw["z_mm"]]
+
+            if motion_type == "moveJ":
                 return robot.move_joint(pose, speed, offset)
             else:
                 return robot.move_linear(pose, speed, offset)
+
 
         elif action == 'gripper':
             gripper_operation = command['command']
