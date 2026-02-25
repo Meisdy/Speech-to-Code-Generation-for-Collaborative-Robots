@@ -32,9 +32,11 @@ class ServerZeroMQ:
                 try:
                     message = self.socket.recv_json()
                     logger.info('Message received')
+                    logger.debug(f'Received message: {message}')
                     response = self.handler.process_message(message=message)
                     self.socket.send_json(response)
                     logger.info('Response sent')
+                    logger.debug(f'Sent response: {response}')
                 except zmq.Again:
                     continue
                 except Exception as e:
