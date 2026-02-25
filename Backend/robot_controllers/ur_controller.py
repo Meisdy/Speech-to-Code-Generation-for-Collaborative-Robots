@@ -3,65 +3,57 @@ URController — pure TCP/IP socket implementation for UR10 (and compatible UR c
 
 Port layout
 -----------
-  29999  Dashboard Server   : text-based admin commands (power, brake-release, play/stop)
-  30002  Secondary Client   : send URScript commands (10 Hz state stream, ignored here)
-  30003  Real-Time Client   : 125 Hz binary state stream – joints & TCP pose are read here
-
-Gripper
--------
-  All OnRobot / gripper code has been removed.
-  Add your own gripper implementation and hook it into gripper_open() / gripper_close().
-
-Motion notes
-------------
-  moveJ / moveL are sent as URScript text to port 30002.
-  Speeds and accelerations are in rad/s (joint) and m/s (linear), not fractions,
-  so the DEFAULT_SPEED fraction is scaled against the same MAX_* constants as before.
+  29999  Dashboard Server  : text-based admin commands (power, brake release, play/stop)
+  30002  Secondary Client  : URScript commands sent here (fire-and-forget per command)
+  30003  Real-Time Client  : 125 Hz binary state stream — joints and TCP pose
 
 State packet (port 30003, CB3 / e-Series)
 ------------------------------------------
-  The real-time packet is 1060 bytes (CB3) or 1220 bytes (e-Series).
-  Offsets used here (big-endian doubles, 8 bytes each):
-      252 … 299   actual joint positions  q[0..5]
-      444 … 491   actual TCP pose         [x, y, z, rx, ry, rz]  (rotvec, metres)
+  Packets are 1060 bytes (CB3) or 1220 bytes (e-Series), big-endian doubles.
+  Offsets used:
+      252  actual joint positions  q[0..5]   (6 × double, rad)
+      444  actual TCP pose         [x,y,z,rx,ry,rz]  (6 × double, rotvec, metres)
   Reference: UR Client Interface documentation v3 / v5.
+
+Gripper
+-------
+  Open/close is handled by loading and executing locally saved URP programs
+  on the robot via the Dashboard Server.
 """
 
 import socket
 import struct
 import time
 from scipy.spatial.transform import Rotation
-
 from Backend.robot_controllers.base_robot_controller import BaseRobotController
 
 
-# ── Constants ─────────────────────────────────────────────────────────────────
+# ── Module-level constants ─────────────────────────────────────────────────────
 
-DEFAULT_ROBOT_IP  = "192.168.1.100"
-POSES_FILE        = "Backend/poses/ur_poses.jsonl"
+DEFAULT_ROBOT_IP = "192.168.1.100"
+POSES_FILE       = "Backend/poses/ur_poses.jsonl"
 
-DASHBOARD_PORT    = 29999   # text, admin
-SCRIPT_PORT       = 30002   # URScript commands
-STATE_PORT        = 30003   # 125 Hz binary state stream
+DASHBOARD_PORT   = 29999
+SCRIPT_PORT      = 30002
+STATE_PORT       = 30003
 
-SOCKET_TIMEOUT    = 5.0     # seconds
-STATE_RECV_BYTES  = 1220    # large enough for both CB3 (1060) and e-Series (1220)
+SOCKET_TIMEOUT   = 5.0    # seconds
+STATE_RECV_BYTES = 1220   # max packet size; covers both CB3 (1060) and e-Series (1220)
 
-# Real-time packet byte offsets (big-endian double = 8 bytes each)
-RT_JOINT_OFFSET   = 252     # 6 × double  → actual joint positions [rad]
-RT_TCP_OFFSET     = 444     # 6 × double  → actual TCP [x,y,z,rx,ry,rz]
+RT_JOINT_OFFSET  = 252    # byte offset of joint positions in state packet
+RT_TCP_OFFSET    = 444    # byte offset of TCP pose in state packet
 
-MAX_JOINT_SPEED   = 3.14    # rad/s
-MAX_JOINT_ACCEL   = 3.14    # rad/s²
-MAX_LINEAR_SPEED  = 0.5     # m/s
-MAX_LINEAR_ACCEL  = 0.5     # m/s²
-DEFAULT_SPEED     = 0.5     # fraction 0.0–1.0
+MAX_JOINT_SPEED  = 3.14   # rad/s
+MAX_JOINT_ACCEL  = 3.14   # rad/s²
+MAX_LINEAR_SPEED = 0.5    # m/s
+MAX_LINEAR_ACCEL = 0.5    # m/s²
+DEFAULT_SPEED    = 0.5    # fraction 0.0–1.0
 
 
-# ── Helper ─────────────────────────────────────────────────────────────────────
+# ── Module-level helpers ───────────────────────────────────────────────────────
 
 def _recv_exactly(sock: socket.socket, n: int) -> bytes:
-    """Read exactly *n* bytes from *sock*, blocking until done."""
+    """Read exactly *n* bytes from *sock*, blocking until all bytes arrive."""
     buf = b""
     while len(buf) < n:
         chunk = sock.recv(n - len(buf))
@@ -77,28 +69,40 @@ class URController(BaseRobotController):
     """
     UR10 controller using raw TCP sockets.
 
-    Connections maintained while connected:
-      - self._dash_sock  : Dashboard Server (29999) – kept open for status queries
-    URScript commands open a short-lived connection to port 30002 per command.
-    State is read by opening a fresh connection to port 30003 per call.
+    Socket strategy:
+      - _dash_sock      : persistent connection to Dashboard Server (29999)
+      - _freedrive_sock : persistent connection kept open while freedrive is active
+      - Script port (30002) : short-lived connection opened per motion command
+      - State port (30003)  : short-lived connection opened per state read
     """
+
+    # ── Tuning constants ──────────────────────────────────────────────────────
+
+    MOTION_TIMEOUT       = 30.0   # seconds before giving up on a motion
+    MOTION_POLL_INTERVAL = 0.1    # seconds between joint position polls
+    MOTION_THRESHOLD     = 0.001  # rad — max delta to consider joints stopped
+    MOTION_START_DELAY   = 0.3    # seconds to wait for motion to begin before polling
+
+    GRIPPER_OPEN_PROGRAM  = "open_UG2_Gripper.urp"
+    GRIPPER_CLOSE_PROGRAM = "close_UG2_Gripper.urp"
+    GRIPPER_ACTUATE_TIME  = 4.0   # seconds — tune to match physical actuation duration
+
+    # ── Initialisation ────────────────────────────────────────────────────────
 
     def __init__(self, robot_ip: str = DEFAULT_ROBOT_IP, poses_file: str = POSES_FILE):
         super().__init__(poses_file)
-        self.robot_ip    = robot_ip
-        self._dash_sock  : socket.socket | None = None
+        self.robot_ip        = robot_ip
+        self._dash_sock      : socket.socket | None = None
         self._freedrive_sock : socket.socket | None = None
 
-    # ── Connection methods ────────────────────────────────────────────────────────────
+    # ── Connection ────────────────────────────────────────────────────────────
 
     def connect(self) -> dict:
         try:
             self._dash_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             self._dash_sock.settimeout(SOCKET_TIMEOUT)
             self._dash_sock.connect((self.robot_ip, DASHBOARD_PORT))
-            # Consume the welcome banner ("Connected: Universal Robots …\n")
-            self._dash_sock.recv(1024)
-
+            self._dash_sock.recv(1024)  # discard welcome banner
             self.connected = True
             return {"success": True, "message": "Connected"}
         except Exception as e:
@@ -117,10 +121,106 @@ class URController(BaseRobotController):
         if not self.connected:
             return False
         try:
-            reply = self._dashboard_cmd("robotmode")
-            return reply.upper().startswith("ROBOTMODE")
+            mode = self.get_robot_mode()
+            return mode["success"] and mode["mode"] not in ("DISCONNECTED", "UNKNOWN")
         except Exception:
             return False
+
+    def get_safety_status(self) -> dict:
+        """Query the robot's current safety status."""
+        try:
+            reply = self._dashboard_cmd("safetystatus").upper()
+
+            if "ROBOT_EMERGENCY_STOP" in reply or "SYSTEM_EMERGENCY_STOP" in reply:
+                return {"success": True, "safe": False, "status": "EMERGENCY_STOP",
+                        "message": "E-stop is active — release the e-stop and try again"}
+            if "SAFEGUARD_STOP" in reply:
+                return {"success": True, "safe": False, "status": "SAFEGUARD_STOP",
+                        "message": "Safeguard stop is active — check external safety inputs"}
+            if "PROTECTIVE_STOP" in reply or "RECOVERY" in reply:
+                return {"success": True, "safe": False, "status": "PROTECTIVE_STOP",
+                        "message": "Protective stop active — clear the stop on the pendant"}
+            if "VIOLATION" in reply or "FAULT" in reply:
+                return {"success": True, "safe": False, "status": "FAULT",
+                        "message": f"Robot fault: {reply}"}
+            if "REDUCED" in reply:
+                return {"success": True, "safe": True, "status": "REDUCED",
+                        "message": "Operating in reduced mode"}
+            if "NORMAL" in reply:
+                return {"success": True, "safe": True, "status": "NORMAL",
+                        "message": ""}
+
+            return {"success": True, "safe": False, "status": "UNKNOWN",
+                    "message": f"Unrecognised safety status: {reply}"}
+        except Exception as e:
+            return {"success": False, "safe": False, "status": "UNKNOWN", "message": str(e)}
+
+    def get_robot_mode(self) -> dict:
+        """Query the robot's current operational mode."""
+        try:
+            reply = self._dashboard_cmd("robotmode").upper()
+
+            if "RUNNING" in reply:
+                return {"success": True, "mode": "RUNNING", "ready": True,
+                        "message": "Robot is active and ready"}
+            if "IDLE" in reply:
+                return {"success": True, "mode": "IDLE", "ready": False,
+                        "message": "Robot is powered on but brakes are engaged"}
+            if "POWER_OFF" in reply:
+                return {"success": True, "mode": "POWER_OFF", "ready": False,
+                        "message": "Robot is powered off"}
+            if "NO_CONTROLLER" in reply or "DISCONNECTED" in reply:
+                return {"success": True, "mode": "DISCONNECTED", "ready": False,
+                        "message": "Robot controller is not ready"}
+
+            return {"success": True, "mode": "UNKNOWN", "ready": False,
+                    "message": f"Unrecognised robot mode: {reply}"}
+        except Exception as e:
+            return {"success": False, "mode": "UNKNOWN", "ready": False, "message": str(e)}
+
+    def activate_robot(self) -> dict:
+        """
+        Power on the robot and release brakes, ready for motion commands.
+        Checks safety status and robot mode before attempting activation.
+        """
+        try:
+            safety = self.get_safety_status()
+            if not safety["success"] or not safety["safe"]:
+                return {"success": False, "message": safety["message"]}
+
+            mode = self.get_robot_mode()
+            if not mode["success"]:
+                return {"success": False, "message": mode["message"]}
+            if mode["ready"]:
+                return {"success": True, "message": "Robot is already active"}
+            if mode["mode"] == "DISCONNECTED":
+                return {"success": False, "message": mode["message"]}
+
+            if mode["mode"] == "POWER_OFF":
+                self._dashboard_cmd("power on")
+                deadline = time.time() + 15.0
+                while time.time() < deadline:
+                    if self.get_robot_mode()["mode"] == "IDLE":
+                        break
+                    time.sleep(0.5)
+                else:
+                    return {"success": False, "message": "Timed out waiting for robot to power on"}
+
+            self._dashboard_cmd("brake release")
+            deadline = time.time() + 15.0
+            while time.time() < deadline:
+                if self.get_robot_mode()["ready"]:
+                    return {"success": True, "message": "Robot active and ready"}
+                time.sleep(0.5)
+
+            # Re-check safety — e-stop may have been triggered during activation
+            safety = self.get_safety_status()
+            if not safety["safe"]:
+                return {"success": False, "message": safety["message"]}
+            return {"success": False, "message": "Timed out waiting for brakes to release"}
+
+        except Exception as e:
+            return {"success": False, "message": str(e)}
 
     def _close_sockets(self):
         for attr in ("_dash_sock", "_freedrive_sock"):
@@ -132,92 +232,79 @@ class URController(BaseRobotController):
                     pass
             setattr(self, attr, None)
 
-    # ── Dashboard helpers ─────────────────────────────────────────────────────
+    # ── Internal communication ────────────────────────────────────────────────
 
     def _dashboard_cmd(self, cmd: str) -> str:
         """Send a Dashboard Server command and return the single-line reply."""
         self._dash_sock.sendall((cmd + "\n").encode("utf-8"))
         return self._dash_sock.recv(1024).decode("utf-8").strip()
 
-    # ── URScript sender ───────────────────────────────────────────────────────
-
     def _send_script(self, script: str):
-        """
-        Open a fresh connection to port 30002, send *script*, then close.
-        Each script must end with '\\n'. The connection is closed immediately
-        after sending; UR executes the commands asynchronously.
-        """
+        """Send a URScript command to port 30002 over a short-lived connection."""
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             s.settimeout(SOCKET_TIMEOUT)
             s.connect((self.robot_ip, SCRIPT_PORT))
             if not script.endswith("\n"):
                 script += "\n"
             s.sendall(script.encode("utf-8"))
-            time.sleep(0.05)
+            time.sleep(0.05)  # brief pause before closing so the robot starts receiving
 
-    # ── Motion helpers ────────────────────────────────────────────────────────
-
-    MOTION_TIMEOUT = 30.0  # seconds before giving up waiting
-    MOTION_POLL_INTERVAL = 0.1  # seconds between position checks
-    MOTION_THRESHOLD = 0.001  # rad — joints considered stopped below this delta
-
+    # ── Motion ────────────────────────────────────────────────────────────────
 
     @staticmethod
-    def _pose_to_rotvec(pose: dict, offset: list | None = None) -> list:
-        """Convert stored pose dict (pos + quat) → [x, y, z, rx, ry, rz]."""
-        pos    = list(pose["pos"])
+    def _pose_to_rotvec(pose: dict, offset: list = None) -> list:
+        pos = list(pose["pos"])
         rotvec = Rotation.from_quat(pose["quat"]).as_rotvec().tolist()
         if offset:
-            pos[0] += offset[0]
-            pos[1] += offset[1]
-            pos[2] += offset[2]
+            pos[0] += offset[0] / 1000.0
+            pos[1] += offset[1] / 1000.0
+            pos[2] += offset[2] / 1000.0
         return pos + rotvec
 
     def _wait_motion_complete(self) -> dict:
         """
-        Block until joint positions stop changing, indicating motion is complete.
-        Compares two consecutive reads — if all joints move less than
-        MOTION_THRESHOLD between reads the robot is considered stationary.
+        Block until the robot stops moving.
+        Polls joint positions and returns once all joints move less than
+        MOTION_THRESHOLD rad between consecutive reads.
         """
-        deadline = time.time() + self.MOTION_TIMEOUT
-        # Give the robot a moment to actually start moving before we poll
-        time.sleep(0.3)
-
+        time.sleep(self.MOTION_START_DELAY)
+        deadline    = time.time() + self.MOTION_TIMEOUT
         prev_joints = None
+
         while time.time() < deadline:
-            state = self.get_current_state()
+            state = self.get_current_pose()
             if not state["success"]:
-                return {"success": False, "message": f"State read failed while waiting for motion: {state['message']}"}
+                return {"success": False, "message": f"Pose read failed during motion: {state['message']}"}
             curr_joints = state["joint_positions"]
             if prev_joints is not None:
                 deltas = [abs(c - p) for c, p in zip(curr_joints, prev_joints)]
                 if all(d < self.MOTION_THRESHOLD for d in deltas):
-                    return {"success": True}
+                    return {"success": True, "message": "Motion complete"}
             prev_joints = curr_joints
             time.sleep(self.MOTION_POLL_INTERVAL)
 
         return {"success": False, "message": f"Motion did not complete within {self.MOTION_TIMEOUT}s"}
 
-    # ── Motion ────────────────────────────────────────────────────────────────
-
     def move_joint(self, pose: dict, speed: float = None, offset: list = None) -> dict:
+        """
+        Joint-space move (moveJ). Blocks until motion is complete.
+        If an offset is provided, the robot performs IK internally via a pose target.
+        """
         try:
             spd = (speed or DEFAULT_SPEED) * MAX_JOINT_SPEED
             acc = (speed or DEFAULT_SPEED) * MAX_JOINT_ACCEL
 
             if offset:
-                target = self._pose_to_rotvec(pose, offset)
+                t = self._pose_to_rotvec(pose, offset)
                 script = (
-                    f"movej(p[{target[0]:.6f},{target[1]:.6f},{target[2]:.6f},"
-                    f"{target[3]:.6f},{target[4]:.6f},{target[5]:.6f}],"
-                    f"a={acc:.4f},v={spd:.4f})"
+                    f"movej(p[{t[0]:.6f},{t[1]:.6f},{t[2]:.6f},"
+                    f"{t[3]:.6f},{t[4]:.6f},{t[5]:.6f}],a={acc:.4f},v={spd:.4f})"
                 )
             else:
                 j = pose["joints"]
                 script = (
                     f"movej([{j[0]:.6f},{j[1]:.6f},{j[2]:.6f},"
-                    f"{j[3]:.6f},{j[4]:.6f},{j[5]:.6f}],"
-                    f"a={acc:.4f},v={spd:.4f})"
+                    f"{j[3]:.6f},{j[4]:.6f},{j[5]:.6f}],a={acc:.4f},v={spd:.4f})"
                 )
 
             self._send_script(script)
@@ -226,15 +313,15 @@ class URController(BaseRobotController):
             return {"success": False, "message": str(e)}
 
     def move_linear(self, pose: dict, speed: float = None, offset: list = None) -> dict:
+        """Linear Cartesian move (moveL). Blocks until motion is complete."""
         try:
-            target = self._pose_to_rotvec(pose, offset)
+            t   = self._pose_to_rotvec(pose, offset)
             spd = (speed or DEFAULT_SPEED) * MAX_LINEAR_SPEED
             acc = (speed or DEFAULT_SPEED) * MAX_LINEAR_ACCEL
 
             script = (
-                f"movel(p[{target[0]:.6f},{target[1]:.6f},{target[2]:.6f},"
-                f"{target[3]:.6f},{target[4]:.6f},{target[5]:.6f}],"
-                f"a={acc:.4f},v={spd:.4f})"
+                f"movel(p[{t[0]:.6f},{t[1]:.6f},{t[2]:.6f},"
+                f"{t[3]:.6f},{t[4]:.6f},{t[5]:.6f}],a={acc:.4f},v={spd:.4f})"
             )
             self._send_script(script)
             return self._wait_motion_complete()
@@ -244,39 +331,24 @@ class URController(BaseRobotController):
     # ── Freedrive ─────────────────────────────────────────────────────────────
 
     def enable_freedrive(self) -> dict:
+        """
+        Enable freedrive (hand-guided) mode.
+        Sends a looping URScript over a persistent socket — the robot stays in
+        freedrive as long as the socket remains open. Call disable_freedrive() to exit.
+        """
         try:
-            mode = self._dashboard_cmd("robotmode")
-            print(f"robot mode: {repr(mode)}")
-
-            safety = self._dashboard_cmd("safetystatus")
-            print(f"safety status: {repr(safety)}")
-
-            if "RUNNING" not in mode.upper():
-                self._dashboard_cmd("power on")
-                time.sleep(3)
-                self._dashboard_cmd("brake release")
-                time.sleep(2)
-
             self._freedrive_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             self._freedrive_sock.settimeout(SOCKET_TIMEOUT)
             self._freedrive_sock.connect((self.robot_ip, SCRIPT_PORT))
-
-            script = (
+            self._freedrive_sock.sendall(
                 "def freedrive():\n"
                 "  freedrive_mode()\n"
                 "  while True:\n"
                 "    sync()\n"
                 "  end\n"
                 "end\n"
-                "freedrive()\n"
+                "freedrive()\n".encode("utf-8")
             )
-            self._freedrive_sock.sendall(script.encode("utf-8"))
-            print(f"script sent")
-
-            time.sleep(0.5)
-            mode_after = self._dashboard_cmd("programstate")
-            print(f"program state after: {repr(mode_after)}")
-
             return {"success": True, "message": "Freedrive enabled"}
         except Exception as e:
             if self._freedrive_sock:
@@ -285,6 +357,7 @@ class URController(BaseRobotController):
             return {"success": False, "message": str(e)}
 
     def disable_freedrive(self) -> dict:
+        """Exit freedrive mode and return the robot to normal operation."""
         try:
             if self._freedrive_sock:
                 self._freedrive_sock.close()
@@ -298,13 +371,12 @@ class URController(BaseRobotController):
 
     # ── Gripper ───────────────────────────────────────────────────────────────
 
-    GRIPPER_OPEN_PROGRAM  = "open_UG2_Gripper.urp"
-    GRIPPER_CLOSE_PROGRAM = "close_UG2_Gripper.urp"
-    GRIPPER_TIMEOUT       = 10.0   # seconds to wait for program completion
-    GRIPPER_POLL_INTERVAL = 0.1    # seconds between programstate polls
-    GRIPPER_ACTUATE_TIME  = 4.0  # seconds to wait for physical actuation
-
     def _run_gripper_program(self, program: str) -> dict:
+        """
+        Load and execute a locally saved URP gripper program via the Dashboard Server.
+        Waits GRIPPER_ACTUATE_TIME seconds for physical actuation, then stops the
+        program if it is still running (some programs loop indefinitely).
+        """
         try:
             reply = self._dashboard_cmd(f"load {program}")
             if "error" in reply.lower():
@@ -314,12 +386,9 @@ class URController(BaseRobotController):
             if "error" in reply.lower():
                 return {"success": False, "message": f"Failed to play {program}: {reply}"}
 
-            # Always wait the full actuation time for the gripper to physically move
             time.sleep(self.GRIPPER_ACTUATE_TIME)
 
-            # Then stop the program in case it's still running (e.g. close program loops)
-            state = self._dashboard_cmd("programstate")
-            if "PLAYING" in state.upper():
+            if "PLAYING" in self._dashboard_cmd("programstate").upper():
                 self._dashboard_cmd("stop")
 
             return {"success": True}
@@ -327,6 +396,8 @@ class URController(BaseRobotController):
             return {"success": False, "message": str(e)}
 
     def gripper_open(self) -> dict:
+        if self.gripper_state == 'open':
+            return {"success": True, "message": "Gripper already open"}
         result = self._run_gripper_program(self.GRIPPER_OPEN_PROGRAM)
         if result["success"]:
             self.gripper_state = "open"
@@ -334,6 +405,8 @@ class URController(BaseRobotController):
         return result
 
     def gripper_close(self) -> dict:
+        if self.gripper_state == 'close':
+            return {"success": True, "message": "Gripper already closed"}
         result = self._run_gripper_program(self.GRIPPER_CLOSE_PROGRAM)
         if result["success"]:
             self.gripper_state = "closed"
@@ -342,29 +415,23 @@ class URController(BaseRobotController):
 
     # ── State ─────────────────────────────────────────────────────────────────
 
-    def get_current_state(self) -> dict:
+    def get_current_pose(self) -> dict:
         """
-        Read one state packet from the real-time interface (port 30003) and
-        decode joint positions and TCP pose.
+        Read the current robot pose from the real-time interface (port 30003).
 
-        Opens a fresh connection each call to avoid mid-stream misalignment.
-        Reads a large buffer and scans for a confirmed packet boundary by
-        verifying two consecutive packet headers.
+        Opens a fresh connection each call to avoid mid-stream byte misalignment.
+        Reads ~5 packets worth of data and scans for two consecutive valid packet
+        headers to confirm alignment before decoding.
 
-        Packet layout (big-endian doubles):
-            offset 252 : 6 joint positions [rad]
-            offset 444 : TCP pose [x, y, z, rx, ry, rz]  (rotvec, metres)
+        Returns joint positions (rad) and TCP pose [x, y, z, qx, qy, qz, qw].
         """
         try:
             with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                 s.settimeout(SOCKET_TIMEOUT)
                 s.connect((self.robot_ip, STATE_PORT))
-                # Read enough for ~5 packets to guarantee we capture at least
-                # two consecutive complete ones for reliable boundary detection
                 buf = _recv_exactly(s, STATE_RECV_BYTES * 5)
 
-            # Scan for a confirmed packet boundary by checking two consecutive
-            # packet length headers. This handles connecting mid-stream.
+            # Scan for a confirmed packet boundary by verifying two consecutive headers
             packet = None
             for i in range(len(buf) - 4):
                 pkt_len = struct.unpack("!I", buf[i:i+4])[0]
@@ -373,24 +440,21 @@ class URController(BaseRobotController):
                 next_pkt = i + pkt_len
                 if next_pkt + 4 > len(buf):
                     continue
-                next_len = struct.unpack("!I", buf[next_pkt:next_pkt+4])[0]
-                if 1060 <= next_len <= STATE_RECV_BYTES:
-                    # Two consecutive valid headers — we're aligned
+                if 1060 <= struct.unpack("!I", buf[next_pkt:next_pkt+4])[0] <= STATE_RECV_BYTES:
                     packet = buf[i:i+pkt_len]
                     break
 
             if packet is None:
-                return {"success": False, "message": "Could not find confirmed packet boundary"}
+                return {"success": False, "message": "Could not find a confirmed packet boundary in state stream"}
 
             joints = list(struct.unpack_from("!6d", packet, RT_JOINT_OFFSET))
             tcp_rv = list(struct.unpack_from("!6d", packet, RT_TCP_OFFSET))
             quat   = Rotation.from_rotvec(tcp_rv[3:]).as_quat().tolist()
-            pose   = tcp_rv[:3] + quat
 
             return {
                 "success":         True,
                 "joint_positions": joints,
-                "pose":            pose,
+                "pose":            tcp_rv[:3] + quat,
                 "gripper_state":   self.gripper_state,
             }
         except Exception as e:

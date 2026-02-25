@@ -410,3 +410,144 @@ AttributeError: 'NoneType' object has no attribute 'disconnect'
 2026-02-25 10:12:38 [INFO] communication_server.py:37  Response sent
 2026-02-25 10:12:52 [INFO] communication_server.py:48  Signal 2 received, shutting down
 2026-02-25 10:12:52 [INFO] communication_server.py:53  Shutting down server
+2026-02-25 14:26:13 [INFO] main.py:16  Starting backend server on tcp://*:5555
+2026-02-25 14:26:13 [INFO] communication_server.py:29  Server ready and listening
+2026-02-25 14:26:18 [INFO] communication_server.py:34  Message received
+2026-02-25 14:26:19 [INFO] communication_server.py:37  Response sent
+2026-02-25 14:27:33 [INFO] communication_server.py:34  Message received
+2026-02-25 14:27:38 [INFO] communication_server.py:37  Response sent
+2026-02-25 14:28:23 [INFO] communication_server.py:34  Message received
+2026-02-25 14:28:38 [INFO] communication_server.py:37  Response sent
+2026-02-25 14:28:42 [INFO] communication_server.py:34  Message received
+2026-02-25 14:29:00 [INFO] communication_server.py:37  Response sent
+2026-02-25 14:29:32 [INFO] communication_server.py:34  Message received
+2026-02-25 14:29:42 [INFO] communication_server.py:37  Response sent
+2026-02-25 14:29:53 [INFO] communication_server.py:34  Message received
+2026-02-25 14:30:02 [INFO] communication_server.py:37  Response sent
+2026-02-25 14:30:35 [INFO] communication_server.py:34  Message received
+2026-02-25 14:30:46 [INFO] communication_server.py:37  Response sent
+2026-02-25 14:30:49 [INFO] communication_server.py:34  Message received
+2026-02-25 14:31:03 [INFO] communication_server.py:37  Response sent
+2026-02-25 14:31:44 [INFO] communication_server.py:34  Message received
+2026-02-25 14:31:52 [INFO] communication_server.py:37  Response sent
+2026-02-25 14:32:13 [INFO] communication_server.py:34  Message received
+2026-02-25 14:32:16 [INFO] communication_server.py:37  Response sent
+2026-02-25 14:32:25 [INFO] communication_server.py:34  Message received
+2026-02-25 14:32:27 [INFO] communication_server.py:37  Response sent
+2026-02-25 14:32:38 [INFO] communication_server.py:34  Message received
+2026-02-25 14:32:41 [INFO] communication_server.py:37  Response sent
+2026-02-25 14:32:53 [INFO] communication_server.py:34  Message received
+2026-02-25 14:32:56 [INFO] communication_server.py:37  Response sent
+2026-02-25 14:33:12 [INFO] communication_server.py:34  Message received
+2026-02-25 14:33:14 [INFO] communication_server.py:37  Response sent
+2026-02-25 14:33:25 [INFO] communication_server.py:34  Message received
+2026-02-25 14:33:28 [INFO] communication_server.py:37  Response sent
+2026-02-25 14:33:42 [INFO] communication_server.py:34  Message received
+2026-02-25 14:33:44 [INFO] communication_server.py:37  Response sent
+2026-02-25 14:34:00 [INFO] communication_server.py:34  Message received
+2026-02-25 14:34:07 [INFO] communication_server.py:37  Response sent
+2026-02-25 14:34:17 [INFO] communication_server.py:48  Signal 2 received, shutting down
+2026-02-25 14:34:17 [INFO] communication_server.py:53  Shutting down server
+2026-02-25 14:34:57 [INFO] main.py:16  Starting backend server on tcp://*:5555
+2026-02-25 14:34:57 [INFO] communication_server.py:29  Server ready and listening
+2026-02-25 14:35:01 [INFO] communication_server.py:34  Message received
+2026-02-25 14:35:06 [INFO] communication_server.py:37  Response sent
+2026-02-25 14:35:27 [INFO] communication_server.py:34  Message received
+2026-02-25 14:35:29 [INFO] communication_server.py:37  Response sent
+2026-02-25 14:39:42 [INFO] communication_server.py:34  Message received
+2026-02-25 14:39:44 [INFO] communication_server.py:37  Response sent
+2026-02-25 14:48:04 [INFO] communication_server.py:48  Signal 2 received, shutting down
+2026-02-25 14:48:04 [INFO] communication_server.py:53  Shutting down server
+2026-02-25 14:48:08 [INFO] main.py:16  Starting backend server on tcp://*:5555
+2026-02-25 14:48:08 [INFO] communication_server.py:29  Server ready and listening
+2026-02-25 14:49:02 [INFO] communication_server.py:34  Message received
+2026-02-25 14:49:05 [INFO] communication_server.py:37  Response sent
+2026-02-25 14:49:13 [INFO] communication_server.py:34  Message received
+2026-02-25 14:49:20 [INFO] communication_server.py:37  Response sent
+2026-02-25 14:49:46 [INFO] communication_server.py:34  Message received
+2026-02-25 14:49:53 [INFO] communication_server.py:37  Response sent
+2026-02-25 14:50:40 [INFO] communication_server.py:48  Signal 2 received, shutting down
+2026-02-25 14:50:40 [INFO] communication_server.py:53  Shutting down server
+2026-02-25 14:51:45 [INFO] main.py:16  Starting backend server on tcp://*:5555
+2026-02-25 14:51:45 [INFO] communication_server.py:29  Server ready and listening
+2026-02-25 14:51:47 [INFO] communication_server.py:34  Message received
+2026-02-25 14:51:51 [INFO] communication_server.py:37  Response sent
+2026-02-25 14:54:20 [INFO] communication_server.py:48  Signal 2 received, shutting down
+2026-02-25 14:54:20 [INFO] communication_server.py:53  Shutting down server
+2026-02-25 15:02:43 [INFO] main.py:16  Starting backend server on tcp://*:5555
+2026-02-25 15:02:43 [INFO] communication_server.py:29  Server ready and listening
+2026-02-25 15:03:11 [INFO] communication_server.py:34  Message received
+2026-02-25 15:03:11 [DEBUG] communication_server.py:35  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'ur', 'commands': [{'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'named_pose', 'name': 'home'}}, {'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'offset_from_pose', 'name': 'home', 'offset': {'x_mm': 5.0, 'y_mm': 0.0, 'z_mm': 0.0}}}], 'message': ''}}
+2026-02-25 15:03:11 [ERROR] message_handler.py:91  Error occured while processing message: 'URController' object has no attribute 'movelinear'
+2026-02-25 15:03:11 [INFO] communication_server.py:38  Response sent
+2026-02-25 15:03:11 [DEBUG] communication_server.py:39  Sent response: {'command': 'error', 'data': {'error message': "'URController' object has no attribute 'movelinear'"}}
+2026-02-25 15:04:19 [INFO] communication_server.py:50  Signal 2 received, shutting down
+2026-02-25 15:04:19 [INFO] communication_server.py:55  Shutting down server
+2026-02-25 15:04:21 [INFO] main.py:16  Starting backend server on tcp://*:5555
+2026-02-25 15:04:21 [INFO] communication_server.py:29  Server ready and listening
+2026-02-25 15:04:25 [INFO] communication_server.py:34  Message received
+2026-02-25 15:04:25 [DEBUG] communication_server.py:35  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'ur', 'commands': [{'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'named_pose', 'name': 'home'}}, {'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'offset_from_pose', 'name': 'home', 'offset': {'x_mm': 5.0, 'y_mm': 0.0, 'z_mm': 0.0}}}], 'message': ''}}
+2026-02-25 15:04:25 [INFO] communication_server.py:38  Response sent
+2026-02-25 15:04:25 [DEBUG] communication_server.py:39  Sent response: {'command': 'success', 'data': {'responses': [{'success': False, 'message': "'URController' object has no attribute '_pose_to_rotvec'"}, {'success': False, 'message': "'URController' object has no attribute '_pose_to_rotvec'"}]}}
+2026-02-25 15:06:13 [INFO] communication_server.py:50  Signal 2 received, shutting down
+2026-02-25 15:06:13 [INFO] communication_server.py:55  Shutting down server
+2026-02-25 15:06:18 [INFO] main.py:16  Starting backend server on tcp://*:5555
+2026-02-25 15:06:18 [INFO] communication_server.py:29  Server ready and listening
+2026-02-25 15:06:20 [INFO] communication_server.py:34  Message received
+2026-02-25 15:06:20 [DEBUG] communication_server.py:35  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'ur', 'commands': [{'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'named_pose', 'name': 'home'}}, {'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'offset_from_pose', 'name': 'home', 'offset': {'x_mm': 5.0, 'y_mm': 0.0, 'z_mm': 0.0}}}], 'message': ''}}
+2026-02-25 15:06:24 [INFO] communication_server.py:38  Response sent
+2026-02-25 15:06:24 [DEBUG] communication_server.py:39  Sent response: {'command': 'success', 'data': {'responses': [{'success': True, 'message': 'Motion complete'}, {'success': True, 'message': 'Motion complete'}]}}
+2026-02-25 15:06:31 [INFO] communication_server.py:34  Message received
+2026-02-25 15:06:31 [DEBUG] communication_server.py:35  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'ur', 'commands': [{'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'named_pose', 'name': 'home'}}, {'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'offset_from_pose', 'name': 'home', 'offset': {'x_mm': 5.0, 'y_mm': 0.0, 'z_mm': 0.0}}}], 'message': ''}}
+2026-02-25 15:06:35 [INFO] communication_server.py:38  Response sent
+2026-02-25 15:06:35 [DEBUG] communication_server.py:39  Sent response: {'command': 'success', 'data': {'responses': [{'success': True, 'message': 'Motion complete'}, {'success': True, 'message': 'Motion complete'}]}}
+2026-02-25 15:06:41 [INFO] communication_server.py:34  Message received
+2026-02-25 15:06:41 [DEBUG] communication_server.py:35  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'ur', 'commands': [{'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'named_pose', 'name': 'home'}}, {'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'offset_from_pose', 'name': 'home', 'offset': {'x_mm': 50.0, 'y_mm': 0.0, 'z_mm': 0.0}}}], 'message': ''}}
+2026-02-25 15:06:45 [INFO] communication_server.py:38  Response sent
+2026-02-25 15:06:45 [DEBUG] communication_server.py:39  Sent response: {'command': 'success', 'data': {'responses': [{'success': True, 'message': 'Motion complete'}, {'success': True, 'message': 'Motion complete'}]}}
+2026-02-25 15:06:51 [INFO] communication_server.py:34  Message received
+2026-02-25 15:06:51 [DEBUG] communication_server.py:35  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'ur', 'commands': [{'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'named_pose', 'name': 'home'}}, {'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'offset_from_pose', 'name': 'home', 'offset': {'x_mm': 50.0, 'y_mm': 0.0, 'z_mm': 0.0}}}], 'message': ''}}
+2026-02-25 15:06:56 [INFO] communication_server.py:38  Response sent
+2026-02-25 15:06:56 [DEBUG] communication_server.py:39  Sent response: {'command': 'success', 'data': {'responses': [{'success': True, 'message': 'Motion complete'}, {'success': True, 'message': 'Motion complete'}]}}
+2026-02-25 15:07:05 [INFO] communication_server.py:34  Message received
+2026-02-25 15:07:05 [DEBUG] communication_server.py:35  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'ur', 'commands': [{'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'named_pose', 'name': 'home'}}, {'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'offset_from_pose', 'name': 'home', 'offset': {'x_mm': 0.0, 'y_mm': 0.0, 'z_mm': 80.0}}}], 'message': ''}}
+2026-02-25 15:07:11 [INFO] communication_server.py:38  Response sent
+2026-02-25 15:07:11 [DEBUG] communication_server.py:39  Sent response: {'command': 'success', 'data': {'responses': [{'success': True, 'message': 'Motion complete'}, {'success': True, 'message': 'Motion complete'}]}}
+2026-02-25 15:07:13 [INFO] communication_server.py:34  Message received
+2026-02-25 15:07:13 [DEBUG] communication_server.py:35  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'ur', 'commands': [{'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'named_pose', 'name': 'home'}}, {'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'offset_from_pose', 'name': 'home', 'offset': {'x_mm': 0.0, 'y_mm': 0.0, 'z_mm': 80.0}}}], 'message': ''}}
+2026-02-25 15:07:18 [INFO] communication_server.py:38  Response sent
+2026-02-25 15:07:18 [DEBUG] communication_server.py:39  Sent response: {'command': 'success', 'data': {'responses': [{'success': True, 'message': 'Motion complete'}, {'success': True, 'message': 'Motion complete'}]}}
+2026-02-25 15:07:20 [INFO] communication_server.py:34  Message received
+2026-02-25 15:07:20 [DEBUG] communication_server.py:35  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'ur', 'commands': [{'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'named_pose', 'name': 'home'}}, {'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'offset_from_pose', 'name': 'home', 'offset': {'x_mm': 0.0, 'y_mm': 0.0, 'z_mm': 80.0}}}], 'message': ''}}
+2026-02-25 15:07:26 [INFO] communication_server.py:38  Response sent
+2026-02-25 15:07:26 [DEBUG] communication_server.py:39  Sent response: {'command': 'success', 'data': {'responses': [{'success': True, 'message': 'Motion complete'}, {'success': True, 'message': 'Motion complete'}]}}
+2026-02-25 15:07:39 [INFO] communication_server.py:34  Message received
+2026-02-25 15:07:39 [DEBUG] communication_server.py:35  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'ur', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}, {'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'offset_from_pose', 'name': 'home', 'offset': {'x_mm': 0.0, 'y_mm': 0.0, 'z_mm': 80.0}}}], 'message': ''}}
+2026-02-25 15:07:43 [INFO] communication_server.py:38  Response sent
+2026-02-25 15:07:43 [DEBUG] communication_server.py:39  Sent response: {'command': 'success', 'data': {'responses': [{'success': True, 'message': 'Motion complete'}, {'success': True, 'message': 'Motion complete'}]}}
+2026-02-25 15:08:09 [INFO] communication_server.py:34  Message received
+2026-02-25 15:08:09 [DEBUG] communication_server.py:35  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'ur', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}, {'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'offset_from_pose', 'name': 'home', 'offset': {'x_mm': 100.0, 'y_mm': 100.0, 'z_mm': 100.0}}}, {'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}], 'message': ''}}
+2026-02-25 15:08:16 [INFO] communication_server.py:38  Response sent
+2026-02-25 15:08:16 [DEBUG] communication_server.py:39  Sent response: {'command': 'success', 'data': {'responses': [{'success': True, 'message': 'Motion complete'}, {'success': True, 'message': 'Motion complete'}, {'success': True, 'message': 'Motion complete'}]}}
+2026-02-25 15:08:25 [INFO] communication_server.py:34  Message received
+2026-02-25 15:08:25 [DEBUG] communication_server.py:35  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'ur', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}, {'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'offset_from_pose', 'name': 'home', 'offset': {'x_mm': 100.0, 'y_mm': 100.0, 'z_mm': 100.0}}}, {'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}], 'message': ''}}
+2026-02-25 15:08:32 [INFO] communication_server.py:38  Response sent
+2026-02-25 15:08:32 [DEBUG] communication_server.py:39  Sent response: {'command': 'success', 'data': {'responses': [{'success': True, 'message': 'Motion complete'}, {'success': True, 'message': 'Motion complete'}, {'success': True, 'message': 'Motion complete'}]}}
+2026-02-25 15:08:41 [INFO] communication_server.py:34  Message received
+2026-02-25 15:08:41 [DEBUG] communication_server.py:35  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'ur', 'commands': [{'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'offset_from_pose', 'name': 'home', 'offset': {'x_mm': 100.0, 'y_mm': 100.0, 'z_mm': 100.0}}}, {'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}], 'message': ''}}
+2026-02-25 15:08:47 [INFO] communication_server.py:38  Response sent
+2026-02-25 15:08:47 [DEBUG] communication_server.py:39  Sent response: {'command': 'success', 'data': {'responses': [{'success': True, 'message': 'Motion complete'}, {'success': True, 'message': 'Motion complete'}]}}
+2026-02-25 15:08:54 [INFO] communication_server.py:34  Message received
+2026-02-25 15:08:54 [DEBUG] communication_server.py:35  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'ur', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'offset_from_pose', 'name': 'home', 'offset': {'x_mm': 100.0, 'y_mm': 100.0, 'z_mm': 100.0}}}, {'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}], 'message': ''}}
+2026-02-25 15:09:00 [INFO] communication_server.py:38  Response sent
+2026-02-25 15:09:00 [DEBUG] communication_server.py:39  Sent response: {'command': 'success', 'data': {'responses': [{'success': True, 'message': 'Motion complete'}, {'success': True, 'message': 'Motion complete'}]}}
+2026-02-25 15:09:43 [INFO] communication_server.py:50  Signal 2 received, shutting down
+2026-02-25 15:09:43 [INFO] communication_server.py:55  Shutting down server
+2026-02-25 15:10:14 [INFO] main.py:16  Starting backend server on tcp://*:5555
+2026-02-25 15:10:14 [INFO] communication_server.py:29  Server ready and listening
+2026-02-25 15:10:18 [INFO] communication_server.py:34  Message received
+2026-02-25 15:10:18 [DEBUG] communication_server.py:35  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'ur', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'offset_from_pose', 'name': 'home', 'offset': {'x_mm': 100.0, 'y_mm': 100.0, 'z_mm': 100.0}}}, {'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}], 'message': ''}}
+2026-02-25 15:10:23 [INFO] communication_server.py:38  Response sent
+2026-02-25 15:10:23 [DEBUG] communication_server.py:39  Sent response: {'command': 'success', 'data': {'responses': [{'success': True, 'message': 'Motion complete'}, {'success': True, 'message': 'Motion complete'}]}}
+2026-02-25 15:10:25 [INFO] communication_server.py:50  Signal 2 received, shutting down
+2026-02-25 15:10:25 [INFO] communication_server.py:55  Shutting down server
