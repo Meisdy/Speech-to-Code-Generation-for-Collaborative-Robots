@@ -35,6 +35,8 @@ class BaseRobotController(ABC):
         if name in self.poses and not overwrite:
             return {"success": False, "message": f"Pose '{name}' already exists"}
         state = self.get_current_state()
+        if not state.get("success"):
+            return {"success": False, "message": f"Could not read robot state: {state.get('message', 'unknown error')}"}
         entry = {
             "name": name,
             "pos": state["pose"][:3],
