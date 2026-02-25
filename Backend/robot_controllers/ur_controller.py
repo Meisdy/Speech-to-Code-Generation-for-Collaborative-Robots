@@ -83,17 +83,13 @@ class URController(BaseRobotController):
     State is read by opening a fresh connection to port 30003 per call.
     """
 
-    def __init__(
-        self,
-        robot_ip: str = DEFAULT_ROBOT_IP,
-        poses_file: str = POSES_FILE,
-    ):
+    def __init__(self, robot_ip: str = DEFAULT_ROBOT_IP, poses_file: str = POSES_FILE):
         super().__init__(poses_file)
         self.robot_ip    = robot_ip
         self._dash_sock  : socket.socket | None = None
         self._freedrive_sock : socket.socket | None = None
 
-    # ── Connection ────────────────────────────────────────────────────────────
+    # ── Connection methods ────────────────────────────────────────────────────────────
 
     def connect(self) -> dict:
         try:
@@ -161,6 +157,11 @@ class URController(BaseRobotController):
 
     # ── Motion helpers ────────────────────────────────────────────────────────
 
+    MOTION_TIMEOUT = 30.0  # seconds before giving up waiting
+    MOTION_POLL_INTERVAL = 0.1  # seconds between position checks
+    MOTION_THRESHOLD = 0.001  # rad — joints considered stopped below this delta
+
+
     @staticmethod
     def _pose_to_rotvec(pose: dict, offset: list | None = None) -> list:
         """Convert stored pose dict (pos + quat) → [x, y, z, rx, ry, rz]."""
@@ -172,15 +173,34 @@ class URController(BaseRobotController):
             pos[2] += offset[2]
         return pos + rotvec
 
+    def _wait_motion_complete(self) -> dict:
+        """
+        Block until joint positions stop changing, indicating motion is complete.
+        Compares two consecutive reads — if all joints move less than
+        MOTION_THRESHOLD between reads the robot is considered stationary.
+        """
+        deadline = time.time() + self.MOTION_TIMEOUT
+        # Give the robot a moment to actually start moving before we poll
+        time.sleep(0.3)
+
+        prev_joints = None
+        while time.time() < deadline:
+            state = self.get_current_state()
+            if not state["success"]:
+                return {"success": False, "message": f"State read failed while waiting for motion: {state['message']}"}
+            curr_joints = state["joint_positions"]
+            if prev_joints is not None:
+                deltas = [abs(c - p) for c, p in zip(curr_joints, prev_joints)]
+                if all(d < self.MOTION_THRESHOLD for d in deltas):
+                    return {"success": True}
+            prev_joints = curr_joints
+            time.sleep(self.MOTION_POLL_INTERVAL)
+
+        return {"success": False, "message": f"Motion did not complete within {self.MOTION_TIMEOUT}s"}
 
     # ── Motion ────────────────────────────────────────────────────────────────
 
     def move_joint(self, pose: dict, speed: float = None, offset: list = None) -> dict:
-        """
-        Joint-space move (moveJ).
-        Uses stored joint angles unless an offset is supplied,
-        in which case inverse kinematics via moveJ with a pose target is used.
-        """
         try:
             spd = (speed or DEFAULT_SPEED) * MAX_JOINT_SPEED
             acc = (speed or DEFAULT_SPEED) * MAX_JOINT_ACCEL
@@ -201,16 +221,15 @@ class URController(BaseRobotController):
                 )
 
             self._send_script(script)
-            return {"success": True, "message": "moveJ sent"}
+            return self._wait_motion_complete()
         except Exception as e:
             return {"success": False, "message": str(e)}
 
     def move_linear(self, pose: dict, speed: float = None, offset: list = None) -> dict:
-        """Linear Cartesian move (moveL)."""
         try:
             target = self._pose_to_rotvec(pose, offset)
-            spd    = (speed or DEFAULT_SPEED) * MAX_LINEAR_SPEED
-            acc    = (speed or DEFAULT_SPEED) * MAX_LINEAR_ACCEL
+            spd = (speed or DEFAULT_SPEED) * MAX_LINEAR_SPEED
+            acc = (speed or DEFAULT_SPEED) * MAX_LINEAR_ACCEL
 
             script = (
                 f"movel(p[{target[0]:.6f},{target[1]:.6f},{target[2]:.6f},"
@@ -218,7 +237,7 @@ class URController(BaseRobotController):
                 f"a={acc:.4f},v={spd:.4f})"
             )
             self._send_script(script)
-            return {"success": True, "message": "moveL sent"}
+            return self._wait_motion_complete()
         except Exception as e:
             return {"success": False, "message": str(e)}
 
@@ -283,7 +302,7 @@ class URController(BaseRobotController):
     GRIPPER_CLOSE_PROGRAM = "close_UG2_Gripper.urp"
     GRIPPER_TIMEOUT       = 10.0   # seconds to wait for program completion
     GRIPPER_POLL_INTERVAL = 0.1    # seconds between programstate polls
-    GRIPPER_ACTUATE_TIME  = 5.0  # seconds to wait for physical actuation
+    GRIPPER_ACTUATE_TIME  = 4.0  # seconds to wait for physical actuation
 
     def _run_gripper_program(self, program: str) -> dict:
         try:
@@ -295,22 +314,15 @@ class URController(BaseRobotController):
             if "error" in reply.lower():
                 return {"success": False, "message": f"Failed to play {program}: {reply}"}
 
-            # Poll until STOPPED, but force-stop after actuation time if still running
-            deadline = time.time() + self.GRIPPER_TIMEOUT
-            actuate_after = time.time() + self.GRIPPER_ACTUATE_TIME
-            forced_stop = False
+            # Always wait the full actuation time for the gripper to physically move
+            time.sleep(self.GRIPPER_ACTUATE_TIME)
 
-            while time.time() < deadline:
-                state = self._dashboard_cmd("programstate")
-                if "STOPPED" in state.upper():
-                    return {"success": True}
-                if not forced_stop and time.time() >= actuate_after:
-                    # Gripper has had enough time to actuate — stop the program
-                    self._dashboard_cmd("stop")
-                    forced_stop = True
-                time.sleep(self.GRIPPER_POLL_INTERVAL)
+            # Then stop the program in case it's still running (e.g. close program loops)
+            state = self._dashboard_cmd("programstate")
+            if "PLAYING" in state.upper():
+                self._dashboard_cmd("stop")
 
-            return {"success": False, "message": f"Gripper program timed out after {self.GRIPPER_TIMEOUT}s"}
+            return {"success": True}
         except Exception as e:
             return {"success": False, "message": str(e)}
 
