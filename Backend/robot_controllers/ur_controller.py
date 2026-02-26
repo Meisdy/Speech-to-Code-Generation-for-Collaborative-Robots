@@ -24,6 +24,8 @@ import socket
 import struct
 import time
 import logging
+from typing import Optional
+
 from scipy.spatial.transform import Rotation
 from Backend.robot_controllers.base_robot_controller import BaseRobotController
 
@@ -95,9 +97,10 @@ class URController(BaseRobotController):
 
     def __init__(self, robot_ip: str = DEFAULT_ROBOT_IP, poses_file: str = POSES_FILE):
         super().__init__(poses_file)
-        self.robot_ip        = robot_ip
-        self._dash_sock      : socket.socket | None = None
-        self._freedrive_sock : socket.socket | None = None
+        self.robot_ip        : str                      = robot_ip
+        self._dash_sock      : Optional[socket.socket]  = None
+        self._freedrive_sock : Optional[socket.socket]  = None
+        self.gripper_state   : Optional[str]            = None
 
     # ── Connection ────────────────────────────────────────────────────────────
 
