@@ -83,6 +83,9 @@ class URController(BaseRobotController):
     MOTION_POLL_INTERVAL = 0.1    # seconds between joint position polls
     MOTION_THRESHOLD     = 0.001  # rad — max delta to consider joints stopped
     MOTION_START_DELAY   = 0.3    # seconds to wait for motion to begin before polling
+    ACTIVATION_SETTLE    = 3.8    # seconds to wait after RUNNING confirmed — the Dashboard
+                                  # sends an implicit stop ~3.5s after brake release if no
+                                  # program is running; this clears that window
 
     GRIPPER_OPEN_PROGRAM  = "open_UG2_Gripper.urp"
     GRIPPER_CLOSE_PROGRAM = "close_UG2_Gripper.urp"
@@ -190,6 +193,7 @@ class URController(BaseRobotController):
         Checks safety status and robot mode before attempting activation.
         """
         try:
+            logger.info("Activating Robot")
             safety = self.get_safety_status()
             if not safety["success"] or not safety["safe"]:
                 return {"success": False, "message": safety["message"]}
@@ -216,6 +220,7 @@ class URController(BaseRobotController):
             deadline = time.time() + 15.0
             while time.time() < deadline:
                 if self.get_robot_mode()["ready"]:
+                    time.sleep(self.ACTIVATION_SETTLE)  # Dashboard sends implicit stop ~3s after brake release
                     logger.info("Robot active and ready")
                     return {"success": True, "message": "Robot active and ready"}
                 time.sleep(0.5)
