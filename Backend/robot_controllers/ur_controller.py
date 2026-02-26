@@ -133,6 +133,13 @@ class URController(BaseRobotController):
             logger.exception("is_connected check failed")
             return False
 
+    def is_ready(self) -> bool:
+        if not self.connected:
+            return False
+        safety = self.get_safety_status()
+        mode = self.get_robot_mode()
+        return safety.get("safe") and mode.get("ready")
+
     def get_safety_status(self) -> dict:
         """Query the robot's current safety status."""
         try:

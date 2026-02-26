@@ -65,6 +65,9 @@ class BaseRobotController(ABC):
         """Power on and prepare the robot for motion. No-op for controllers that handle this internally."""
         return {"success": True, "message": "Ready"}
 
+    def is_ready(self) -> bool:
+        return self.connected  # default: connected = ready
+
     # --- Abstract movement commands ---
 
     @abstractmethod
