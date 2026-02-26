@@ -20,13 +20,14 @@ Gripper
   Open/close is handled by loading and executing locally saved URP programs
   on the robot via the Dashboard Server.
 """
-
 import socket
 import struct
 import time
+import logging
 from scipy.spatial.transform import Rotation
 from Backend.robot_controllers.base_robot_controller import BaseRobotController
 
+logger = logging.getLogger("cobot_backend")
 
 # ── Module-level constants ─────────────────────────────────────────────────────
 
@@ -104,18 +105,20 @@ class URController(BaseRobotController):
             self._dash_sock.connect((self.robot_ip, DASHBOARD_PORT))
             self._dash_sock.recv(1024)  # discard welcome banner
             self.connected = True
+            logger.info("Connected")
             return {"success": True, "message": "Connected"}
         except Exception as e:
             self._close_sockets()
+            logger.exception("Connection failed")
             return {"success": False, "message": str(e)}
 
-    def disconnect(self) -> dict:
+    def disconnect(self) -> None:
         try:
             self._close_sockets()
             self.connected = False
-            return {"success": True, "message": "Disconnected"}
-        except Exception as e:
-            return {"success": False, "message": str(e)}
+            logger.info("Disconnected")
+        except Exception:
+            logger.warning("Error during disconnect", exc_info=True)
 
     def is_connected(self) -> bool:
         if not self.connected:
@@ -124,6 +127,7 @@ class URController(BaseRobotController):
             mode = self.get_robot_mode()
             return mode["success"] and mode["mode"] not in ("DISCONNECTED", "UNKNOWN")
         except Exception:
+            logger.exception("is_connected check failed")
             return False
 
     def get_safety_status(self) -> dict:
@@ -153,6 +157,7 @@ class URController(BaseRobotController):
             return {"success": True, "safe": False, "status": "UNKNOWN",
                     "message": f"Unrecognised safety status: {reply}"}
         except Exception as e:
+            logger.exception("Failed to get safety status")
             return {"success": False, "safe": False, "status": "UNKNOWN", "message": str(e)}
 
     def get_robot_mode(self) -> dict:
@@ -176,6 +181,7 @@ class URController(BaseRobotController):
             return {"success": True, "mode": "UNKNOWN", "ready": False,
                     "message": f"Unrecognised robot mode: {reply}"}
         except Exception as e:
+            logger.exception("Failed to get robot mode")
             return {"success": False, "mode": "UNKNOWN", "ready": False, "message": str(e)}
 
     def activate_robot(self) -> dict:
@@ -210,6 +216,7 @@ class URController(BaseRobotController):
             deadline = time.time() + 15.0
             while time.time() < deadline:
                 if self.get_robot_mode()["ready"]:
+                    logger.info("Robot active and ready")
                     return {"success": True, "message": "Robot active and ready"}
                 time.sleep(0.5)
 
@@ -220,6 +227,7 @@ class URController(BaseRobotController):
             return {"success": False, "message": "Timed out waiting for brakes to release"}
 
         except Exception as e:
+            logger.exception("Robot activation failed")
             return {"success": False, "message": str(e)}
 
     def _close_sockets(self):
@@ -229,7 +237,7 @@ class URController(BaseRobotController):
                 try:
                     sock.close()
                 except Exception:
-                    pass
+                    logger.warning("Error closing socket '%s'", attr, exc_info=True)
             setattr(self, attr, None)
 
     # ── Internal communication ────────────────────────────────────────────────
@@ -291,6 +299,7 @@ class URController(BaseRobotController):
         If an offset is provided, the robot performs IK internally via a pose target.
         """
         try:
+            logger.info("Moving with moveJ to '%s'", pose["name"])
             spd = (speed or DEFAULT_SPEED) * MAX_JOINT_SPEED
             acc = (speed or DEFAULT_SPEED) * MAX_JOINT_ACCEL
 
@@ -310,11 +319,13 @@ class URController(BaseRobotController):
             self._send_script(script)
             return self._wait_motion_complete()
         except Exception as e:
+            logger.exception("moveJ failed")
             return {"success": False, "message": str(e)}
 
     def move_linear(self, pose: dict, speed: float = None, offset: list = None) -> dict:
         """Linear Cartesian move (moveL). Blocks until motion is complete."""
         try:
+            logger.info("Moving with moveL to '%s'", pose["name"])
             t   = self._pose_to_rotvec(pose, offset)
             spd = (speed or DEFAULT_SPEED) * MAX_LINEAR_SPEED
             acc = (speed or DEFAULT_SPEED) * MAX_LINEAR_ACCEL
@@ -326,6 +337,7 @@ class URController(BaseRobotController):
             self._send_script(script)
             return self._wait_motion_complete()
         except Exception as e:
+            logger.exception("moveL failed")
             return {"success": False, "message": str(e)}
 
     # ── Freedrive ─────────────────────────────────────────────────────────────
@@ -349,8 +361,10 @@ class URController(BaseRobotController):
                 "end\n"
                 "freedrive()\n".encode("utf-8")
             )
+            logger.info("Freedrive enabled")
             return {"success": True, "message": "Freedrive enabled"}
         except Exception as e:
+            logger.exception("Failed to enable freedrive")
             if self._freedrive_sock:
                 self._freedrive_sock.close()
                 self._freedrive_sock = None
@@ -365,8 +379,10 @@ class URController(BaseRobotController):
             reply = self._dashboard_cmd("stop")
             if "error" in reply.lower():
                 return {"success": False, "message": f"Failed to stop freedrive: {reply}"}
+            logger.info("Freedrive disabled")
             return {"success": True, "message": "Freedrive disabled"}
         except Exception as e:
+            logger.exception("Failed to disable freedrive")
             return {"success": False, "message": str(e)}
 
     # ── Gripper ───────────────────────────────────────────────────────────────
@@ -393,9 +409,11 @@ class URController(BaseRobotController):
 
             return {"success": True}
         except Exception as e:
+            logger.exception("Gripper program '%s' failed", program)
             return {"success": False, "message": str(e)}
 
     def gripper_open(self) -> dict:
+        logger.info("Opening gripper")
         if self.gripper_state == 'open':
             return {"success": True, "message": "Gripper already open"}
         result = self._run_gripper_program(self.GRIPPER_OPEN_PROGRAM)
@@ -405,6 +423,7 @@ class URController(BaseRobotController):
         return result
 
     def gripper_close(self) -> dict:
+        logger.info("Closing gripper")
         if self.gripper_state == 'close':
             return {"success": True, "message": "Gripper already closed"}
         result = self._run_gripper_program(self.GRIPPER_CLOSE_PROGRAM)
@@ -458,4 +477,5 @@ class URController(BaseRobotController):
                 "gripper_state":   self.gripper_state,
             }
         except Exception as e:
+            logger.exception("Failed to read current pose")
             return {"success": False, "message": str(e)}
