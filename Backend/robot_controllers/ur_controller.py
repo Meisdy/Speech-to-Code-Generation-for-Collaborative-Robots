@@ -110,6 +110,8 @@ class URController(BaseRobotController):
             self.connected = True
             logger.info("Connected")
             return {"success": True, "message": "Connected"}
+        except OSError as e:
+            return {"success": False, "safe": False, "status": "UNKNOWN", "message": e}
         except Exception as e:
             self._close_sockets()
             logger.exception("Connection failed")
@@ -129,6 +131,7 @@ class URController(BaseRobotController):
         try:
             mode = self.get_robot_mode()
             return mode["success"] and mode["mode"] not in ("DISCONNECTED", "UNKNOWN")
+
         except Exception:
             logger.exception("is_connected check failed")
             return False
@@ -137,6 +140,8 @@ class URController(BaseRobotController):
         if not self.connected:
             return False
         safety = self.get_safety_status()
+        if not self.connected:  # socket may have died during the call above
+            return False
         mode = self.get_robot_mode()
         return safety.get("safe") and mode.get("ready")
 
@@ -166,6 +171,8 @@ class URController(BaseRobotController):
 
             return {"success": True, "safe": False, "status": "UNKNOWN",
                     "message": f"Unrecognised safety status: {reply}"}
+        except OSError as e:
+            return {"success": False, "safe": False, "status": "UNKNOWN", "message": {e}}
         except Exception as e:
             logger.exception("Failed to get safety status")
             return {"success": False, "safe": False, "status": "UNKNOWN", "message": str(e)}
@@ -190,6 +197,8 @@ class URController(BaseRobotController):
 
             return {"success": True, "mode": "UNKNOWN", "ready": False,
                     "message": f"Unrecognised robot mode: {reply}"}
+        except OSError as e:
+            return {"success": False, "safe": False, "status": "UNKNOWN", "message": {e}}
         except Exception as e:
             logger.exception("Failed to get robot mode")
             return {"success": False, "mode": "UNKNOWN", "ready": False, "message": str(e)}
@@ -255,9 +264,16 @@ class URController(BaseRobotController):
     # ── Internal communication ────────────────────────────────────────────────
 
     def _dashboard_cmd(self, cmd: str) -> str:
-        """Send a Dashboard Server command and return the single-line reply."""
-        self._dash_sock.sendall((cmd + "\n").encode("utf-8"))
-        return self._dash_sock.recv(1024).decode("utf-8").strip()
+        if self._dash_sock is None:
+            raise ConnectionError("Not connected")
+        try:
+            self._dash_sock.sendall((cmd + "\n").encode("utf-8"))
+            return self._dash_sock.recv(1024).decode("utf-8").strip()
+        except OSError:
+            self._close_sockets()
+            self.connected = False
+            logger.warning("Connection lost")  # logged once here, callers don't re-log
+            raise
 
     def _send_script(self, script: str):
         """Send a URScript command to port 30002 over a short-lived connection."""

@@ -56,7 +56,7 @@ class MessageHandler:
 
         result = self.robot.connect()
         if not result["success"]:
-            logger.error("Failed to connect to %s: %s", robot_type, result["message"])
+            logger.warning("Could not reconnect to %s: %s", robot_type, result["message"])
             return result
 
         result = self.robot.activate_robot()
@@ -69,7 +69,9 @@ class MessageHandler:
     def disconnect_robot(self) -> None:
         """Wraper to disconnect robot"""
         if self.robot:
-            self.robot.disconnect()
+            if self.robot.is_connected():
+                self.robot.disconnect()
+            self.robot = None
 
     def _formatted_response(self, command: str, data: dict) -> dict:
         """Format response as JSON with standard structure."""
