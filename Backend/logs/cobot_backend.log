@@ -1310,3 +1310,172 @@ KeyError: 'message'
 16:04:43  INFO      ur_controller.py  Moving with moveJ to 'home'
 16:04:46  INFO      communication_server.py  Response sent
 16:04:46  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'responses': [{'success': True, 'message': 'Motion complete'}, {'success': True, 'message': 'Motion complete'}]}}
+16:13:15  INFO      main.py  Starting backend server on tcp://*:5555
+16:14:03  INFO      communication_server.py  Signal 2 received, shutting down
+16:14:03  INFO      communication_server.py  Shutting down server
+16:14:03  INFO      ur_controller.py  Disconnected
+16:14:07  INFO      main.py  Starting backend server on tcp://*:5555
+16:14:07  INFO      communication_server.py  Server ready and listening
+16:14:13  INFO      communication_server.py  Signal 2 received, shutting down
+16:14:13  INFO      communication_server.py  Shutting down server
+16:14:23  INFO      main.py  Starting backend server on tcp://*:5555
+16:14:23  INFO      communication_server.py  Server ready and listening
+16:14:25  INFO      communication_server.py  Signal 2 received, shutting down
+16:14:25  INFO      communication_server.py  Shutting down server
+16:17:37  INFO      main.py  Starting backend server on tcp://*:5555
+16:17:37  INFO      communication_server.py  Server ready and listening
+16:17:39  INFO      communication_server.py  Signal 2 received, shutting down
+16:17:39  INFO      communication_server.py  Shutting down server
+16:17:49  INFO      main.py  Starting backend server on tcp://*:5555
+16:17:49  INFO      communication_server.py  Server ready and listening
+16:17:53  INFO      communication_server.py  Signal 2 received, shutting down
+16:17:53  INFO      communication_server.py  Shutting down server
+16:18:49  INFO      main.py  Starting backend server on tcp://*:5555
+16:18:49  INFO      communication_server.py  Server ready and listening
+16:18:51  INFO      communication_server.py  Signal 2 received, shutting down
+16:18:51  INFO      communication_server.py  Shutting down server
+16:20:14  INFO      main.py  Starting backend server on tcp://*:5555
+16:20:14  INFO      communication_server.py  Server ready and listening
+16:20:15  INFO      communication_server.py  Signal 2 received, shutting down
+16:20:15  INFO      communication_server.py  Shutting down server
+16:21:42  INFO      main.py  Starting backend server on tcp://*:5555
+16:21:42  INFO      communication_server.py  Server ready and listening
+16:27:30  INFO      main.py  Starting backend server on tcp://*:5555
+16:27:57  INFO      main.py  Starting backend server on tcp://*:5555
+16:28:20  INFO      communication_server.py  Signal 2 received, shutting down
+16:28:20  INFO      communication_server.py  Shutting down server
+16:28:28  INFO      main.py  Starting backend server on tcp://*:5555
+16:28:28  INFO      communication_server.py  Server ready and listening
+16:28:32  INFO      communication_server.py  Signal 2 received, shutting down
+16:28:32  INFO      communication_server.py  Shutting down server
+16:32:25  INFO      main.py  Starting backend server on tcp://*:5555
+16:32:25  INFO      communication_server.py  Server ready and listening
+16:32:29  INFO      main.py  Starting backend server on tcp://*:5555
+16:36:11  INFO      communication_server.py  Message received
+16:36:11  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}], 'message': ''}}
+16:36:11  WARNING   message_handler.py  Cannot load Franka adapter: dependencies not installed
+16:36:11  INFO      communication_server.py  Response sent
+16:36:11  DEBUG     communication_server.py  Sent response: {'command': 'rejected', 'data': {'reason': 'Could not connect to franka: FrankaController dependencies not installed'}}
+16:36:37  INFO      communication_server.py  Message received
+16:36:37  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'mock', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}], 'message': ''}}
+16:36:37  ERROR     message_handler.py  Error processing message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'mock', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}], 'message': ''}}
+Traceback (most recent call last):
+  File "C:\Users\Sandy\Desktop\Cobot Code Generation\Backend\message_handler.py", line 106, in process_message
+    return commands[command]()
+           ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Sandy\Desktop\Cobot Code Generation\Backend\message_handler.py", line 103, in <lambda>
+    "execute_sequence": lambda: self._execute_sequence(data),
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Sandy\Desktop\Cobot Code Generation\Backend\message_handler.py", line 129, in _execute_sequence
+    result = self._ensure_robot_ready(robot_type)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Sandy\Desktop\Cobot Code Generation\Backend\message_handler.py", line 53, in _ensure_robot_ready
+    self.robot = MockRobotController()
+                 ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Sandy\Desktop\Cobot Code Generation\Backend\robot_controllers\mock_robot_controller.py", line 12, in __init__
+    super().__init__(poses_file)
+  File "C:\Users\Sandy\Desktop\Cobot Code Generation\Backend\robot_controllers\base_robot_controller.py", line 11, in __init__
+    self.poses = self._load_poses()
+                 ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Sandy\Desktop\Cobot Code Generation\Backend\robot_controllers\base_robot_controller.py", line 22, in _load_poses
+    os.makedirs(os.path.dirname(self.poses_file), exist_ok=True)
+  File "<frozen os>", line 215, in makedirs
+  File "<frozen os>", line 225, in makedirs
+PermissionError: [WinError 5] Access is denied: 'Backend'
+16:36:37  INFO      communication_server.py  Response sent
+16:36:37  DEBUG     communication_server.py  Sent response: {'command': 'error', 'data': {'error message': "[WinError 5] Access is denied: 'Backend'"}}
+16:36:58  INFO      communication_server.py  Signal 2 received, shutting down
+16:36:58  INFO      communication_server.py  Shutting down server
+16:37:37  INFO      main.py  Starting backend server on tcp://*:5555
+16:37:37  INFO      communication_server.py  Server ready and listening
+16:38:07  INFO      communication_server.py  Message received
+16:38:07  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'mock', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}], 'message': ''}}
+16:38:08  INFO      mock_robot_controller.py  Connected
+16:38:08  INFO      communication_server.py  Response sent
+16:38:08  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'responses': [{'success': False, 'message': 'Unknown pose home'}]}}
+16:38:46  INFO      communication_server.py  Message received
+16:38:46  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'ur', 'commands': [{'action': 'gripper', 'command': 'open'}], 'message': ''}}
+16:38:47  INFO      mock_robot_controller.py  Disconnected
+16:38:47  INFO      ur_controller.py  Connected
+16:38:47  INFO      ur_controller.py  Activating Robot
+16:38:47  INFO      ur_controller.py  Opening gripper
+16:38:47  INFO      communication_server.py  Response sent
+16:38:47  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'responses': [{'success': True, 'message': 'Gripper already open'}]}}
+16:39:22  INFO      communication_server.py  Signal 2 received, shutting down
+16:39:22  INFO      communication_server.py  Shutting down server
+16:39:22  INFO      ur_controller.py  Disconnected
+16:39:29  INFO      main.py  Starting backend server on tcp://*:5555
+16:39:29  INFO      communication_server.py  Server ready and listening
+16:39:46  INFO      communication_server.py  Message received
+16:39:46  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'ur', 'commands': [{'action': 'gripper', 'command': 'open'}], 'message': ''}}
+16:39:46  INFO      ur_controller.py  Connected
+16:39:46  INFO      ur_controller.py  Activating Robot
+16:39:46  INFO      ur_controller.py  Opening gripper
+16:39:46  INFO      communication_server.py  Response sent
+16:39:46  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'responses': [{'success': True, 'message': 'Gripper already open'}]}}
+16:40:44  INFO      communication_server.py  Message received
+16:40:44  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'ur', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'position_5'}}], 'message': ''}}
+16:40:44  INFO      communication_server.py  Response sent
+16:40:44  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'responses': [{'success': False, 'message': 'Unknown pose position_5'}]}}
+16:41:05  INFO      communication_server.py  Signal 2 received, shutting down
+16:41:05  INFO      communication_server.py  Shutting down server
+16:41:05  INFO      ur_controller.py  Disconnected
+16:43:08  INFO      main.py  Starting backend server on tcp://*:5555
+16:43:08  INFO      communication_server.py  Server ready and listening
+16:47:23  INFO      communication_server.py  Signal 2 received, shutting down
+16:47:23  INFO      communication_server.py  Shutting down server
+16:47:25  INFO      main.py  Starting backend server on tcp://*:5555
+16:47:25  INFO      communication_server.py  Server ready and listening
+16:48:18  INFO      communication_server.py  Message received
+16:48:18  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'ur', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'position_5'}}], 'message': ''}}
+16:48:18  INFO      ur_controller.py  Connected
+16:48:18  INFO      ur_controller.py  Activating Robot
+16:48:18  INFO      communication_server.py  Response sent
+16:48:18  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'responses': [{'success': False, 'message': 'Unknown pose position_5'}]}}
+16:50:59  INFO      communication_server.py  Signal 2 received, shutting down
+16:50:59  INFO      communication_server.py  Shutting down server
+16:50:59  INFO      ur_controller.py  Disconnected
+16:51:02  INFO      main.py  Starting backend server on tcp://*:5555
+16:51:02  INFO      communication_server.py  Server ready and listening
+16:51:38  INFO      communication_server.py  Message received
+16:51:38  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'ur', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'position_5'}}], 'message': ''}}
+16:51:38  INFO      ur_controller.py  Connected
+16:51:38  INFO      ur_controller.py  Activating Robot
+16:51:38  INFO      ur_controller.py  Moving with moveJ to 'position_5'
+16:51:42  INFO      communication_server.py  Response sent
+16:51:42  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'responses': [{'success': True, 'message': 'Motion complete'}]}}
+16:52:17  INFO      communication_server.py  Message received
+16:52:17  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'ur', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}, {'action': 'wait', 'duration_s': 2.0}, {'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'five'}}], 'message': ''}}
+16:52:17  INFO      ur_controller.py  Moving with moveJ to 'home'
+16:52:24  INFO      communication_server.py  Response sent
+16:52:24  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'responses': [{'success': True, 'message': 'Motion complete'}, {'message': 'Waited for 2.0 seconds'}, {'success': False, 'message': 'Unknown pose five'}]}}
+16:56:14  INFO      communication_server.py  Signal 2 received, shutting down
+16:56:14  INFO      communication_server.py  Shutting down server
+16:56:14  INFO      ur_controller.py  Disconnected
+16:56:24  INFO      main.py  Starting backend server on tcp://*:5555
+16:56:24  INFO      communication_server.py  Server ready and listening
+16:57:58  INFO      communication_server.py  Signal 2 received, shutting down
+16:57:58  INFO      communication_server.py  Shutting down server
+16:58:03  INFO      main.py  Starting backend server on tcp://*:5555
+16:58:03  INFO      communication_server.py  Server ready and listening
+16:58:36  INFO      communication_server.py  Message received
+16:58:36  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'position_5'}}], 'message': ''}}
+16:58:36  WARNING   message_handler.py  Cannot load Franka adapter: dependencies not installed
+16:58:36  INFO      communication_server.py  Response sent
+16:58:36  DEBUG     communication_server.py  Sent response: {'command': 'rejected', 'data': {'reason': 'Could not connect to franka: FrankaController dependencies not installed'}}
+16:59:00  INFO      communication_server.py  Message received
+16:59:00  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'ur', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'position_5'}}], 'message': ''}}
+16:59:00  INFO      ur_controller.py  Connected
+16:59:00  INFO      ur_controller.py  Activating Robot
+16:59:00  INFO      ur_controller.py  Moving with moveJ to 'position_5'
+16:59:05  INFO      communication_server.py  Response sent
+16:59:05  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'responses': [{'success': True, 'message': 'Motion complete'}]}}
+16:59:34  INFO      communication_server.py  Message received
+16:59:34  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'ur', 'commands': [{'action': 'gripper', 'command': 'close'}, {'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home_position'}}, {'action': 'gripper', 'command': 'open'}], 'message': ''}}
+16:59:34  INFO      ur_controller.py  Closing gripper
+16:59:38  INFO      ur_controller.py  Opening gripper
+16:59:42  INFO      communication_server.py  Response sent
+16:59:42  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'responses': [{'success': True, 'message': 'Gripper closed'}, {'success': False, 'message': 'Unknown pose home_position'}, {'success': True, 'message': 'Gripper opened'}]}}
+17:00:37  INFO      communication_server.py  Signal 2 received, shutting down
+17:00:37  INFO      communication_server.py  Shutting down server
+17:00:37  INFO      ur_controller.py  Disconnected

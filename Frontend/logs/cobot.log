@@ -1551,3 +1551,396 @@ KeyError: slice(None, 500, None)
 2026-02-20 15:41:31 [DEBUG] Sending data: {"mode": "live", "robot": "franka", "commands": [{"action": "move", "motion_type": "moveJ", "target": {"type": "named_pose", "name": "home"}}], "message": ""}
 2026-02-20 15:41:36 [ERROR] Execution: Backend failed to execute command: {'command': 'timeout', 'data': {'error': 'Backend timeout'}}
 2026-02-20 15:41:41 [INFO] Application shutting down
+2026-02-26 16:32:40 [INFO] Application starting
+2026-02-26 16:32:44 [INFO] Application ready
+2026-02-26 16:33:47 [INFO] Recording started
+2026-02-26 16:33:48 [INFO] Recording stopped, starting transcription
+2026-02-26 16:33:49 [INFO] ASR: transcribed text 'position', confidence = 0.68
+2026-02-26 16:33:49 [WARNING] ASR confidence low: 0.68 - parsing may fail
+2026-02-26 16:33:49 [ERROR] Parsing failed: Command empty or too short
+2026-02-26 16:34:18 [INFO] Recording started
+2026-02-26 16:34:20 [INFO] Recording stopped, starting transcription
+2026-02-26 16:34:20 [ERROR] Transcription failed: no text or zero confidence
+2026-02-26 16:34:26 [INFO] Recording started
+2026-02-26 16:34:28 [INFO] Recording stopped, starting transcription
+2026-02-26 16:34:28 [ERROR] Transcription failed: no text or zero confidence
+2026-02-26 16:34:29 [INFO] Recording started
+2026-02-26 16:34:29 [INFO] Recording stopped, starting transcription
+2026-02-26 16:34:29 [ERROR] Transcription failed: no text or zero confidence
+2026-02-26 16:34:30 [INFO] Recording started
+2026-02-26 16:34:31 [INFO] Recording stopped, starting transcription
+2026-02-26 16:34:31 [ERROR] Transcription failed: no text or zero confidence
+2026-02-26 16:34:32 [INFO] Application shutting down
+2026-02-26 16:34:39 [INFO] Application starting
+2026-02-26 16:34:41 [INFO] Application ready
+2026-02-26 16:34:42 [INFO] Recording started
+2026-02-26 16:34:44 [INFO] Recording stopped, starting transcription
+2026-02-26 16:34:45 [INFO] ASR: transcribed text 'Move to home position.', confidence = 0.81
+2026-02-26 16:35:47 [ERROR] Parser: LLM request timed out
+2026-02-26 16:35:47 [ERROR] Parsing failed: LLM request timed out after 60s
+2026-02-26 16:35:55 [INFO] Recording started
+2026-02-26 16:35:58 [INFO] Recording stopped, starting transcription
+2026-02-26 16:35:58 [INFO] ASR: transcribed text 'Move to home position.', confidence = 0.85
+2026-02-26 16:36:11 [DEBUG] Parser: LLM raw response preview: {
+  "mode": "live",
+  "robot": "franka",
+  "commands": [
+    {
+      "action": "move",
+      "motion_type": "moveJ",
+      "target": {
+        "type": "named_pose",
+        "name": "home"
+      }
+    }
+  ]
+}
+2026-02-26 16:36:11 [DEBUG] Parser: Parsed JSON after cleanup: {"mode": "live", "robot": "franka", "commands": [{"action": "move", "motion_type": "moveJ", "target": {"type": "named_pose", "name": "home"}}]}
+2026-02-26 16:36:11 [INFO] Parser: Parsing successful
+2026-02-26 16:36:11 [INFO] Parser: Command summary "Move to home pos."
+2026-02-26 16:36:11 [INFO] Client: Sending data to backend
+2026-02-26 16:36:11 [DEBUG] Sending data: {"mode": "live", "robot": "franka", "commands": [{"action": "move", "motion_type": "moveJ", "target": {"type": "named_pose", "name": "home"}}], "message": ""}
+2026-02-26 16:36:11 [ERROR] Execution: Backend failed to execute command: {'command': 'rejected', 'data': {'reason': 'Could not connect to franka: FrankaController dependencies not installed'}}
+2026-02-26 16:36:20 [INFO] Recording started
+2026-02-26 16:36:22 [INFO] Recording stopped, starting transcription
+2026-02-26 16:36:23 [INFO] ASR: transcribed text 'Move to home position.', confidence = 0.80
+2026-02-26 16:36:37 [DEBUG] Parser: LLM raw response preview: {
+  "mode": "live",
+  "robot": "mock",
+  "commands": [
+    {
+      "action": "move",
+      "motion_type": "moveJ",
+      "target": {
+        "type": "named_pose",
+        "name": "home"
+      }
+    }
+  ]
+}
+2026-02-26 16:36:37 [DEBUG] Parser: Parsed JSON after cleanup: {"mode": "live", "robot": "mock", "commands": [{"action": "move", "motion_type": "moveJ", "target": {"type": "named_pose", "name": "home"}}]}
+2026-02-26 16:36:37 [INFO] Parser: Parsing successful
+2026-02-26 16:36:37 [INFO] Parser: Command summary "Move to home pos."
+2026-02-26 16:36:37 [INFO] Client: Sending data to backend
+2026-02-26 16:36:37 [DEBUG] Sending data: {"mode": "live", "robot": "mock", "commands": [{"action": "move", "motion_type": "moveJ", "target": {"type": "named_pose", "name": "home"}}], "message": ""}
+2026-02-26 16:36:37 [ERROR] Execution: Backend failed to execute command: {'command': 'error', 'data': {'error message': "[WinError 5] Access is denied: 'Backend'"}}
+2026-02-26 16:37:51 [INFO] Recording started
+2026-02-26 16:37:54 [INFO] Recording stopped, starting transcription
+2026-02-26 16:37:54 [INFO] ASR: transcribed text 'Move to home position.', confidence = 0.77
+2026-02-26 16:38:07 [DEBUG] Parser: LLM raw response preview: {
+  "mode": "live",
+  "robot": "mock",
+  "commands": [
+    {
+      "action": "move",
+      "motion_type": "moveJ",
+      "target": {
+        "type": "named_pose",
+        "name": "home"
+      }
+    }
+  ]
+}
+2026-02-26 16:38:07 [DEBUG] Parser: Parsed JSON after cleanup: {"mode": "live", "robot": "mock", "commands": [{"action": "move", "motion_type": "moveJ", "target": {"type": "named_pose", "name": "home"}}]}
+2026-02-26 16:38:07 [INFO] Parser: Parsing successful
+2026-02-26 16:38:07 [INFO] Parser: Command summary "Move to home pos."
+2026-02-26 16:38:07 [INFO] Client: Sending data to backend
+2026-02-26 16:38:07 [DEBUG] Sending data: {"mode": "live", "robot": "mock", "commands": [{"action": "move", "motion_type": "moveJ", "target": {"type": "named_pose", "name": "home"}}], "message": ""}
+2026-02-26 16:38:08 [DEBUG] Execution: Backend executed command successfully: {'command': 'success', 'data': {'responses': [{'success': False, 'message': 'Unknown pose home'}]}}
+2026-02-26 16:38:08 [INFO] Execution: Backend executed command successfully. Details available in logfile
+2026-02-26 16:38:30 [INFO] Recording started
+2026-02-26 16:38:33 [INFO] Recording stopped, starting transcription
+2026-02-26 16:38:36 [INFO] ASR: transcribed text 'Oping...ripper', confidence = 0.68
+2026-02-26 16:38:36 [WARNING] ASR confidence low: 0.68 - parsing may fail
+2026-02-26 16:38:46 [DEBUG] Parser: LLM raw response preview: {
+  "mode": "live",
+  "robot": "ur",
+  "commands": [
+    {
+      "action": "gripper",
+      "command": "open"
+    }
+  ],
+  "message": ""
+}
+2026-02-26 16:38:46 [DEBUG] Parser: Parsed JSON after cleanup: {"mode": "live", "robot": "ur", "commands": [{"action": "gripper", "command": "open"}], "message": ""}
+2026-02-26 16:38:46 [INFO] Parser: Parsing successful
+2026-02-26 16:38:46 [INFO] Parser: Command summary "Open gripper"
+2026-02-26 16:38:46 [INFO] Client: Sending data to backend
+2026-02-26 16:38:46 [DEBUG] Sending data: {"mode": "live", "robot": "ur", "commands": [{"action": "gripper", "command": "open"}], "message": ""}
+2026-02-26 16:38:47 [DEBUG] Execution: Backend executed command successfully: {'command': 'success', 'data': {'responses': [{'success': True, 'message': 'Gripper already open'}]}}
+2026-02-26 16:38:47 [INFO] Execution: Backend executed command successfully. Details available in logfile
+2026-02-26 16:39:34 [INFO] Recording started
+2026-02-26 16:39:37 [INFO] Recording stopped, starting transcription
+2026-02-26 16:39:37 [INFO] ASR: transcribed text 'Open gripper.', confidence = 0.67
+2026-02-26 16:39:37 [WARNING] ASR confidence low: 0.67 - parsing may fail
+2026-02-26 16:39:46 [DEBUG] Parser: LLM raw response preview: {
+  "mode": "live",
+  "robot": "ur",
+  "commands": [
+    {
+      "action": "gripper",
+      "command": "open"
+    }
+  ]
+}
+2026-02-26 16:39:46 [DEBUG] Parser: Parsed JSON after cleanup: {"mode": "live", "robot": "ur", "commands": [{"action": "gripper", "command": "open"}]}
+2026-02-26 16:39:46 [INFO] Parser: Parsing successful
+2026-02-26 16:39:46 [INFO] Parser: Command summary "Open gripper"
+2026-02-26 16:39:46 [INFO] Client: Sending data to backend
+2026-02-26 16:39:46 [DEBUG] Sending data: {"mode": "live", "robot": "ur", "commands": [{"action": "gripper", "command": "open"}], "message": ""}
+2026-02-26 16:39:46 [DEBUG] Execution: Backend executed command successfully: {'command': 'success', 'data': {'responses': [{'success': True, 'message': 'Gripper already open'}]}}
+2026-02-26 16:39:46 [INFO] Execution: Backend executed command successfully. Details available in logfile
+2026-02-26 16:40:28 [INFO] Recording started
+2026-02-26 16:40:31 [INFO] Recording stopped, starting transcription
+2026-02-26 16:40:31 [INFO] ASR: transcribed text 'move to position 5', confidence = 0.86
+2026-02-26 16:40:44 [DEBUG] Parser: LLM raw response preview: {
+  "mode": "live",
+  "robot": "ur",
+  "commands": [
+    {
+      "action": "move",
+      "motion_type": "moveJ",
+      "target": {
+        "type": "named_pose",
+        "name": "position_5"
+      }
+    }
+  ]
+}
+2026-02-26 16:40:44 [DEBUG] Parser: Parsed JSON after cleanup: {"mode": "live", "robot": "ur", "commands": [{"action": "move", "motion_type": "moveJ", "target": {"type": "named_pose", "name": "position_5"}}]}
+2026-02-26 16:40:44 [INFO] Parser: Parsing successful
+2026-02-26 16:40:44 [INFO] Parser: Command summary "Move to position_5 pos."
+2026-02-26 16:40:44 [INFO] Client: Sending data to backend
+2026-02-26 16:40:44 [DEBUG] Sending data: {"mode": "live", "robot": "ur", "commands": [{"action": "move", "motion_type": "moveJ", "target": {"type": "named_pose", "name": "position_5"}}], "message": ""}
+2026-02-26 16:40:44 [DEBUG] Execution: Backend executed command successfully: {'command': 'success', 'data': {'responses': [{'success': False, 'message': 'Unknown pose position_5'}]}}
+2026-02-26 16:40:44 [INFO] Execution: Backend executed command successfully. Details available in logfile
+2026-02-26 16:41:05 [INFO] Application shutting down
+2026-02-26 16:47:43 [INFO] Application starting
+2026-02-26 16:47:46 [INFO] Application ready
+2026-02-26 16:48:01 [INFO] Recording started
+2026-02-26 16:48:04 [INFO] Recording stopped, starting transcription
+2026-02-26 16:48:05 [INFO] ASR: transcribed text 'Move to position 5.', confidence = 0.84
+2026-02-26 16:48:18 [DEBUG] Parser: LLM raw response preview: {
+  "mode": "live",
+  "robot": "ur",
+  "commands": [
+    {
+      "action": "move",
+      "motion_type": "moveJ",
+      "target": {
+        "type": "named_pose",
+        "name": "position_5"
+      }
+    }
+  ]
+}
+2026-02-26 16:48:18 [DEBUG] Parser: Parsed JSON after cleanup: {"mode": "live", "robot": "ur", "commands": [{"action": "move", "motion_type": "moveJ", "target": {"type": "named_pose", "name": "position_5"}}]}
+2026-02-26 16:48:18 [INFO] Parser: Parsing successful
+2026-02-26 16:48:18 [INFO] Parser: Command summary "Move to position_5 pos."
+2026-02-26 16:48:18 [INFO] Client: Sending data to backend
+2026-02-26 16:48:18 [DEBUG] Sending data: {"mode": "live", "robot": "ur", "commands": [{"action": "move", "motion_type": "moveJ", "target": {"type": "named_pose", "name": "position_5"}}], "message": ""}
+2026-02-26 16:48:18 [DEBUG] Execution: Backend executed command successfully: {'command': 'success', 'data': {'responses': [{'success': False, 'message': 'Unknown pose position_5'}]}}
+2026-02-26 16:48:18 [INFO] Execution: Backend executed command successfully. Details available in logfile
+2026-02-26 16:51:22 [INFO] Recording started
+2026-02-26 16:51:25 [INFO] Recording stopped, starting transcription
+2026-02-26 16:51:25 [INFO] ASR: transcribed text 'Move to position 5.', confidence = 0.86
+2026-02-26 16:51:38 [DEBUG] Parser: LLM raw response preview: {
+  "mode": "live",
+  "robot": "ur",
+  "commands": [
+    {
+      "action": "move",
+      "motion_type": "moveJ",
+      "target": {
+        "type": "named_pose",
+        "name": "position_5"
+      }
+    }
+  ]
+}
+2026-02-26 16:51:38 [DEBUG] Parser: Parsed JSON after cleanup: {"mode": "live", "robot": "ur", "commands": [{"action": "move", "motion_type": "moveJ", "target": {"type": "named_pose", "name": "position_5"}}]}
+2026-02-26 16:51:38 [INFO] Parser: Parsing successful
+2026-02-26 16:51:38 [INFO] Parser: Command summary "Move to position_5 pos."
+2026-02-26 16:51:38 [INFO] Client: Sending data to backend
+2026-02-26 16:51:38 [DEBUG] Sending data: {"mode": "live", "robot": "ur", "commands": [{"action": "move", "motion_type": "moveJ", "target": {"type": "named_pose", "name": "position_5"}}], "message": ""}
+2026-02-26 16:51:42 [DEBUG] Execution: Backend executed command successfully: {'command': 'success', 'data': {'responses': [{'success': True, 'message': 'Motion complete'}]}}
+2026-02-26 16:51:42 [INFO] Execution: Backend executed command successfully. Details available in logfile
+2026-02-26 16:51:47 [INFO] Recording started
+2026-02-26 16:51:54 [INFO] Recording stopped, starting transcription
+2026-02-26 16:51:54 [INFO] ASR: transcribed text 'Move to position home, wait two seconds and then move to position five.', confidence = 0.85
+2026-02-26 16:52:17 [DEBUG] Parser: LLM raw response preview: {
+  "mode": "live",
+  "robot": "ur",
+  "commands": [
+    {
+      "action": "move",
+      "motion_type": "moveJ",
+      "target": {
+        "type": "named_pose",
+        "name": "home"
+      }
+    },
+    {
+      "action": "wait",
+      "duration_s": 2.0
+    },
+    {
+      "action": "move",
+      "motion_type": "moveJ",
+      "target": {
+        "type": "named_pose",
+        "name": "five"
+      }
+    }
+  ]
+}
+2026-02-26 16:52:17 [DEBUG] Parser: Parsed JSON after cleanup: {"mode": "live", "robot": "ur", "commands": [{"action": "move", "motion_type": "moveJ", "target": {"type": "named_pose", "name": "home"}}, {"action": "wait", "duration_s": 2.0}, {"action": "move", "motion_type": "moveJ", "target": {"type": "named_pose", "name": "five"}}]}
+2026-02-26 16:52:17 [INFO] Parser: Parsing successful
+2026-02-26 16:52:17 [INFO] Parser: Command summary "Move to home pos. → Wait ?s → Move to five pos."
+2026-02-26 16:52:17 [INFO] Client: Sending data to backend
+2026-02-26 16:52:17 [DEBUG] Sending data: {"mode": "live", "robot": "ur", "commands": [{"action": "move", "motion_type": "moveJ", "target": {"type": "named_pose", "name": "home"}}, {"action": "wait", "duration_s": 2.0}, {"action": "move", "motion_type": "moveJ", "target": {"type": "named_pose", "name": "five"}}], "message": ""}
+2026-02-26 16:52:22 [ERROR] Execution: Backend failed to execute command: {'command': 'timeout', 'data': {'error': 'Backend timeout'}}
+2026-02-26 16:54:03 [INFO] Recording started
+2026-02-26 16:54:13 [INFO] Recording stopped, starting transcription
+2026-02-26 16:54:14 [INFO] ASR: transcribed text 'Close the gripper, move to position 5, wait 2 seconds, open the gripper and then move back to home position.', confidence = 0.93
+2026-02-26 16:54:44 [DEBUG] Parser: LLM raw response preview: {
+  "mode": "live",
+  "robot": "ur",
+  "commands": [
+    {
+      "action": "gripper",
+      "command": "close"
+    },
+    {
+      "action": "move",
+      "motion_type": "moveJ",
+      "target": {
+        "type": "named_pose",
+        "name": "position_5"
+      }
+    },
+    {
+      "action": "wait",
+      "duration_s": 2.0
+    },
+    {
+      "action": "gripper",
+      "command": "open"
+    },
+    {
+      "action": "move",
+      "motion_type": "moveJ",
+      "target": {
+        "type": "named_pose
+2026-02-26 16:54:44 [DEBUG] Parser: Parsed JSON after cleanup: {"mode": "live", "robot": "ur", "commands": [{"action": "gripper", "command": "close"}, {"action": "move", "motion_type": "moveJ", "target": {"type": "named_pose", "name": "position_5"}}, {"action": "wait", "duration_s": 2.0}, {"action": "gripper", "command": "open"}, {"action": "move", "motion_type": "moveJ", "target": {"type": "named_pose", "name": "home"}}]}
+2026-02-26 16:54:44 [INFO] Parser: Parsing successful
+2026-02-26 16:54:44 [INFO] Parser: Command summary "Close gripper → Move to position_5 pos. → Wait ?s → Open gripper → Move to home pos."
+2026-02-26 16:54:44 [INFO] Client: Sending data to backend
+2026-02-26 16:54:44 [DEBUG] Sending data: {"mode": "live", "robot": "ur", "commands": [{"action": "gripper", "command": "close"}, {"action": "move", "motion_type": "moveJ", "target": {"type": "named_pose", "name": "position_5"}}, {"action": "wait", "duration_s": 2.0}, {"action": "gripper", "command": "open"}, {"action": "move", "motion_type": "moveJ", "target": {"type": "named_pose", "name": "home"}}], "message": ""}
+2026-02-26 16:54:45 [ERROR] Execution: Backend failed to execute command: {'command': 'error', 'data': {'error': 'Operation cannot be accomplished in current state'}}
+2026-02-26 16:56:29 [INFO] Recording started
+2026-02-26 16:56:32 [INFO] Recording stopped, starting transcription
+2026-02-26 16:56:33 [INFO] ASR: transcribed text 'Move to position 5.', confidence = 0.82
+2026-02-26 16:56:47 [DEBUG] Parser: LLM raw response preview: {
+  "mode": "live",
+  "robot": "ur",
+  "commands": [
+    {
+      "action": "move",
+      "motion_type": "moveJ",
+      "target": {
+        "type": "named_pose",
+        "name": "position_5"
+      }
+    }
+  ]
+}
+2026-02-26 16:56:47 [DEBUG] Parser: Parsed JSON after cleanup: {"mode": "live", "robot": "ur", "commands": [{"action": "move", "motion_type": "moveJ", "target": {"type": "named_pose", "name": "position_5"}}]}
+2026-02-26 16:56:47 [INFO] Parser: Parsing successful
+2026-02-26 16:56:47 [INFO] Parser: Command summary "Move to position_5 pos."
+2026-02-26 16:56:47 [INFO] Client: Sending data to backend
+2026-02-26 16:56:47 [DEBUG] Sending data: {"mode": "live", "robot": "ur", "commands": [{"action": "move", "motion_type": "moveJ", "target": {"type": "named_pose", "name": "position_5"}}], "message": ""}
+2026-02-26 16:56:47 [ERROR] Execution: Backend failed to execute command: {'command': 'error', 'data': {'error': 'Operation cannot be accomplished in current state'}}
+2026-02-26 16:57:58 [INFO] Application shutting down
+16:58:10  INFO      main.py  Application starting
+16:58:12  INFO      main.py  Application ready
+16:58:20  INFO      pipeline.py  Recording started
+16:58:22  INFO      pipeline.py  Recording stopped, starting transcription
+16:58:23  INFO      ASR_module.py  ASR: transcribed text 'Move to position 5.', confidence = 0.86
+16:58:36  DEBUG     parsing_module.py  Parser: LLM raw response preview: {
+  "mode": "live",
+  "robot": "franka",
+  "commands": [
+    {
+      "action": "move",
+      "motion_type": "moveJ",
+      "target": {
+        "type": "named_pose",
+        "name": "position_5"
+      }
+    }
+  ]
+}
+16:58:36  DEBUG     parsing_module.py  Parser: Parsed JSON after cleanup: {"mode": "live", "robot": "franka", "commands": [{"action": "move", "motion_type": "moveJ", "target": {"type": "named_pose", "name": "position_5"}}]}
+16:58:36  INFO      parsing_module.py  Parser: Parsing successful
+16:58:36  INFO      pipeline.py  Parser: Command summary "Move to position_5 pos."
+16:58:36  INFO      pipeline.py  Client: Sending data to backend
+16:58:36  DEBUG     pipeline.py  Sending data: {"mode": "live", "robot": "franka", "commands": [{"action": "move", "motion_type": "moveJ", "target": {"type": "named_pose", "name": "position_5"}}], "message": ""}
+16:58:36  ERROR     pipeline.py  Execution: Backend failed to execute command: {'command': 'rejected', 'data': {'reason': 'Could not connect to franka: FrankaController dependencies not installed'}}
+16:58:44  INFO      pipeline.py  Recording started
+16:58:46  INFO      pipeline.py  Recording stopped, starting transcription
+16:58:47  INFO      ASR_module.py  ASR: transcribed text 'Move to position 5.', confidence = 0.76
+16:59:00  DEBUG     parsing_module.py  Parser: LLM raw response preview: {
+  "mode": "live",
+  "robot": "ur",
+  "commands": [
+    {
+      "action": "move",
+      "motion_type": "moveJ",
+      "target": {
+        "type": "named_pose",
+        "name": "position_5"
+      }
+    }
+  ]
+}
+16:59:00  DEBUG     parsing_module.py  Parser: Parsed JSON after cleanup: {"mode": "live", "robot": "ur", "commands": [{"action": "move", "motion_type": "moveJ", "target": {"type": "named_pose", "name": "position_5"}}]}
+16:59:00  INFO      parsing_module.py  Parser: Parsing successful
+16:59:00  INFO      pipeline.py  Parser: Command summary "Move to position_5 pos."
+16:59:00  INFO      pipeline.py  Client: Sending data to backend
+16:59:00  DEBUG     pipeline.py  Sending data: {"mode": "live", "robot": "ur", "commands": [{"action": "move", "motion_type": "moveJ", "target": {"type": "named_pose", "name": "position_5"}}], "message": ""}
+16:59:05  DEBUG     pipeline.py  Execution: Backend executed command successfully: {'command': 'success', 'data': {'responses': [{'success': True, 'message': 'Motion complete'}]}}
+16:59:05  INFO      pipeline.py  Execution: Backend executed command successfully. Details available in logfile
+16:59:07  INFO      pipeline.py  Recording started
+16:59:14  INFO      pipeline.py  Recording stopped, starting transcription
+16:59:14  INFO      ASR_module.py  ASR: transcribed text 'Close the gripper, move to home position and then open the gripper.', confidence = 0.91
+16:59:34  DEBUG     parsing_module.py  Parser: LLM raw response preview: {
+  "mode": "live",
+  "robot": "ur",
+  "commands": [
+    {
+      "action": "gripper",
+      "command": "close"
+    },
+    {
+      "action": "move",
+      "motion_type": "moveJ",
+      "target": {
+        "type": "named_pose",
+        "name": "home_position"
+      }
+    },
+    {
+      "action": "gripper",
+      "command": "open"
+    }
+  ]
+}
+16:59:34  DEBUG     parsing_module.py  Parser: Parsed JSON after cleanup: {"mode": "live", "robot": "ur", "commands": [{"action": "gripper", "command": "close"}, {"action": "move", "motion_type": "moveJ", "target": {"type": "named_pose", "name": "home_position"}}, {"action": "gripper", "command": "open"}]}
+16:59:34  INFO      parsing_module.py  Parser: Parsing successful
+16:59:34  INFO      pipeline.py  Parser: Command summary "Close gripper → Move to home_position pos. → Open gripper"
+16:59:34  INFO      pipeline.py  Client: Sending data to backend
+16:59:34  DEBUG     pipeline.py  Sending data: {"mode": "live", "robot": "ur", "commands": [{"action": "gripper", "command": "close"}, {"action": "move", "motion_type": "moveJ", "target": {"type": "named_pose", "name": "home_position"}}, {"action": "gripper", "command": "open"}], "message": ""}
+16:59:39  ERROR     pipeline.py  Execution: Backend failed to execute command: {'command': 'timeout', 'data': {'error': 'Backend timeout'}}
+17:00:37  INFO      main.py  Application shutting down

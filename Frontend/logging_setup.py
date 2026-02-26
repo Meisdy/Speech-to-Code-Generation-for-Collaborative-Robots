@@ -68,8 +68,8 @@ def setup_logging() -> logging.Logger:
     # Allow handlers to filter independently: set logger to the most permissive level
     logger.setLevel(min(console_level, file_level))
 
-    fmt = "%(asctime)s [%(levelname)s] %(message)s"
-    datefmt = "%Y-%m-%d %H:%M:%S"
+    fmt = "%(asctime)s  %(levelname)-8s  %(filename)s  %(message)s"
+    datefmt = "%H:%M:%S"
 
     # File handler (plain, verbose)
     fh = RotatingFileHandler(os.path.join(LOG_DIR, "cobot.log"), maxBytes=500_000, backupCount=3, encoding="utf-8")
