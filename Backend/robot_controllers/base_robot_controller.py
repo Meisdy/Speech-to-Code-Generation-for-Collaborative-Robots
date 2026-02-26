@@ -59,6 +59,12 @@ class BaseRobotController(ABC):
             for entry in self.poses.values():
                 f.write(json.dumps(entry) + '\n')
 
+    # --- Optional lifecycle commands ---
+
+    def activate_robot(self) -> dict:
+        """Power on and prepare the robot for motion. No-op for controllers that handle this internally."""
+        return {"success": True, "message": "Ready"}
+
     # --- Abstract movement commands ---
 
     @abstractmethod
