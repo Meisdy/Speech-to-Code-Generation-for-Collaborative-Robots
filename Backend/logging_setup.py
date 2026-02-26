@@ -1,7 +1,6 @@
 import os
 import logging
 from logging.handlers import RotatingFileHandler
-from typing import Optional
 from config import LOGGING_LEVEL, LOGGING_LEVEL_FILE  # Adjust import as needed
 
 LOG_DIR = os.path.join(os.path.dirname(__file__), "logs")
@@ -16,9 +15,6 @@ class _ColorFormatter(logging.Formatter):
         'ERROR': "\x1b[31m",
         'CRITICAL': "\x1b[1;31m",
     }
-
-    def __init__(self, base_fmt: str, datefmt: Optional[str] = None):
-        super().__init__(base_fmt, datefmt=datefmt)
 
     def format(self, record: logging.LogRecord) -> str:
         base = super().format(record)
@@ -41,8 +37,8 @@ def setup_logging(logger_name: str = "cobot_backend") -> logging.Logger:
 
     logger.setLevel(min(console_level, file_level))
 
-    fmt = "%(asctime)s [%(levelname)s] %(filename)s:%(lineno)d  %(message)s"
-    datefmt = "%Y-%m-%d %H:%M:%S"
+    fmt = "%(asctime)s  %(levelname)-8s  %(filename)s  %(message)s"
+    datefmt = "%H:%M:%S"
 
     # File handler
     fh = RotatingFileHandler(

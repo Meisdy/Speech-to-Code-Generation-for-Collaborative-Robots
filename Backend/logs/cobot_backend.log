@@ -551,3 +551,59 @@ AttributeError: 'NoneType' object has no attribute 'disconnect'
 2026-02-25 15:10:23 [DEBUG] communication_server.py:39  Sent response: {'command': 'success', 'data': {'responses': [{'success': True, 'message': 'Motion complete'}, {'success': True, 'message': 'Motion complete'}]}}
 2026-02-25 15:10:25 [INFO] communication_server.py:50  Signal 2 received, shutting down
 2026-02-25 15:10:25 [INFO] communication_server.py:55  Shutting down server
+2026-02-26 10:40:16 [INFO] main.py:16  Starting backend server on tcp://*:5555
+2026-02-26 10:40:16 [INFO] communication_server.py:29  Server ready and listening
+2026-02-26 10:40:33 [INFO] communication_server.py:34  Message received
+2026-02-26 10:40:33 [DEBUG] communication_server.py:35  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'ur', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}, {'action': 'gripper', 'command': 'open'}, {'action': 'wait', 'duration_s': 0.5}, {'action': 'pose', 'command': 'teach', 'pose_name': 'home', 'overwrite': True}], 'message': ''}}
+2026-02-26 10:40:38 [ERROR] ur_controller.py:112  Universal Robot: timed out
+2026-02-26 10:40:38 [INFO] communication_server.py:38  Response sent
+2026-02-26 10:40:38 [DEBUG] communication_server.py:39  Sent response: {'command': 'rejected', 'data': {'reason': 'Could not connect to ur: timed out'}}
+2026-02-26 10:43:57 [INFO] communication_server.py:34  Message received
+2026-02-26 10:43:57 [DEBUG] communication_server.py:35  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}, {'action': 'gripper', 'command': 'open'}, {'action': 'wait', 'duration_s': 0.5}, {'action': 'pose', 'command': 'teach', 'pose_name': 'home', 'overwrite': True}], 'message': ''}}
+2026-02-26 10:43:57 [INFO] ur_controller.py:119  Universal Robot: Disconnected
+2026-02-26 10:43:57 [WARNING] message_handler.py:43  Could not load franka adapter due to missing franka dependencies
+2026-02-26 10:43:57 [INFO] communication_server.py:38  Response sent
+2026-02-26 10:43:57 [DEBUG] communication_server.py:39  Sent response: {'command': 'rejected', 'data': {'reason': 'Could not connect to franka: FrankaController dependencies not installed'}}
+2026-02-26 10:48:28 [INFO] communication_server.py:34  Message received
+2026-02-26 10:48:28 [DEBUG] communication_server.py:35  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'mock', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}, {'action': 'gripper', 'command': 'open'}, {'action': 'wait', 'duration_s': 0.5}, {'action': 'pose', 'command': 'teach', 'pose_name': 'home', 'overwrite': True}], 'message': ''}}
+2026-02-26 10:48:28 [INFO] ur_controller.py:119  Universal Robot: Disconnected
+2026-02-26 10:48:28 [INFO] mock_robot_controller.py:16  Mock robot: Connecting to robot
+2026-02-26 10:48:28 [INFO] mock_robot_controller.py:34  Mock robot: MoveJ to 'home' offset=None speed=None
+2026-02-26 10:48:30 [INFO] mock_robot_controller.py:50  Mock robot: Opening gripper
+2026-02-26 10:48:31 [INFO] communication_server.py:38  Response sent
+2026-02-26 10:48:31 [DEBUG] communication_server.py:39  Sent response: {'command': 'success', 'data': {'responses': [{'success': True, 'message': "Mock MoveJ complete to 'home'"}, {'success': True, 'message': 'Mock gripper opened'}, {'message': 'Waited for 0.5 seconds'}, {'success': True, 'message': "Pose 'home' saved"}]}}
+2026-02-26 10:57:59 [INFO] communication_server.py:50  Signal 2 received, shutting down
+2026-02-26 10:57:59 [INFO] communication_server.py:55  Shutting down server
+2026-02-26 10:57:59 [INFO] mock_robot_controller.py:22  Mock robot: Disconnecting from robot
+2026-02-26 11:38:37 [INFO] main.py:16  Starting backend server on tcp://*:5555
+2026-02-26 11:38:37 [INFO] communication_server.py:29  Server ready and listening
+2026-02-26 11:39:09 [INFO] communication_server.py:50  Signal 2 received, shutting down
+2026-02-26 11:39:09 [INFO] communication_server.py:55  Shutting down server
+2026-02-26 11:52:02 [INFO] main.py:16  Starting backend server on tcp://*:5555
+2026-02-26 11:52:02 [INFO] communication_server.py:29  Server ready and listening
+2026-02-26 11:52:18 [INFO] communication_server.py:50  Signal 2 received, shutting down
+2026-02-26 11:52:18 [INFO] communication_server.py:55  Shutting down server
+2026-02-26 11:52:20  INFO      cobot_backend:16  Starting backend server on tcp://*:5555
+2026-02-26 11:52:20  INFO      cobot_backend:29  Server ready and listening
+2026-02-26 11:52:35  INFO      cobot_backend:50  Signal 2 received, shutting down
+2026-02-26 11:52:35  INFO      cobot_backend:55  Shutting down server
+11:52:37  INFO      cobot_backend:16  Starting backend server on tcp://*:5555
+11:52:37  INFO      cobot_backend:29  Server ready and listening
+11:53:29  INFO      cobot_backend:50  Signal 2 received, shutting down
+11:53:29  INFO      cobot_backend:55  Shutting down server
+11:53:31  INFO      cobot_backend  Starting backend server on tcp://*:5555
+11:53:31  INFO      cobot_backend  Server ready and listening
+11:54:05  INFO      cobot_backend  Message received
+11:54:05  DEBUG     cobot_backend  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'mock', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}, {'action': 'gripper', 'command': 'open'}, {'action': 'wait', 'duration_s': 0.5}, {'action': 'pose', 'command': 'teach', 'pose_name': 'home', 'overwrite': True}], 'message': ''}}
+11:54:05  INFO      cobot_backend  Mock robot: Connecting to robot
+11:54:05  INFO      cobot_backend  Mock robot: MoveJ to 'home' offset=None speed=None
+11:54:07  INFO      cobot_backend  Mock robot: Opening gripper
+11:54:08  INFO      cobot_backend  Response sent
+11:54:08  DEBUG     cobot_backend  Sent response: {'command': 'success', 'data': {'responses': [{'success': True, 'message': "Mock MoveJ complete to 'home'"}, {'success': True, 'message': 'Mock gripper opened'}, {'message': 'Waited for 0.5 seconds'}, {'success': True, 'message': "Pose 'home' saved"}]}}
+11:56:11  INFO      cobot_backend  Signal 2 received, shutting down
+11:56:11  INFO      cobot_backend  Shutting down server
+11:56:11  INFO      cobot_backend  Mock robot: Disconnecting from robot
+11:56:18  INFO      main.py  Starting backend server on tcp://*:5555
+11:56:18  INFO      communication_server.py  Server ready and listening
+11:57:30  INFO      communication_server.py  Signal 2 received, shutting down
+11:57:30  INFO      communication_server.py  Shutting down server

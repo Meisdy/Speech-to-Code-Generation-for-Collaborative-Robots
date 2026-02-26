@@ -4,8 +4,6 @@ from typing import Optional # Needed for old py version of ROS / Franka
 import logging
 import time
 
-logger = logging.getLogger("cobot_backend")
-
 try:
     from Backend.robot_controllers.franka_controller import FrankaController
 except ImportError:
@@ -16,6 +14,7 @@ try:
 except ImportError:
     URController = None
 
+logger = logging.getLogger("cobot_backend")
 
 class MessageHandler:
     """Processes commands - no knowledge of communication protocol"""
@@ -40,7 +39,7 @@ class MessageHandler:
             self.robot = URController()
         elif robot_type == "franka":
             if FrankaController is None:
-                logger.warning("Could not load franka adapter due to missing franka dependencies")
+                logger.warning("Cannot load Franka adapter: dependencies not installed")
                 return {"success": False, "message": "FrankaController dependencies not installed"}
             self.robot = FrankaController()
         elif robot_type == "mock":
@@ -48,7 +47,10 @@ class MessageHandler:
         else:
             return {"success": False, "message": f"Unknown robot type: {robot_type}"}
 
-        return self.robot.connect()
+        result = self.robot.connect()
+        if not result["success"]:
+            logger.error("Failed to connect to %s: %s", robot_type, result["message"])
+        return result
 
     def disconnect_robot(self) -> None:
         """Wraper to disconnect robot"""
@@ -88,7 +90,7 @@ class MessageHandler:
             return commands[command]()
 
         except Exception as e:
-            logger.error(f'Error occured while processing message: {e}')
+            logger.exception("Error processing message: %s", message)
             return self._formatted_response('error', {"error message": str(e)})
 
     def _answer_ping(self) -> dict:
@@ -121,7 +123,7 @@ class MessageHandler:
 
         Args:
             command: dict with the command details
-            robot: MockRobotController instance
+        robot: BaseRobotController instance
 
         Returns:
             dict with the result of the command execution
@@ -177,9 +179,3 @@ class MessageHandler:
 
         else:
             return {"error": f"Unknown action: {action}"}
-
-
-
-
-
-
