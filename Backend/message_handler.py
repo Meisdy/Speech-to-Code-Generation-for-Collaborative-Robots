@@ -26,12 +26,19 @@ class MessageHandler:
         self.robot_types : list = ['franka', 'ur', 'mock']  # Supported robot types
         self.robot : Optional[BaseRobotController] = None
 
-    def _load_robot_adapter(self, robot_type: str = "mock") -> dict:
+    def _ensure_robot_ready(self, robot_type: str) -> dict:
         expected = {"ur": "URController", "franka": "FrankaController", "mock": "MockRobotController"}
 
-        if self.robot and type(self.robot).__name__ == expected[robot_type] and self.robot.is_connected():
-            return {"success": True, "message": "Already connected"}
+        # Already the right robot and fully ready — nothing to do
+        if self.robot and type(self.robot).__name__ == expected[robot_type]:
+            if self.robot.is_ready():
+                return {"success": True, "message": "Ready"}
+            # Right robot, wrong state — try to recover without full reconnect
+            if self.robot.is_connected():
+                return self.robot.activate_robot()
+            # Socket is dead — fall through to full reconnect
 
+        # Wrong robot or dead connection — full load
         if self.robot:
             self.robot.disconnect()
 
@@ -117,7 +124,7 @@ class MessageHandler:
         if robot_type not in self.robot_types:
             return self._formatted_response('rejected', {"reason": f"Unsupported robot type: {robot_type}"})
 
-        result = self._load_robot_adapter(robot_type)
+        result = self._ensure_robot_ready(robot_type)
         if not result["success"]:
             return self._formatted_response('rejected', {"reason": f"Could not connect to {robot_type}: {result['message']}"})
 
