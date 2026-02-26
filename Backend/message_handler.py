@@ -50,6 +50,13 @@ class MessageHandler:
         result = self.robot.connect()
         if not result["success"]:
             logger.error("Failed to connect to %s: %s", robot_type, result["message"])
+            return result
+
+        result = self.robot.activate_robot()
+        if not result["success"]:
+            logger.error("Failed to activate %s: %s", robot_type, result["message"])
+            return result
+
         return result
 
     def disconnect_robot(self) -> None:
