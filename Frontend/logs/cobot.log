@@ -2742,3 +2742,89 @@ NoneType: None
 11:32:47  DEBUG     pipeline.py  Sending data: {"mode": "live", "robot": "ur", "commands": [{"action": "move", "motion_type": "moveJ", "target": {"type": "named_pose", "name": "home"}}], "message": ""}
 11:32:49  DEBUG     pipeline.py  Execution: Backend executed command successfully: {'command': 'success', 'data': {'responses': [{'success': True, 'message': 'Motion complete'}]}}
 11:32:49  INFO      pipeline.py  Execution: Backend executed command successfully. Details available in logfile
+11:39:24  INFO      main.py  Application shutting down
+14:03:18  INFO      main.py  Application starting
+14:03:23  INFO      main.py  Application ready
+14:03:33  INFO      pipeline.py  Recording started
+14:03:35  INFO      pipeline.py  Recording stopped, starting transcription
+14:03:36  INFO      ASR_module.py  ASR: transcribed text 'Close the gripper.', confidence = 0.69
+14:03:36  WARNING   pipeline.py  ASR confidence low: 0.69 - parsing may fail
+14:03:50  DEBUG     parsing_module.py  Parser: LLM raw response preview: {
+  "mode": "live",
+  "robot": "ur",
+  "commands": [
+    {
+      "action": "gripper",
+      "command": "close"
+    }
+  ]
+}
+14:03:50  DEBUG     parsing_module.py  Parser: Parsed JSON after cleanup: {"mode": "live", "robot": "ur", "commands": [{"action": "gripper", "command": "close"}]}
+14:03:50  INFO      parsing_module.py  Parser: Parsing successful
+14:03:50  INFO      pipeline.py  Parser: Command summary "Close gripper"
+14:03:50  INFO      pipeline.py  Client: Sending data to backend
+14:03:50  DEBUG     pipeline.py  Sending data: {"mode": "live", "robot": "ur", "commands": [{"action": "gripper", "command": "close"}], "message": ""}
+14:03:54  DEBUG     pipeline.py  Execution: Backend executed command successfully: {'command': 'success', 'data': {'responses': [{'success': True, 'message': 'Gripper closed'}]}}
+14:03:54  INFO      pipeline.py  Execution: Backend executed command successfully. Details available in logfile
+14:04:10  INFO      pipeline.py  Recording started
+14:04:12  INFO      pipeline.py  Recording stopped, starting transcription
+14:04:12  INFO      ASR_module.py  ASR: transcribed text 'Open the gripper.', confidence = 0.86
+14:04:16  DEBUG     parsing_module.py  Parser: LLM raw response preview: {
+  "mode": "live",
+  "robot": "ur",
+  "commands": [
+    {
+      "action": "gripper",
+      "command": "open"
+    }
+  ]
+}
+14:04:16  DEBUG     parsing_module.py  Parser: Parsed JSON after cleanup: {"mode": "live", "robot": "ur", "commands": [{"action": "gripper", "command": "open"}]}
+14:04:16  INFO      parsing_module.py  Parser: Parsing successful
+14:04:16  INFO      pipeline.py  Parser: Command summary "Open gripper"
+14:04:16  INFO      pipeline.py  Client: Sending data to backend
+14:04:16  DEBUG     pipeline.py  Sending data: {"mode": "live", "robot": "ur", "commands": [{"action": "gripper", "command": "open"}], "message": ""}
+14:04:20  DEBUG     pipeline.py  Execution: Backend executed command successfully: {'command': 'success', 'data': {'responses': [{'success': True, 'message': 'Gripper opened'}]}}
+14:04:20  INFO      pipeline.py  Execution: Backend executed command successfully. Details available in logfile
+14:05:02  INFO      pipeline.py  Recording started
+14:05:04  INFO      pipeline.py  Recording stopped, starting transcription
+14:05:05  INFO      ASR_module.py  ASR: transcribed text 'Close the gripper.', confidence = 0.59
+14:05:05  WARNING   pipeline.py  ASR confidence low: 0.59 - parsing may fail
+14:05:08  DEBUG     parsing_module.py  Parser: LLM raw response preview: {
+  "mode": "live",
+  "robot": "ur",
+  "commands": [
+    {
+      "action": "gripper",
+      "command": "close"
+    }
+  ]
+}
+14:05:08  DEBUG     parsing_module.py  Parser: Parsed JSON after cleanup: {"mode": "live", "robot": "ur", "commands": [{"action": "gripper", "command": "close"}]}
+14:05:08  INFO      parsing_module.py  Parser: Parsing successful
+14:05:08  INFO      pipeline.py  Parser: Command summary "Close gripper"
+14:05:08  INFO      pipeline.py  Client: Sending data to backend
+14:05:08  DEBUG     pipeline.py  Sending data: {"mode": "live", "robot": "ur", "commands": [{"action": "gripper", "command": "close"}], "message": ""}
+14:05:13  ERROR     pipeline.py  Execution: Backend failed to execute command: {'command': 'rejected', 'data': {'reason': 'Could not connect to ur: timed out'}}
+NoneType: None
+14:05:23  INFO      pipeline.py  Recording started
+14:05:25  INFO      pipeline.py  Recording stopped, starting transcription
+14:05:25  INFO      ASR_module.py  ASR: transcribed text 'Close the gripper.', confidence = 0.72
+14:05:28  DEBUG     parsing_module.py  Parser: LLM raw response preview: {
+  "mode": "live",
+  "robot": "ur",
+  "commands": [
+    {
+      "action": "gripper",
+      "command": "close"
+    }
+  ]
+}
+14:05:28  DEBUG     parsing_module.py  Parser: Parsed JSON after cleanup: {"mode": "live", "robot": "ur", "commands": [{"action": "gripper", "command": "close"}]}
+14:05:28  INFO      parsing_module.py  Parser: Parsing successful
+14:05:28  INFO      pipeline.py  Parser: Command summary "Close gripper"
+14:05:28  INFO      pipeline.py  Client: Sending data to backend
+14:05:28  DEBUG     pipeline.py  Sending data: {"mode": "live", "robot": "ur", "commands": [{"action": "gripper", "command": "close"}], "message": ""}
+14:05:33  DEBUG     pipeline.py  Execution: Backend executed command successfully: {'command': 'success', 'data': {'responses': [{'success': True, 'message': 'Gripper closed'}]}}
+14:05:33  INFO      pipeline.py  Execution: Backend executed command successfully. Details available in logfile
+14:09:58  INFO      main.py  Application shutting down
