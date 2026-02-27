@@ -75,16 +75,16 @@ class URController(BaseRobotController):
     """
 
     MOTION_TIMEOUT       = 30.0   # seconds before giving up on a motion
-    MOTION_POLL_INTERVAL = 0.1    # seconds between joint position polls
+    MOTION_POLL_INTERVAL = 0.005  # seconds between joint position polls
     MOTION_THRESHOLD     = 0.001  # rad — max delta to consider joints stopped
-    MOTION_START_DELAY   = 0.3    # seconds to wait for motion to begin before polling
+    MOTION_START_DELAY   = 0.2    # seconds to wait for motion to begin before polling
     ACTIVATION_SETTLE    = 3.8    # seconds to wait after RUNNING confirmed — the Dashboard
                                   # sends an implicit stop ~3.5s after brake release if no
                                   # program is running; this clears that window
 
     GRIPPER_OPEN_PROGRAM  = "open_UG2_Gripper.urp"
     GRIPPER_CLOSE_PROGRAM = "close_UG2_Gripper.urp"
-    GRIPPER_ACTUATE_TIME  = 4.0   # seconds — tune to match physical actuation duration
+    GRIPPER_ACTUATE_TIME  = 3.0   # seconds — tune to match physical actuation duration
 
     def __init__(self, robot_ip: str = DEFAULT_ROBOT_IP, poses_file: str = POSES_FILE):
         super().__init__(poses_file)
