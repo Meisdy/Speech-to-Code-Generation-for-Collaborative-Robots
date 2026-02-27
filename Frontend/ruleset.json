@@ -62,6 +62,15 @@
           "applicable": ["teach"]
         }
       }
+    },
+    "freedrive": {
+      "description": "Turn freedrive on or off.",
+      "parameters": {
+        "active": {
+        "type": "bool",
+        "required": true
     }
+  }
+}
   }
 }

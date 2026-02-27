@@ -59,14 +59,21 @@ class BaseRobotController(ABC):
             for entry in self.poses.values():
                 f.write(json.dumps(entry) + '\n')
 
-    # --- Optional lifecycle commands ---
+    # --- Optional commands ---
 
     def activate_robot(self) -> dict:
         """Power on and prepare the robot for motion. No-op for controllers that handle this internally."""
         return {"success": True, "message": "Ready"}
 
     def is_ready(self) -> bool:
+        """Will return connected status if method is not overwritten by robot controler"""
         return self.connected  # default: connected = ready
+
+    def enable_freedrive(self) -> dict:
+        return {"success": False, "message": "Freedrive not implemented for this robot"}
+
+    def disable_freedrive(self) -> dict:
+        return {"success": False, "message": "Freedrive not implemented for this robot"}
 
     # --- Abstract movement commands ---
 
