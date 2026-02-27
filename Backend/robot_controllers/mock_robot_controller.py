@@ -1,68 +1,78 @@
-from Backend.robot_controllers.base_robot_controller import BaseRobotController
-import time
 import logging
+import time
+from typing import Optional
+
+from Backend.robot_controllers.base_robot_controller import BaseRobotController
 
 logger = logging.getLogger("cobot_backend")
 
+
 class MockRobotController(BaseRobotController):
-    """Mock robot controller for testing without hardware"""
+    """Mock robot controller for testing without hardware."""
 
     def __init__(self, poses_file: str = "Backend/poses/mock_poses.jsonl"):
         super().__init__(poses_file)
-        self.joint_angles = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-        self.positions = [0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0]  # pos + identity quat
+        self._joint_angles: list = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+        self._tcp_pose: list = [0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0]  # pos + identity quat
 
-    def connect(self):
-        logger.info('Mock robot: Connecting to robot')
+    def connect(self) -> dict:
+        """Simulate connection delay and mark robot as connected."""
         time.sleep(0.5)
         self.connected = True
+        logger.info("Connected")
         return {"success": True, "message": "Mock robot connected"}
 
-    def disconnect(self):
-        logger.info('Mock robot: Disconnecting from robot')
+    def disconnect(self) -> None:
+        """Simulate disconnect delay and mark robot as disconnected."""
         time.sleep(0.2)
         self.connected = False
-        return {"success": True, "message": "Mock robot disconnected"}
+        logger.info("Disconnected")
 
-    def is_connected(self):
+    def is_connected(self) -> bool:
+        """Return current connection state."""
         return self.connected
 
-    def move_joint(self, pose: dict, speed=None, offset: list = None):
+    def move_joint(self, pose: dict, speed: Optional[float] = None, offset: Optional[list] = None) -> dict:  # speed ignored in mock
+        """Simulate a joint-space move."""
+        logger.info("Moving with moveJ to '%s'", pose["name"])
         target_pos = list(pose["pos"])
         if offset:
             target_pos = [p + o for p, o in zip(target_pos, offset)]
-        logger.info(f"Mock robot: MoveJ to '{pose['name']}' offset={offset} speed={speed}")
         time.sleep(2)
-        self.joint_angles = list(pose["joints"])
-        self.positions = target_pos + list(pose["quat"])
-        return {"success": True, "message": f"Mock MoveJ complete to '{pose['name']}'"}
+        self._joint_angles = list(pose["joints"])
+        self._tcp_pose = target_pos + list(pose["quat"])
+        return {"success": True, "message": f"Mock moveJ complete to '{pose['name']}'"}
 
-    def move_linear(self, pose: dict, speed=None, offset: list = None):
+    def move_linear(self, pose: dict, speed: Optional[float] = None, offset: Optional[list] = None) -> dict:  # speed ignored in mock
+        """Simulate a linear Cartesian move."""
+        logger.info("Moving with moveL to '%s'", pose["name"])
         target_pos = list(pose["pos"])
         if offset:
             target_pos = [p + o for p, o in zip(target_pos, offset)]
-        logger.info(f"Mock robot: MoveL to '{pose['name']}' offset={offset} speed={speed}")
         time.sleep(2)
-        self.positions = target_pos + list(pose["quat"])
-        return {"success": True, "message": f"Mock MoveL complete to '{pose['name']}'"}
+        self._joint_angles = list(pose["joints"])
+        self._tcp_pose = target_pos + list(pose["quat"])
+        return {"success": True, "message": f"Mock moveL complete to '{pose['name']}'"}
 
-    def gripper_open(self):
-        logger.info('Mock robot: Opening gripper')
+    def gripper_open(self) -> dict:
+        """Simulate gripper open."""
+        logger.info("Opening gripper")
         time.sleep(0.5)
         self.gripper_state = "open"
         return {"success": True, "message": "Mock gripper opened"}
 
-    def gripper_close(self):
-        logger.info('Mock robot: Closing gripper')
+    def gripper_close(self) -> dict:
+        """Simulate gripper close."""
+        logger.info("Closing gripper")
         time.sleep(0.5)
         self.gripper_state = "closed"
         return {"success": True, "message": "Mock gripper closed"}
 
-    def get_current_state(self):
+    def get_current_pose(self) -> dict:
+        """Return current simulated robot state."""
         return {
-            "success": True,
-            "joint_positions": self.joint_angles,
-            "pose": self.positions,  # [x, y, z, qx, qy, qz, qw]
-            "gripper_state": self.gripper_state,
-            "connected": self.connected
+            "success":         True,
+            "joint_positions": self._joint_angles,
+            "pose":            self._tcp_pose,
+            "gripper_state":   self.gripper_state,
         }

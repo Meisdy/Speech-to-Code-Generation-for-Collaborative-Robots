@@ -43,9 +43,9 @@ class TestMockRobotController(unittest.TestCase):
         self.assertEqual(response, {"success": True, "message": "Mock gripper closed"})
         self.assertEqual(self.mock_robot.gripper_state, "closed")
 
-    def test_get_current_state(self):
+    def test_get_current_pose(self):
         self.mock_robot.connect()
-        response = self.mock_robot.get_current_state()
+        response = self.mock_robot.get_current_pose()
         self.assertTrue(response["success"])
         self.assertIn("joint_positions", response)
         self.assertIn("pose", response)
