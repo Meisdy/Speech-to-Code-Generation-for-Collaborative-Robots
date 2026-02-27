@@ -2077,3 +2077,150 @@ TypeError: ServerZeroMQ._handle_signal() takes 2 positional arguments but 3 were
 15:49:29  INFO      communication_server.py  Signal 2 received, shutting down
 15:49:29  INFO      communication_server.py  Shutting down server
 15:49:29  INFO      ur_controller.py  Disconnected
+16:01:22  INFO      main.py  Starting backend server on tcp://*:5555
+16:01:22  INFO      communication_server.py  Server ready and listening on tcp://*:5555
+16:01:34  INFO      communication_server.py  Signal 2 received, shutting down
+16:01:34  INFO      communication_server.py  Shutting down server
+16:03:25  INFO      main.py  Starting backend server on tcp://*:5555
+16:03:25  INFO      communication_server.py  Server ready and listening on tcp://*:5555
+16:03:45  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'ur', 'commands': [{'action': 'gripper', 'command': 'close'}], 'message': ''}}
+16:03:45  INFO      ur_controller.py  Connected
+16:03:45  INFO      ur_controller.py  Activating Robot
+16:03:45  INFO      ur_controller.py  Closing gripper
+16:03:50  INFO      ur_controller.py  Gripper took 4.368s
+16:03:50  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'responses': [{'success': True, 'message': 'Gripper closed'}]}}
+16:04:22  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'ur', 'commands': [{'action': 'gripper', 'command': 'open'}], 'message': ''}}
+16:04:22  INFO      ur_controller.py  Opening gripper
+16:04:27  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'responses': [{'success': True, 'message': 'Gripper opened'}]}}
+16:04:36  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'ur', 'commands': [{'action': 'gripper', 'command': 'close'}], 'message': ''}}
+16:04:36  INFO      ur_controller.py  Closing gripper
+16:04:40  INFO      ur_controller.py  Gripper took 4.245s
+16:04:40  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'responses': [{'success': True, 'message': 'Gripper closed'}]}}
+16:05:49  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'ur', 'commands': [{'action': 'gripper', 'command': 'open'}], 'message': ''}}
+16:05:49  INFO      ur_controller.py  Opening gripper
+16:05:53  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'responses': [{'success': True, 'message': 'Gripper opened'}]}}
+16:05:56  INFO      communication_server.py  Signal 2 received, shutting down
+16:05:56  INFO      communication_server.py  Shutting down server
+16:05:56  INFO      ur_controller.py  Disconnected
+16:05:58  INFO      main.py  Starting backend server on tcp://*:5555
+16:05:58  INFO      communication_server.py  Server ready and listening on tcp://*:5555
+16:07:10  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'ur', 'commands': [{'action': 'gripper', 'command': 'close'}], 'message': ''}}
+16:07:10  INFO      ur_controller.py  Connected
+16:07:10  INFO      ur_controller.py  Activating Robot
+16:07:10  INFO      ur_controller.py  Closing gripper
+16:07:13  INFO      ur_controller.py  Gripper took 3.752s
+16:07:13  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'responses': [{'success': True, 'message': 'Gripper closed'}]}}
+16:08:16  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'ur', 'commands': [{'action': 'gripper', 'command': 'open'}, {'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}, {'action': 'gripper', 'command': 'close'}, {'action': 'wait', 'duration_s': 0.5}, {'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'linear_1'}}], 'message': ''}}
+16:08:16  INFO      ur_controller.py  Opening gripper
+16:08:20  INFO      ur_controller.py  Moving with moveJ to 'home' with speed 1.57
+16:08:22  INFO      ur_controller.py  Closing gripper
+16:08:26  INFO      ur_controller.py  Gripper took 3.788s
+16:08:26  INFO      ur_controller.py  Moving with moveJ to 'linear_1' with speed 1.57
+16:08:29  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'responses': [{'success': True, 'message': 'Gripper opened'}, {'success': True, 'message': 'Motion complete'}, {'success': True, 'message': 'Gripper closed'}, {'success': True, 'message': 'Waited for 0.5 seconds'}, {'success': True, 'message': 'Motion complete'}]}}
+16:08:37  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'ur', 'commands': [{'action': 'gripper', 'command': 'open'}, {'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}, {'action': 'gripper', 'command': 'close'}, {'action': 'wait', 'duration_s': 0.5}, {'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'linear_1'}}], 'message': ''}}
+16:08:37  INFO      ur_controller.py  Opening gripper
+16:08:41  INFO      ur_controller.py  Moving with moveJ to 'home' with speed 1.57
+16:08:43  INFO      ur_controller.py  Closing gripper
+16:08:47  INFO      ur_controller.py  Gripper took 3.811s
+16:08:48  INFO      ur_controller.py  Moving with moveJ to 'linear_1' with speed 1.57
+16:08:50  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'responses': [{'success': True, 'message': 'Gripper opened'}, {'success': True, 'message': 'Motion complete'}, {'success': True, 'message': 'Gripper closed'}, {'success': True, 'message': 'Waited for 0.5 seconds'}, {'success': True, 'message': 'Motion complete'}]}}
+16:08:57  INFO      communication_server.py  Signal 2 received, shutting down
+16:08:57  INFO      communication_server.py  Shutting down server
+16:08:57  INFO      ur_controller.py  Disconnected
+16:09:12  INFO      main.py  Starting backend server on tcp://*:5555
+16:09:12  INFO      communication_server.py  Server ready and listening on tcp://*:5555
+16:09:14  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'ur', 'commands': [{'action': 'gripper', 'command': 'open'}, {'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}, {'action': 'gripper', 'command': 'close'}, {'action': 'wait', 'duration_s': 0.5}, {'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'linear_1'}}], 'message': ''}}
+16:09:14  INFO      ur_controller.py  Connected
+16:09:14  INFO      ur_controller.py  Activating Robot
+16:09:14  INFO      ur_controller.py  Opening gripper
+16:09:18  INFO      ur_controller.py  Moving with moveJ to 'home' with speed 1.57
+16:09:20  INFO      ur_controller.py  Closing gripper
+16:09:24  INFO      ur_controller.py  Gripper took 3.411s
+16:09:24  INFO      ur_controller.py  Moving with moveJ to 'linear_1' with speed 1.57
+16:09:27  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'responses': [{'success': True, 'message': 'Gripper opened'}, {'success': True, 'message': 'Motion complete'}, {'success': True, 'message': 'Gripper closed'}, {'success': True, 'message': 'Waited for 0.5 seconds'}, {'success': True, 'message': 'Motion complete'}]}}
+16:10:07  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'ur', 'commands': [{'action': 'gripper', 'command': 'open'}, {'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}, {'action': 'gripper', 'command': 'close'}, {'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'linear_1'}}], 'message': ''}}
+16:10:07  INFO      ur_controller.py  Opening gripper
+16:10:10  INFO      ur_controller.py  Moving with moveJ to 'home' with speed 1.57
+16:10:13  INFO      ur_controller.py  Closing gripper
+16:10:16  INFO      ur_controller.py  Gripper took 3.458s
+16:10:16  INFO      ur_controller.py  Moving with moveJ to 'linear_1' with speed 1.57
+16:10:19  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'responses': [{'success': True, 'message': 'Gripper opened'}, {'success': True, 'message': 'Motion complete'}, {'success': True, 'message': 'Gripper closed'}, {'success': True, 'message': 'Motion complete'}]}}
+16:10:23  INFO      communication_server.py  Signal 2 received, shutting down
+16:10:23  INFO      communication_server.py  Shutting down server
+16:10:23  INFO      ur_controller.py  Disconnected
+16:10:44  INFO      main.py  Starting backend server on tcp://*:5555
+16:10:44  INFO      communication_server.py  Server ready and listening on tcp://*:5555
+16:11:14  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'ur', 'commands': [{'action': 'gripper', 'command': 'open'}, {'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}, {'action': 'gripper', 'command': 'close'}, {'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'linear_1'}}], 'message': ''}}
+16:11:14  INFO      ur_controller.py  Connected
+16:11:14  INFO      ur_controller.py  Activating Robot
+16:11:14  INFO      ur_controller.py  Opening gripper
+16:11:17  INFO      ur_controller.py  Moving with moveJ to 'home' with speed 1.57
+16:11:19  INFO      ur_controller.py  Closing gripper
+16:11:23  INFO      ur_controller.py  Gripper took 3.275s
+16:11:23  INFO      ur_controller.py  Moving with moveJ to 'linear_1' with speed 1.57
+16:11:25  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'responses': [{'success': True, 'message': 'Gripper opened'}, {'success': True, 'message': 'Motion complete'}, {'success': True, 'message': 'Gripper closed'}, {'success': True, 'message': 'Motion complete'}]}}
+16:11:50  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'ur', 'commands': [{'action': 'gripper', 'command': 'open'}, {'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}, {'action': 'gripper', 'command': 'close'}, {'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'linear_1'}}], 'message': ''}}
+16:11:50  INFO      ur_controller.py  Opening gripper
+16:11:53  INFO      ur_controller.py  Moving with moveJ to 'home' with speed 1.57
+16:11:55  INFO      ur_controller.py  Closing gripper
+16:11:59  INFO      ur_controller.py  Gripper took 3.257s
+16:11:59  INFO      ur_controller.py  Moving with moveJ to 'linear_1' with speed 1.57
+16:12:01  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'responses': [{'success': True, 'message': 'Gripper opened'}, {'success': True, 'message': 'Motion complete'}, {'success': True, 'message': 'Gripper closed'}, {'success': True, 'message': 'Motion complete'}]}}
+16:13:48  INFO      communication_server.py  Signal 2 received, shutting down
+16:13:48  INFO      communication_server.py  Shutting down server
+16:13:48  INFO      ur_controller.py  Disconnected
+16:13:58  INFO      main.py  Starting backend server on tcp://*:5555
+16:13:58  INFO      communication_server.py  Server ready and listening on tcp://*:5555
+16:14:02  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'ur', 'commands': [{'action': 'gripper', 'command': 'open'}, {'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}, {'action': 'gripper', 'command': 'close'}, {'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'linear_1'}}], 'message': ''}}
+16:14:02  INFO      ur_controller.py  Connected
+16:14:02  INFO      ur_controller.py  Activating Robot
+16:14:02  INFO      ur_controller.py  Opening gripper
+16:14:06  INFO      ur_controller.py  Moving with moveJ to 'home' with speed 1.57
+16:14:08  INFO      ur_controller.py  Closing gripper
+16:14:11  INFO      ur_controller.py  Gripper took 3.282s
+16:14:11  INFO      ur_controller.py  Moving with moveJ to 'linear_1' with speed 1.57
+16:14:14  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'responses': [{'success': True, 'message': 'Gripper opened'}, {'success': True, 'message': 'Motion complete'}, {'success': True, 'message': 'Gripper closed'}, {'success': True, 'message': 'Motion complete'}]}}
+16:18:06  INFO      communication_server.py  Signal 2 received, shutting down
+16:18:06  INFO      communication_server.py  Shutting down server
+16:18:06  INFO      ur_controller.py  Disconnected
+16:18:08  INFO      main.py  Starting backend server on tcp://*:5555
+16:18:08  INFO      communication_server.py  Server ready and listening on tcp://*:5555
+16:18:10  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'ur', 'commands': [{'action': 'gripper', 'command': 'open'}, {'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}, {'action': 'gripper', 'command': 'close'}, {'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'linear_1'}}], 'message': ''}}
+16:18:10  INFO      ur_controller.py  Connected
+16:18:10  INFO      ur_controller.py  Activating Robot
+16:18:10  INFO      ur_controller.py  Opening gripper
+16:18:14  INFO      ur_controller.py  Moving with moveJ to 'home' with speed 1.57
+16:18:16  INFO      ur_controller.py  Closing gripper
+16:18:19  INFO      ur_controller.py  Moving with moveJ to 'linear_1' with speed 1.57
+16:18:22  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'responses': [{'success': True, 'message': 'Gripper opened'}, {'success': True, 'message': 'Motion complete'}, {'success': True, 'message': 'Gripper closed'}, {'success': True, 'message': 'Motion complete'}]}}
+16:18:27  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'ur', 'commands': [{'action': 'gripper', 'command': 'open'}, {'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}, {'action': 'gripper', 'command': 'close'}, {'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'linear_1'}}], 'message': ''}}
+16:18:27  INFO      ur_controller.py  Opening gripper
+16:18:31  INFO      ur_controller.py  Moving with moveJ to 'home' with speed 1.57
+16:18:33  INFO      ur_controller.py  Closing gripper
+16:18:36  INFO      ur_controller.py  Moving with moveJ to 'linear_1' with speed 1.57
+16:18:39  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'responses': [{'success': True, 'message': 'Gripper opened'}, {'success': True, 'message': 'Motion complete'}, {'success': True, 'message': 'Gripper closed'}, {'success': True, 'message': 'Motion complete'}]}}
+16:20:22  INFO      communication_server.py  Signal 2 received, shutting down
+16:20:22  INFO      communication_server.py  Shutting down server
+16:20:22  INFO      ur_controller.py  Disconnected
+16:20:25  INFO      main.py  Starting backend server on tcp://*:5555
+16:20:25  INFO      communication_server.py  Server ready and listening on tcp://*:5555
+16:20:34  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'ur', 'commands': [{'action': 'gripper', 'command': 'open'}, {'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}, {'action': 'gripper', 'command': 'close'}, {'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'linear_1'}}], 'message': ''}}
+16:20:34  INFO      ur_controller.py  Connected
+16:20:34  INFO      ur_controller.py  Activating Robot
+16:20:34  INFO      ur_controller.py  Opening gripper
+16:20:37  INFO      ur_controller.py  Moving with moveJ to 'home' with speed 1.57
+16:20:39  INFO      ur_controller.py  Closing gripper
+16:20:43  INFO      ur_controller.py  Moving with moveJ to 'linear_1' with speed 1.57
+16:20:45  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'responses': [{'success': True, 'message': 'Gripper opened'}, {'success': True, 'message': 'Motion complete'}, {'success': True, 'message': 'Gripper closed'}, {'success': True, 'message': 'Motion complete'}]}}
+16:20:55  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'ur', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}, {'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'linear_1'}}], 'message': ''}}
+16:20:55  INFO      ur_controller.py  Moving with moveJ to 'home' with speed 1.57
+16:20:57  INFO      ur_controller.py  Moving with moveJ to 'linear_1' with speed 1.57
+16:21:00  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'responses': [{'success': True, 'message': 'Motion complete'}, {'success': True, 'message': 'Motion complete'}]}}
+16:21:06  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'ur', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}, {'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'linear_1'}}], 'message': ''}}
+16:21:06  INFO      ur_controller.py  Moving with moveJ to 'home' with speed 1.57
+16:21:09  INFO      ur_controller.py  Moving with moveJ to 'linear_1' with speed 1.57
+16:21:11  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'responses': [{'success': True, 'message': 'Motion complete'}, {'success': True, 'message': 'Motion complete'}]}}
+16:21:21  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'ur', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}, {'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'linear_1'}}], 'message': ''}}
+16:21:21  INFO      ur_controller.py  Moving with moveJ to 'home' with speed 1.57
+16:21:24  INFO      ur_controller.py  Moving with moveJ to 'linear_1' with speed 1.57
+16:21:26  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'responses': [{'success': True, 'message': 'Motion complete'}, {'success': True, 'message': 'Motion complete'}]}}
