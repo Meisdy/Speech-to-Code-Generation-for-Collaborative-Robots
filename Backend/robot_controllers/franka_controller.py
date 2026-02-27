@@ -130,7 +130,7 @@ class FrankaController(BaseRobotController):
     # State
     # ------------------------------------------------------------------ #
 
-    def get_current_state(self) -> dict:
+    def get_current_pose(self) -> dict:
         try:
             joints   = self._robot.arm.get_current_joint_values()
             ros_pose = self._robot.arm.get_current_pose().pose
