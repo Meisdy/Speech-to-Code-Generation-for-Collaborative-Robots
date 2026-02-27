@@ -1,7 +1,10 @@
+import logging
 import json
 import os
 from abc import ABC, abstractmethod
 from typing import Optional
+
+logger = logging.getLogger("cobot_backend")
 
 
 class BaseRobotController(ABC):
@@ -32,14 +35,17 @@ class BaseRobotController(ABC):
         }
         self.poses[name] = entry
         self._write_poses()
+        logger.info(f"Saved position '{name}'")
         return {"success": True, "message": f"Pose '{name}' saved"}
 
     def delete_pose(self, name: str) -> dict:
         """Delete a named pose."""
         if name not in self.poses:
+            logger.info(f"Pose '{name}' unknown")
             return {"success": False, "message": f"Pose '{name}' not found"}
         del self.poses[name]
         self._write_poses()
+        logger.info(f"Deleted position '{name}'")
         return {"success": True, "message": f"Pose '{name}' deleted"}
 
     def is_ready(self) -> bool:
