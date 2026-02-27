@@ -1,13 +1,14 @@
-from Backend.robot_controllers.base_robot_controller import BaseRobotController
-from Backend.robot_controllers.mock_robot_controller import MockRobotController
-from typing import Optional # Needed for old py version of ROS / Franka
 import logging
 import time
+from typing import Optional
+
+from Backend.robot_controllers.base_robot_controller import BaseRobotController
+from Backend.robot_controllers.mock_robot_controller import MockRobotController
 
 try:
     from Backend.robot_controllers.franka_controller import FrankaController
 except ImportError:
-    FrankaController = None 
+    FrankaController = None
 
 try:
     from Backend.robot_controllers.ur_controller import URController
@@ -16,15 +17,43 @@ except ImportError:
 
 logger = logging.getLogger("cobot_backend")
 
+
 class MessageHandler:
-    """Processes commands - no knowledge of communication protocol"""
+    """Processes incoming commands and dispatches them to the robot controller."""
+
+    ALLOWED_COMMANDS = ["ping", "get_status", "execute_sequence"]
+    ROBOT_TYPES = ["franka", "ur", "mock"]
 
     def __init__(self):
-        """Initialize handler - later will include robot controller, logger"""
+        self.robot: Optional[BaseRobotController] = None
 
-        self.allowed_commands : list = ['ping', 'get_status', 'execute_sequence']
-        self.robot_types : list = ['franka', 'ur', 'mock']  # Supported robot types
-        self.robot : Optional[BaseRobotController] = None
+    def disconnect_robot(self) -> None:
+        """Disconnect and release the current robot controller."""
+        if self.robot:
+            if self.robot.is_connected():
+                self.robot.disconnect()
+            self.robot = None
+
+    def process_message(self, message: dict) -> dict:
+        """Parse and dispatch an incoming command message."""
+        try:
+            command = message.get("command", "")
+            data = message.get("data", {})
+
+            if command not in self.ALLOWED_COMMANDS:
+                return self._unknown_command(command)
+
+            commands = {
+                "ping": self._answer_ping,
+                "get_status": self._send_status,
+                "execute_sequence": lambda: self._execute_sequence(data),
+            }
+
+            return commands[command]()
+
+        except Exception as e:
+            logger.exception("Error processing message: %s", message)
+            return self._formatted_response("error", {"error message": str(e)})
 
     def _ensure_robot_ready(self, robot_type: str) -> dict:
         expected = {"ur": "URController", "franka": "FrankaController", "mock": "MockRobotController"}
@@ -38,7 +67,7 @@ class MessageHandler:
                 return self.robot.activate_robot()
             # Socket is dead — fall through to full reconnect
 
-        # Wrong robot or dead connection — full load
+        # Wrong robot or dead connection — full reload
         if self.robot:
             self.robot.disconnect()
 
@@ -56,95 +85,43 @@ class MessageHandler:
 
         result = self.robot.connect()
         if not result["success"]:
-            logger.warning("Could not reconnect to %s: %s", robot_type, result["message"])
+            logger.warning("Could not connect to %s: %s", robot_type, result["message"])
             return result
 
-        result = self.robot.activate_robot()
+        result = self.robot.activate_robot() # This will be passed automatically if robot has no defined activation
         if not result["success"]:
             logger.error("Failed to activate %s: %s", robot_type, result["message"])
             return result
 
         return result
 
-    def disconnect_robot(self) -> None:
-        """Wraper to disconnect robot"""
-        if self.robot:
-            if self.robot.is_connected():
-                self.robot.disconnect()
-            self.robot = None
-
     def _formatted_response(self, command: str, data: dict) -> dict:
-        """Format response as JSON with standard structure."""
-        return {
-            "command": command,
-            "data": data
-        }
-
-    def process_message(self, message):
-        """
-        Process incoming message and return response.
-
-        Args:
-            message: dict with {"command": str, "data": dict}
-
-        Returns:
-            dict with {"command": str, "data": dict}
-        """
-        try:
-            command = message.get("command", "")
-            data = message.get("data", {})
-
-            if command not in self.allowed_commands:
-                return self._unknown_command(command)
-
-            commands = {
-                "ping": self._answer_ping,
-                "get_status": self._send_status,
-                "execute_sequence": lambda: self._execute_sequence(data),
-            }
-
-            return commands[command]()
-
-        except Exception as e:
-            logger.exception("Error processing message: %s", message)
-            return self._formatted_response('error', {"error message": str(e)})
+        return {"command": command, "data": data}
 
     def _answer_ping(self) -> dict:
-        """Handle ping command"""
-        return self._formatted_response('success', {'message': 'Backend Alive'})
+        return self._formatted_response("success", {"message": "Backend Alive"})
 
-    def _unknown_command(self, command):
-        """Handle unknown commands"""
-        return self._formatted_response('rejected', {"reason": f"Unknown command: {command}"})
+    def _unknown_command(self, command: str) -> dict:
+        return self._formatted_response("rejected", {"reason": f"Unknown command: {command}"})
 
-    def _send_status(self):
-        """Handle get_status command"""
-        return self._formatted_response('success', {"Connected Robots": 'unknown' })
+    def _send_status(self) -> dict:
+        return self._formatted_response("success", {"Connected Robots": "unknown"})
 
-    def _execute_sequence(self, data):
-        robot_type = data['robot']
-        if robot_type not in self.robot_types:
-            return self._formatted_response('rejected', {"reason": f"Unsupported robot type: {robot_type}"})
+    def _execute_sequence(self, data: dict) -> dict:
+        robot_type = data["robot"]
+        if robot_type not in self.ROBOT_TYPES:
+            return self._formatted_response("rejected", {"reason": f"Unsupported robot type: {robot_type}"})
 
         result = self._ensure_robot_ready(robot_type)
         if not result["success"]:
-            return self._formatted_response('rejected', {"reason": f"Could not connect to {robot_type}: {result['message']}"})
+            return self._formatted_response("rejected", {"reason": f"Could not connect to {robot_type}: {result['message']}"})
 
-        responses = [self._process_command(cmd, self.robot) for cmd in data.get('commands', [])]
-        return self._formatted_response('success', {'responses': responses})
+        responses = [self._process_command(cmd, self.robot) for cmd in data.get("commands", [])]
+        return self._formatted_response("success", {"responses": responses})
 
     def _process_command(self, command: dict, robot: BaseRobotController) -> dict:
-        """
-        Process a single command
-
-        Args:
-            command: dict with the command details
-        robot: BaseRobotController instance
-
-        Returns:
-            dict with the result of the command execution
-        """
-        action = command.get('action', '')
+        """Dispatch a single command to the appropriate robot method."""
+        action = command.get("action", "")
 
         if action == "move":
             motion_type = command["motion_type"]
@@ -154,8 +131,8 @@ class MessageHandler:
 
             pose = robot.get_pose(pose_name)
             if pose is None:
-                logger.error(f"Position unknown: {pose}")
-                return {"success": False, "message": f"Unknown pose {pose_name}"}
+                logger.error("Unknown pose requested: %s", pose_name)
+                return {"success": False, "message": f"Unknown pose: {pose_name}"}
 
             offset = None
             if target.get("type") == "offset_from_pose":
@@ -167,37 +144,36 @@ class MessageHandler:
             else:
                 return robot.move_linear(pose, speed, offset)
 
-
-        elif action == 'gripper':
-            gripper_operation = command['command']
-            if gripper_operation == 'open':
-                response = robot.gripper_open()
-            elif gripper_operation == 'close':
-                response = robot.gripper_close()
+        elif action == "gripper":
+            gripper_operation = command["command"]
+            if gripper_operation == "open":
+                return robot.gripper_open()
+            elif gripper_operation == "close":
+                return robot.gripper_close()
             else:
-                return {"error": f"Unknown gripper command: {gripper_operation}"}
-            return response
+                return {"success": False, "message": f"Unknown gripper command: {gripper_operation}"}
 
-        elif action == 'wait':
-            time.sleep(command['duration_s'])
-            return {"message": f"Waited for {command['duration_s']} seconds"}
+        elif action == "wait":
+            time.sleep(command["duration_s"])
+            return {"success": True, "message": f"Waited for {command['duration_s']} seconds"}
 
-        elif action == 'pose':
-            mode = command['command']
-            pose_name = command['pose_name']
-            overwrite = command.get('overwrite', False)
+        elif action == "pose":
+            mode = command["command"]
+            pose_name = command["pose_name"]
+            overwrite = command.get("overwrite", False)
 
-            if mode == 'teach':
+            if mode == "teach":
                 return robot.save_pose(pose_name, overwrite)
-            elif mode == 'delete':
+            elif mode == "delete":
                 return robot.delete_pose(pose_name)
             else:
-                return {"error": f"Unknown pose management mode: {mode}"}
+                return {"success": False, "message": f"Unknown pose management mode: {mode}"}
+
         elif action == "freedrive":
-            if command['active']:
+            if command["active"]:
                 return robot.enable_freedrive()
             else:
                 return robot.disable_freedrive()
 
         else:
-            return {"error": f"Unknown action: {action}"}
+            return {"success": False, "message": f"Unknown action: {action}"}
