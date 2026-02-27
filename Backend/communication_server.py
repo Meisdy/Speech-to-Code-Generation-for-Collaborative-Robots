@@ -50,6 +50,6 @@ class ServerZeroMQ:
         self.socket.close()
         self.context.term()
 
-    def _handle_signal(self, sig: int) -> None:
-        logger.info("Signal %s received, shutting down", sig)
+    def _handle_signal(self, sig, frame: object):
+        logger.info('Signal %s received, shutting down', sig)
         self.running = False
