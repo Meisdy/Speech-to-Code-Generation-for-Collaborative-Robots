@@ -250,9 +250,9 @@ class URController(BaseRobotController):
         If an offset is provided, the robot performs IK internally via a pose target.
         """
         try:
-            logger.info("Moving with moveJ to '%s'", pose["name"])
             spd = (speed or DEFAULT_SPEED) * MAX_JOINT_SPEED
             acc = (speed or DEFAULT_SPEED) * MAX_JOINT_ACCEL
+            logger.info("Moving with moveJ to '%s' with speed %.2f", pose["name"], spd)
 
             if offset:
                 t = self._pose_to_rotvec(pose, offset)
@@ -260,6 +260,7 @@ class URController(BaseRobotController):
                     f"movej(p[{t[0]:.6f},{t[1]:.6f},{t[2]:.6f},"
                     f"{t[3]:.6f},{t[4]:.6f},{t[5]:.6f}],a={acc:.4f},v={spd:.4f})"
                 )
+                logger.info(f"Offset used: {offset}")
             else:
                 j = pose["joints"]
                 script = (
@@ -276,10 +277,12 @@ class URController(BaseRobotController):
     def move_linear(self, pose: dict, speed: Optional[float] = None, offset: Optional[list] = None) -> dict:
         """Linear Cartesian move (moveL). Blocks until motion is complete."""
         try:
-            logger.info("Moving with moveL to '%s'", pose["name"])
-            t   = self._pose_to_rotvec(pose, offset)
+            t = self._pose_to_rotvec(pose, offset)
             spd = (speed or DEFAULT_SPEED) * MAX_LINEAR_SPEED
             acc = (speed or DEFAULT_SPEED) * MAX_LINEAR_ACCEL
+            logger.info("Moving with moveL to '%s' with speed %.2f", pose["name"], spd)
+            if offset:
+                logger.info(f"Offset used: {offset}")
 
             script = (
                 f"movel(p[{t[0]:.6f},{t[1]:.6f},{t[2]:.6f},"
@@ -375,14 +378,14 @@ class URController(BaseRobotController):
             # Scan for a confirmed packet boundary by verifying two consecutive headers
             packet = None
             for i in range(len(buf) - 4):
-                pkt_len = struct.unpack("!I", buf[i:i+4])[0]
+                pkt_len = struct.unpack("!I", buf[i:i + 4])[0]
                 if not (1060 <= pkt_len <= STATE_RECV_BYTES):
                     continue
                 next_pkt = i + pkt_len
                 if next_pkt + 4 > len(buf):
                     continue
-                if 1060 <= struct.unpack("!I", buf[next_pkt:next_pkt+4])[0] <= STATE_RECV_BYTES:
-                    packet = buf[i:i+pkt_len]
+                if 1060 <= struct.unpack("!I", buf[next_pkt:next_pkt + 4])[0] <= STATE_RECV_BYTES:
+                    packet = buf[i:i + pkt_len]
                     break
 
             if packet is None:
@@ -449,7 +452,7 @@ class URController(BaseRobotController):
         MOTION_THRESHOLD rad between consecutive reads.
         """
         time.sleep(self.MOTION_START_DELAY)
-        deadline    = time.time() + self.MOTION_TIMEOUT
+        deadline = time.time() + self.MOTION_TIMEOUT
         prev_joints = None
 
         while time.time() < deadline:
