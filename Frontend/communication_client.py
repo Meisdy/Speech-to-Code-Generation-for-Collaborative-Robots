@@ -3,11 +3,13 @@ import zmq
 
 
 class ClientZeroMQ:
-    def __init__(self, connection_string, timeout_ms=5000):
+    def __init__(self, connection_string, timeout_ms=30000):
         """
         connection_string: "tcp://192.168.1.10:5555" or "tcp://localhost:5556"
         timeout_ms: Response timeout in milliseconds
         """
+        self.connection_str : str = connection_string
+        self.timeout_ms : int = timeout_ms
         self.context = zmq.Context()
         self.socket = self.context.socket(zmq.REQ)
         self.socket.setsockopt(zmq.RCVTIMEO, timeout_ms)
@@ -28,7 +30,10 @@ class ClientZeroMQ:
             response = self.socket.recv_json()
             return True, response
         except zmq.Again:
-            # Timeout - backend not responding
+            self.socket.close()
+            self.socket = self.context.socket(zmq.REQ)
+            self.socket.setsockopt(zmq.RCVTIMEO, self.timeout_ms)
+            self.socket.connect(self.connection_str)
             return False, {"command": "timeout", "data": {"error": "Backend timeout"}}
         except Exception as e:
             return False, {"command": "error", "data": {"error": str(e)}}
@@ -43,14 +48,14 @@ def main():
 
     data = {
         "mode": "live",
-        "robot": "mock",
+        "robot": "ur",
         "commands": [
             {
                 "action": "move",
                 "motion_type": "moveJ",
                 "target": {
                     "type": "named_pose",
-                    "name": "home"
+                    "name": "home_position"
                 }
             },
             {
@@ -60,12 +65,6 @@ def main():
             {
                 "action": "wait",
                 "duration_s": 0.5
-            },
-            {
-                "action": "pose",
-                "command": "teach",
-                "pose_name": "home",
-                "overwrite": True
             }
         ],
         "message": ""
