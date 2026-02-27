@@ -1,29 +1,25 @@
-import sys
 import os
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-BINDING_ADDRESS = "tcp://*:5555"  # Changed from localhost - binds to all interfaces
+import sys
 
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))  # package root resolution for python devices without IDE auto add
 
 from Backend.communication_server import ServerZeroMQ
 from Backend.logging_setup import setup_logging
 
+BINDING_ADDRESS = "tcp://*:5555"
 
-def main():
-    """Main entry point for robot backend server"""
 
-    # Initialize logger
+def main() -> None:
+    """Entry point for the robot backend server."""
     logger = setup_logging()
     logger.info(f"Starting backend server on {BINDING_ADDRESS}")
 
-    # Initialize server
     server = ServerZeroMQ(BINDING_ADDRESS)
 
-    # Start server loop
     try:
-        server.start()  # Should block here
+        server.start()
     except Exception as e:
-        logger.exception(f"Server error: {e}")
-        server.close()
+        logger.exception(f"Unhandled server error: {e}")
 
 
 if __name__ == "__main__":

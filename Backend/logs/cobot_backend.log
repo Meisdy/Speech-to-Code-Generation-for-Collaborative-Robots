@@ -1712,3 +1712,55 @@ PermissionError: [WinError 5] Access is denied: 'Backend'
 14:09:56  INFO      communication_server.py  Signal 2 received, shutting down
 14:09:56  INFO      communication_server.py  Shutting down server
 14:09:56  INFO      ur_controller.py  Disconnected
+14:27:18  INFO      main.py  Starting backend server on tcp://*:5555
+14:27:18  INFO      communication_server.py  Server ready and listening
+14:28:30  INFO      communication_server.py  Message received
+14:28:30  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'ur', 'commands': [{'action': 'gripper', 'command': 'open'}], 'message': ''}}
+14:28:30  INFO      ur_controller.py  Connected
+14:28:30  INFO      ur_controller.py  Activating Robot
+14:28:30  INFO      ur_controller.py  Opening gripper
+14:28:35  INFO      communication_server.py  Response sent
+14:28:35  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'responses': [{'success': True, 'message': 'Gripper opened'}]}}
+14:41:58  INFO      communication_server.py  Signal 2 received, shutting down
+14:41:58  INFO      communication_server.py  Shutting down server
+14:41:58  INFO      ur_controller.py  Disconnected
+14:42:01  INFO      main.py  Starting backend server on tcp://*:5555
+14:42:26  INFO      main.py  Starting backend server on tcp://*:5555
+14:44:40  INFO      main.py  Starting backend server on tcp://*:5555
+14:44:40  INFO      communication_server.py  Server ready and listening on tcp://*:5555
+14:44:52  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'ur', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'position_5'}}, {'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}], 'message': ''}}
+14:44:52  INFO      ur_controller.py  Connected
+14:44:52  INFO      ur_controller.py  Activating Robot
+14:44:52  INFO      ur_controller.py  Moving with moveJ to 'position_5'
+14:44:56  INFO      ur_controller.py  Moving with moveJ to 'home'
+14:45:01  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'responses': [{'success': True, 'message': 'Motion complete'}, {'success': True, 'message': 'Motion complete'}]}}
+14:49:04  INFO      communication_server.py  Shutting down server
+14:49:04  INFO      ur_controller.py  Disconnected
+14:49:04  ERROR     main.py  Server error: ServerZeroMQ._handle_signal() takes 2 positional arguments but 3 were given
+Traceback (most recent call last):
+  File "C:\Users\Sandy\Desktop\Cobot Code Generation\Backend\main.py", line 23, in main
+    server.start()  # Should block here
+    ^^^^^^^^^^^^^^
+  File "C:\Users\Sandy\Desktop\Cobot Code Generation\Backend\communication_server.py", line 34, in start
+    message = self.socket.recv_json()
+              ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Sandy\Desktop\Cobot Code Generation\.venv\Lib\site-packages\zmq\sugar\socket.py", line 1031, in recv_json
+    msg = self.recv(flags)
+          ^^^^^^^^^^^^^^^^
+  File "zmq/backend/cython/_zmq.py", line 1218, in zmq.backend.cython._zmq.Socket.recv
+    def recv(self, flags=0, copy: bint = True, track: bint = False):
+    ^^^^^^^^^^^
+  File "zmq/backend/cython/_zmq.py", line 1253, in zmq.backend.cython._zmq.Socket.recv
+    return _recv_copy(self.handle, flags)
+    ^^^^^^^^^^^
+  File "zmq/backend/cython/_zmq.py", line 1413, in zmq.backend.cython._zmq._recv_copy
+    raise
+  File "zmq/backend/cython/_zmq.py", line 1408, in zmq.backend.cython._zmq._recv_copy
+    _check_rc(rc)
+    ^^^^^^^^^^^
+  File "zmq/backend/cython/_zmq.py", line 179, in zmq.backend.cython._zmq._check_rc
+    PyErr_CheckSignals()
+    ^^^^^^^^^^^
+TypeError: ServerZeroMQ._handle_signal() takes 2 positional arguments but 3 were given
+14:49:04  INFO      communication_server.py  Shutting down server
+14:49:08  INFO      main.py  Starting backend server on tcp://*:5555
