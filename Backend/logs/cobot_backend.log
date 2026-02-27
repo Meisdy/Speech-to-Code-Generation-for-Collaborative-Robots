@@ -1669,3 +1669,46 @@ PermissionError: [WinError 5] Access is denied: 'Backend'
 11:32:47  INFO      ur_controller.py  Moving with moveJ to 'home'
 11:32:49  INFO      communication_server.py  Response sent
 11:32:49  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'responses': [{'success': True, 'message': 'Motion complete'}]}}
+11:39:27  INFO      communication_server.py  Signal 2 received, shutting down
+11:39:27  INFO      communication_server.py  Shutting down server
+11:39:27  INFO      ur_controller.py  Disconnected
+11:56:29  INFO      main.py  Starting backend server on tcp://*:5555
+11:56:29  INFO      communication_server.py  Server ready and listening
+11:56:32  INFO      communication_server.py  Signal 2 received, shutting down
+11:56:32  INFO      communication_server.py  Shutting down server
+14:03:10  INFO      main.py  Starting backend server on tcp://*:5555
+14:03:10  INFO      communication_server.py  Server ready and listening
+14:03:50  INFO      communication_server.py  Message received
+14:03:50  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'ur', 'commands': [{'action': 'gripper', 'command': 'close'}], 'message': ''}}
+14:03:50  INFO      ur_controller.py  Connected
+14:03:50  INFO      ur_controller.py  Activating Robot
+14:03:50  INFO      ur_controller.py  Closing gripper
+14:03:54  INFO      communication_server.py  Response sent
+14:03:54  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'responses': [{'success': True, 'message': 'Gripper closed'}]}}
+14:04:16  INFO      communication_server.py  Message received
+14:04:16  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'ur', 'commands': [{'action': 'gripper', 'command': 'open'}], 'message': ''}}
+14:04:16  WARNING   ur_controller.py  Connection lost
+14:04:16  INFO      ur_controller.py  Disconnected
+14:04:16  INFO      ur_controller.py  Connected
+14:04:16  INFO      ur_controller.py  Activating Robot
+14:04:16  INFO      ur_controller.py  Opening gripper
+14:04:20  INFO      communication_server.py  Response sent
+14:04:20  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'responses': [{'success': True, 'message': 'Gripper opened'}]}}
+14:05:08  INFO      communication_server.py  Message received
+14:05:08  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'ur', 'commands': [{'action': 'gripper', 'command': 'close'}], 'message': ''}}
+14:05:08  WARNING   ur_controller.py  Connection lost
+14:05:08  INFO      ur_controller.py  Disconnected
+14:05:13  WARNING   message_handler.py  Could not reconnect to ur: timed out
+14:05:13  INFO      communication_server.py  Response sent
+14:05:13  DEBUG     communication_server.py  Sent response: {'command': 'rejected', 'data': {'reason': 'Could not connect to ur: timed out'}}
+14:05:28  INFO      communication_server.py  Message received
+14:05:28  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'ur', 'commands': [{'action': 'gripper', 'command': 'close'}], 'message': ''}}
+14:05:28  INFO      ur_controller.py  Disconnected
+14:05:28  INFO      ur_controller.py  Connected
+14:05:28  INFO      ur_controller.py  Activating Robot
+14:05:28  INFO      ur_controller.py  Closing gripper
+14:05:33  INFO      communication_server.py  Response sent
+14:05:33  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'responses': [{'success': True, 'message': 'Gripper closed'}]}}
+14:09:56  INFO      communication_server.py  Signal 2 received, shutting down
+14:09:56  INFO      communication_server.py  Shutting down server
+14:09:56  INFO      ur_controller.py  Disconnected
