@@ -1479,3 +1479,193 @@ PermissionError: [WinError 5] Access is denied: 'Backend'
 17:00:37  INFO      communication_server.py  Signal 2 received, shutting down
 17:00:37  INFO      communication_server.py  Shutting down server
 17:00:37  INFO      ur_controller.py  Disconnected
+10:19:02  INFO      main.py  Starting backend server on tcp://*:5555
+10:19:02  INFO      communication_server.py  Server ready and listening
+10:19:56  INFO      communication_server.py  Message received
+10:19:56  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'ur', 'commands': [{'action': 'gripper', 'command': 'close'}], 'message': ''}}
+10:20:01  WARNING   message_handler.py  Could not reconnect to ur: timed out
+10:20:01  INFO      communication_server.py  Response sent
+10:20:01  DEBUG     communication_server.py  Sent response: {'command': 'rejected', 'data': {'reason': 'Could not connect to ur: timed out'}}
+10:21:30  INFO      communication_server.py  Signal 2 received, shutting down
+10:21:30  INFO      communication_server.py  Shutting down server
+10:21:34  INFO      main.py  Starting backend server on tcp://*:5555
+10:21:34  INFO      communication_server.py  Server ready and listening
+10:22:04  INFO      communication_server.py  Message received
+10:22:04  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'franka', 'commands': [{'action': 'gripper', 'command': 'close'}], 'message': ''}}
+10:22:04  WARNING   message_handler.py  Cannot load Franka adapter: dependencies not installed
+10:22:04  INFO      communication_server.py  Response sent
+10:22:04  DEBUG     communication_server.py  Sent response: {'command': 'rejected', 'data': {'reason': 'Could not connect to franka: FrankaController dependencies not installed'}}
+10:22:24  INFO      communication_server.py  Message received
+10:22:24  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'ur', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}], 'message': ''}}
+10:22:24  INFO      ur_controller.py  Connected
+10:22:24  INFO      ur_controller.py  Activating Robot
+10:22:49  INFO      ur_controller.py  Robot active and ready
+10:22:49  INFO      communication_server.py  Response sent
+10:22:49  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'responses': [{'success': False, 'message': 'Unknown pose home'}]}}
+10:30:40  INFO      communication_server.py  Message received
+10:30:40  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'ue', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}, {'action': 'gripper', 'command': 'close'}, {'action': 'wait', 'duration_s': 0.5}], 'message': ''}}
+10:30:40  INFO      communication_server.py  Response sent
+10:30:40  DEBUG     communication_server.py  Sent response: {'command': 'rejected', 'data': {'reason': 'Unsupported robot type: ue'}}
+10:30:48  INFO      communication_server.py  Message received
+10:30:48  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'ur', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}, {'action': 'gripper', 'command': 'close'}, {'action': 'wait', 'duration_s': 0.5}], 'message': ''}}
+10:30:48  INFO      ur_controller.py  Closing gripper
+10:30:54  INFO      communication_server.py  Response sent
+10:30:54  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'responses': [{'success': False, 'message': 'Unknown pose home'}, {'success': True, 'message': 'Gripper closed'}, {'message': 'Waited for 0.5 seconds'}]}}
+10:31:07  INFO      communication_server.py  Message received
+10:31:07  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'ur', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home_position'}}, {'action': 'gripper', 'command': 'open'}, {'action': 'wait', 'duration_s': 0.5}], 'message': ''}}
+10:31:07  INFO      ur_controller.py  Moving with moveJ to 'home_position'
+10:31:11  INFO      ur_controller.py  Opening gripper
+10:31:16  INFO      communication_server.py  Response sent
+10:31:16  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'responses': [{'success': True, 'message': 'Motion complete'}, {'success': True, 'message': 'Gripper opened'}, {'message': 'Waited for 0.5 seconds'}]}}
+10:38:55  INFO      communication_server.py  Signal 2 received, shutting down
+10:38:55  INFO      communication_server.py  Shutting down server
+10:38:55  INFO      ur_controller.py  Disconnected
+10:38:56  INFO      main.py  Starting backend server on tcp://*:5555
+10:38:56  INFO      communication_server.py  Server ready and listening
+10:39:16  INFO      communication_server.py  Message received
+10:39:16  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'franka', 'commands': [{'action': 'gripper', 'command': 'close'}], 'message': ''}}
+10:39:16  WARNING   message_handler.py  Cannot load Franka adapter: dependencies not installed
+10:39:16  INFO      communication_server.py  Response sent
+10:39:16  DEBUG     communication_server.py  Sent response: {'command': 'rejected', 'data': {'reason': 'Could not connect to franka: FrankaController dependencies not installed'}}
+10:39:28  INFO      communication_server.py  Message received
+10:39:28  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'ur', 'commands': [{'action': 'gripper', 'command': 'close'}], 'message': ''}}
+10:39:28  INFO      ur_controller.py  Connected
+10:39:28  INFO      ur_controller.py  Activating Robot
+10:39:28  INFO      ur_controller.py  Closing gripper
+10:39:32  INFO      communication_server.py  Response sent
+10:39:32  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'responses': [{'success': True, 'message': 'Gripper closed'}]}}
+10:39:48  INFO      communication_server.py  Message received
+10:39:48  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'ur', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'position_5'}}], 'message': ''}}
+10:39:48  INFO      ur_controller.py  Moving with moveJ to 'position_5'
+10:39:53  INFO      communication_server.py  Response sent
+10:39:53  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'responses': [{'success': True, 'message': 'Motion complete'}]}}
+10:40:56  INFO      communication_server.py  Message received
+10:40:56  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'ur', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}, {'action': 'gripper', 'command': 'open'}, {'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'offset_from_pose', 'name': 'position_5', 'offset': {'x_mm': 0.0, 'y_mm': 0.0, 'z_mm': 0.0}}}], 'message': ''}}
+10:40:56  INFO      ur_controller.py  Opening gripper
+10:41:01  INFO      ur_controller.py  Moving with moveL to 'position_5'
+10:41:02  INFO      communication_server.py  Response sent
+10:41:02  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'responses': [{'success': False, 'message': 'Unknown pose home'}, {'success': True, 'message': 'Gripper opened'}, {'success': True, 'message': 'Motion complete'}]}}
+10:45:41  INFO      communication_server.py  Message received
+10:45:41  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'ur', 'commands': [{'action': 'gripper', 'command': 'close'}], 'message': ''}}
+10:45:41  INFO      ur_controller.py  Activating Robot
+10:46:04  INFO      ur_controller.py  Robot active and ready
+10:46:04  INFO      ur_controller.py  Closing gripper
+10:46:08  INFO      communication_server.py  Response sent
+10:46:08  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'responses': [{'success': True, 'message': 'Gripper closed'}]}}
+10:46:58  INFO      communication_server.py  Message received
+10:46:58  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'ur', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}], 'message': ''}}
+10:46:58  INFO      ur_controller.py  Activating Robot
+10:47:25  INFO      ur_controller.py  Robot active and ready
+10:47:25  INFO      communication_server.py  Response sent
+10:47:25  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'responses': [{'success': False, 'message': 'Unknown pose home'}]}}
+10:47:52  INFO      communication_server.py  Message received
+10:47:52  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'ur', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}], 'message': ''}}
+10:47:52  INFO      communication_server.py  Response sent
+10:47:52  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'responses': [{'success': False, 'message': 'Unknown pose home'}]}}
+10:48:22  INFO      communication_server.py  Message received
+10:48:22  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'ur', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'position_2'}}], 'message': ''}}
+10:48:22  INFO      ur_controller.py  Moving with moveJ to 'position_2'
+10:48:28  INFO      communication_server.py  Response sent
+10:48:28  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'responses': [{'success': True, 'message': 'Motion complete'}]}}
+10:50:13  INFO      communication_server.py  Signal 2 received, shutting down
+10:50:13  INFO      communication_server.py  Shutting down server
+10:50:13  INFO      ur_controller.py  Disconnected
+10:54:44  INFO      main.py  Starting backend server on tcp://*:5555
+10:54:44  INFO      communication_server.py  Server ready and listening
+10:55:00  INFO      communication_server.py  Message received
+10:55:00  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'd1'}}], 'message': ''}}
+10:55:00  WARNING   message_handler.py  Cannot load Franka adapter: dependencies not installed
+10:55:00  INFO      communication_server.py  Response sent
+10:55:00  DEBUG     communication_server.py  Sent response: {'command': 'rejected', 'data': {'reason': 'Could not connect to franka: FrankaController dependencies not installed'}}
+10:55:16  INFO      communication_server.py  Message received
+10:55:16  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'ur', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'd1'}}, {'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'offset_from_pose', 'name': 'd2', 'offset': {'x_mm': 0.0, 'y_mm': 0.0, 'z_mm': 0.0}}}, {'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'd3'}}, {'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'offset_from_pose', 'name': 'd4', 'offset': {'x_mm': 0.0, 'y_mm': 0.0, 'z_mm': 0.0}}}], 'message': ''}}
+10:55:16  INFO      ur_controller.py  Connected
+10:55:16  INFO      ur_controller.py  Activating Robot
+10:55:16  INFO      ur_controller.py  Moving with moveJ to 'd1'
+10:55:19  INFO      ur_controller.py  Moving with moveL to 'd2'
+10:55:24  INFO      ur_controller.py  Moving with moveJ to 'd3'
+10:55:28  INFO      ur_controller.py  Moving with moveL to 'd4'
+10:55:33  INFO      communication_server.py  Response sent
+10:55:33  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'responses': [{'success': True, 'message': 'Motion complete'}, {'success': True, 'message': 'Motion complete'}, {'success': True, 'message': 'Motion complete'}, {'success': True, 'message': 'Motion complete'}]}}
+10:56:35  INFO      communication_server.py  Message received
+10:56:35  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'ur', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}], 'message': ''}}
+10:56:35  INFO      communication_server.py  Response sent
+10:56:35  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'responses': [{'success': False, 'message': 'Unknown pose home'}]}}
+10:59:36  INFO      communication_server.py  Message received
+10:59:36  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'ur', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}], 'message': ''}}
+10:59:36  INFO      communication_server.py  Response sent
+10:59:36  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'responses': [{'success': False, 'message': 'Unknown pose home'}]}}
+11:01:48  INFO      communication_server.py  Signal 2 received, shutting down
+11:01:48  INFO      communication_server.py  Shutting down server
+11:01:48  INFO      ur_controller.py  Disconnected
+11:01:50  INFO      main.py  Starting backend server on tcp://*:5555
+11:01:50  INFO      communication_server.py  Server ready and listening
+11:02:00  INFO      communication_server.py  Message received
+11:02:00  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'ur', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}], 'message': ''}}
+11:02:00  INFO      ur_controller.py  Connected
+11:02:00  INFO      ur_controller.py  Activating Robot
+11:02:00  INFO      ur_controller.py  Moving with moveJ to 'home'
+11:02:03  INFO      communication_server.py  Response sent
+11:02:03  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'responses': [{'success': True, 'message': 'Motion complete'}]}}
+11:02:23  INFO      communication_server.py  Message received
+11:02:23  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'ur', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'position_5'}}, {'action': 'gripper', 'command': 'close'}, {'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}, {'action': 'gripper', 'command': 'open'}], 'message': ''}}
+11:02:23  INFO      ur_controller.py  Moving with moveJ to 'position_5'
+11:02:28  INFO      ur_controller.py  Closing gripper
+11:02:32  INFO      ur_controller.py  Moving with moveJ to 'home'
+11:02:37  INFO      ur_controller.py  Opening gripper
+11:02:41  INFO      communication_server.py  Response sent
+11:02:41  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'responses': [{'success': True, 'message': 'Motion complete'}, {'success': True, 'message': 'Gripper closed'}, {'success': True, 'message': 'Motion complete'}, {'success': True, 'message': 'Gripper opened'}]}}
+11:13:11  INFO      communication_server.py  Signal 2 received, shutting down
+11:13:11  INFO      communication_server.py  Shutting down server
+11:13:11  INFO      ur_controller.py  Disconnected
+11:17:07  INFO      main.py  Starting backend server on tcp://*:5555
+11:17:07  INFO      communication_server.py  Server ready and listening
+11:17:32  INFO      communication_server.py  Message received
+11:17:32  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'franka', 'commands': [{'action': 'freedrive', 'active': True}], 'message': ''}}
+11:17:32  WARNING   message_handler.py  Cannot load Franka adapter: dependencies not installed
+11:17:32  INFO      communication_server.py  Response sent
+11:17:32  DEBUG     communication_server.py  Sent response: {'command': 'rejected', 'data': {'reason': 'Could not connect to franka: FrankaController dependencies not installed'}}
+11:17:47  INFO      communication_server.py  Message received
+11:17:47  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'mock', 'commands': [{'action': 'freedrive', 'active': True}], 'message': ''}}
+11:17:48  INFO      mock_robot_controller.py  Connected
+11:17:48  INFO      communication_server.py  Response sent
+11:17:48  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'responses': [{'success': False, 'message': 'Freedrive not implemented for this robot'}]}}
+11:18:51  INFO      communication_server.py  Message received
+11:18:51  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'ur', 'commands': [{'action': 'freedrive', 'active': True}], 'message': ''}}
+11:18:51  INFO      mock_robot_controller.py  Disconnected
+11:18:51  INFO      ur_controller.py  Connected
+11:18:51  INFO      ur_controller.py  Activating Robot
+11:18:51  INFO      ur_controller.py  Freedrive enabled
+11:18:51  INFO      communication_server.py  Response sent
+11:18:51  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'responses': [{'success': True, 'message': 'Freedrive enabled'}]}}
+11:19:08  INFO      communication_server.py  Message received
+11:19:08  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'ur', 'commands': [{'action': 'freedrive', 'active': False}], 'message': ''}}
+11:19:08  INFO      ur_controller.py  Freedrive disabled
+11:19:08  INFO      communication_server.py  Response sent
+11:19:08  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'responses': [{'success': True, 'message': 'Freedrive disabled'}]}}
+11:21:28  INFO      communication_server.py  Message received
+11:21:28  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'ur', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}], 'message': ''}}
+11:21:28  INFO      ur_controller.py  Moving with moveJ to 'home'
+11:21:31  INFO      communication_server.py  Response sent
+11:21:31  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'responses': [{'success': True, 'message': 'Motion complete'}]}}
+11:31:43  INFO      communication_server.py  Message received
+11:31:43  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'ur', 'commands': [{'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'named_pose', 'name': 'position_1'}}], 'message': ''}}
+11:31:43  INFO      ur_controller.py  Moving with moveL to 'position_1'
+11:31:47  INFO      communication_server.py  Response sent
+11:31:47  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'responses': [{'success': True, 'message': 'Motion complete'}]}}
+11:31:57  INFO      communication_server.py  Message received
+11:31:57  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'ur', 'commands': [{'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'named_pose', 'name': 'linear_1'}}], 'message': ''}}
+11:31:57  INFO      ur_controller.py  Moving with moveL to 'linear_1'
+11:32:01  INFO      communication_server.py  Response sent
+11:32:01  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'responses': [{'success': True, 'message': 'Motion complete'}]}}
+11:32:14  INFO      communication_server.py  Message received
+11:32:14  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'ur', 'commands': [{'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'named_pose', 'name': 'linear_2'}}, {'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'named_pose', 'name': 'linear_1'}}], 'message': ''}}
+11:32:14  INFO      ur_controller.py  Moving with moveL to 'linear_2'
+11:32:21  INFO      ur_controller.py  Moving with moveL to 'linear_1'
+11:32:28  INFO      communication_server.py  Response sent
+11:32:28  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'responses': [{'success': True, 'message': 'Motion complete'}, {'success': True, 'message': 'Motion complete'}]}}
+11:32:47  INFO      communication_server.py  Message received
+11:32:47  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'ur', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}], 'message': ''}}
+11:32:47  INFO      ur_controller.py  Moving with moveJ to 'home'
+11:32:49  INFO      communication_server.py  Response sent
+11:32:49  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'responses': [{'success': True, 'message': 'Motion complete'}]}}

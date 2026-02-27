@@ -154,6 +154,7 @@ class MessageHandler:
 
             pose = robot.get_pose(pose_name)
             if pose is None:
+                logger.error(f"Position unknown: {pose}")
                 return {"success": False, "message": f"Unknown pose {pose_name}"}
 
             offset = None
@@ -192,6 +193,11 @@ class MessageHandler:
                 return robot.delete_pose(pose_name)
             else:
                 return {"error": f"Unknown pose management mode: {mode}"}
+        elif action == "freedrive":
+            if command['active']:
+                return robot.enable_freedrive()
+            else:
+                return robot.disable_freedrive()
 
         else:
             return {"error": f"Unknown action: {action}"}

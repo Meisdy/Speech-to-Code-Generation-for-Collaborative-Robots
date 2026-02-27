@@ -191,7 +191,7 @@ class Controller:
             logger.info("Execution: Backend executed command successfully. Details available in logfile")
         else:
             self.gui.set_gui_status_line("❌ Execution failed", "danger")
-            logger.error("Execution: Backend failed to execute command: %s", response)
+            logger.exception("Execution: Backend failed to execute command: %s", response)
         self.state = State.IDLE
         self._set_button_state()
 
