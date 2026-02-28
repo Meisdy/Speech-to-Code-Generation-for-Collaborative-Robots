@@ -1,7 +1,7 @@
 import os
 import logging
 from logging.handlers import RotatingFileHandler
-from config import LOGGING_LEVEL, LOGGING_LEVEL_FILE
+from config_backend import LOGGING_LEVEL, LOGGING_LEVEL_FILE
 
 LOG_DIR = os.path.join(os.path.dirname(__file__), "logs")
 

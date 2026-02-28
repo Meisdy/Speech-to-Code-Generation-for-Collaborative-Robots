@@ -4,6 +4,7 @@ import signal
 import zmq
 
 from Backend.message_handler import MessageHandler
+from config_backend import ZMQ_TIMEOUT_MS
 
 logger = logging.getLogger("cobot_backend")
 
@@ -21,7 +22,7 @@ class ServerZeroMQ:
     def start(self) -> None:
         """Bind socket, register signals, and enter the receive-respond loop."""
         self.socket.bind(self.bind_address)
-        self.socket.setsockopt(zmq.RCVTIMEO, 1000)  # allows clean interrupt checks
+        self.socket.setsockopt(zmq.RCVTIMEO, ZMQ_TIMEOUT_MS)  # allows clean interrupt checks
         signal.signal(signal.SIGINT, self._handle_signal)
         signal.signal(signal.SIGTERM, self._handle_signal)
 
