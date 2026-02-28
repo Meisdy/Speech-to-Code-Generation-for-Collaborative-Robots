@@ -1,6 +1,6 @@
-import json
 import zmq
 
+MAX_RETRIES = 3
 
 class ClientZeroMQ:
     def __init__(self, connection_string, timeout_ms=30000):
@@ -15,28 +15,25 @@ class ClientZeroMQ:
         self.socket.setsockopt(zmq.RCVTIMEO, timeout_ms)
         self.socket.connect(connection_string)
 
-    def send_command(self, command_str, data_dict):
-        """
-        Send command and wait for response.
-        Returns: (success: bool, response_dict: dict)
-        """
-        message = {
-            "command": command_str,
-            "data": data_dict
-        }
+    def _reconnect(self):
+        self.socket.close()
+        self.socket = self.context.socket(zmq.REQ)
+        self.socket.setsockopt(zmq.RCVTIMEO, self.timeout_ms)
+        self.socket.connect(self.connection_str)
 
-        try:
-            self.socket.send_json(message)
-            response = self.socket.recv_json()
-            return True, response
-        except zmq.Again:
-            self.socket.close()
-            self.socket = self.context.socket(zmq.REQ)
-            self.socket.setsockopt(zmq.RCVTIMEO, self.timeout_ms)
-            self.socket.connect(self.connection_str)
-            return False, {"command": "timeout", "data": {"error": "Backend timeout"}}
-        except Exception as e:
-            return False, {"command": "error", "data": {"error": str(e)}}
+    def send_command(self, command_str, data_dict):
+        message = {"command": command_str, "data": data_dict}
+        for attempt in range(MAX_RETRIES):
+            try:
+                self.socket.send_json(message)
+                response = self.socket.recv_json()
+                return True, response
+            except zmq.Again:
+                self._reconnect()
+            except Exception as e:
+                return False, {"command": "error", "data": {"error": str(e)}}
+        return False, {"command": "timeout",
+                       "data": {"error": f"Backend unreachable after {MAX_RETRIES} attempts"}}
 
     def close(self):
         self.socket.close()

@@ -2323,3 +2323,37 @@ TypeError: ServerZeroMQ._handle_signal() takes 2 positional arguments but 3 were
 15:25:20  INFO      communication_server.py  Signal 2 received, shutting down
 15:25:20  INFO      communication_server.py  Shutting down server
 15:25:20  INFO      mock_controller.py  Disconnected
+15:25:22  INFO      main.py  Starting backend server on tcp://*:5555
+15:25:22  DEBUG     message_handler.py  Controller available: 'mock' -> MockRobotController
+15:25:22  DEBUG     message_handler.py  Controller available: 'ur' -> URController
+15:25:22  INFO      communication_server.py  Server ready and listening on tcp://*:5555
+15:25:31  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'mock', 'commands': [{'action': 'wait', 'duration_s': 2.0}], 'message': ''}}
+15:25:31  INFO      mock_controller.py  Connected
+15:25:31  INFO      message_handler.py  Waiting for 2.0s
+15:25:33  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+15:29:58  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'mock', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}], 'message': ''}}
+15:29:58  INFO      mock_controller.py  Moving with moveJ to 'home'
+15:30:00  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+15:35:14  INFO      communication_server.py  Signal 2 received, shutting down
+15:35:14  INFO      communication_server.py  Shutting down server
+15:35:14  INFO      mock_controller.py  Disconnected
+15:44:53  INFO      main.py  Starting backend server on tcp://*:5555
+15:44:53  DEBUG     message_handler.py  Controller available: 'mock' -> MockRobotController
+15:44:53  DEBUG     message_handler.py  Controller available: 'ur' -> URController
+15:44:53  INFO      communication_server.py  Server ready and listening on tcp://*:5555
+15:45:04  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'ur', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}], 'message': ''}}
+15:45:09  WARNING   message_handler.py  Could not connect to ur: timed out
+15:45:09  DEBUG     communication_server.py  Sent response: {'command': 'rejected', 'data': {'reason': 'Could not connect to ur: timed out'}}
+15:49:21  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}], 'message': ''}}
+15:49:21  DEBUG     communication_server.py  Sent response: {'command': 'rejected', 'data': {'reason': 'Unsupported robot type: franka'}}
+15:53:57  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'mock', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}], 'message': ''}}
+15:53:57  INFO      ur_controller.py  Disconnected
+15:53:58  INFO      mock_controller.py  Connected
+15:53:58  INFO      mock_controller.py  Moving with moveJ to 'home'
+15:54:00  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+15:54:15  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'ur', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}], 'message': ''}}
+15:54:15  INFO      mock_controller.py  Disconnected
+15:54:20  WARNING   message_handler.py  Could not connect to ur: timed out
+15:54:20  DEBUG     communication_server.py  Sent response: {'command': 'rejected', 'data': {'reason': 'Could not connect to ur: timed out'}}
+15:54:26  INFO      communication_server.py  Signal 2 received, shutting down
+15:54:26  INFO      communication_server.py  Shutting down server
