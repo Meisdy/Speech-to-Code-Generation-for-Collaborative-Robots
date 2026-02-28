@@ -2303,3 +2303,20 @@ TypeError: ServerZeroMQ._handle_signal() takes 2 positional arguments but 3 were
 15:13:10  DEBUG     communication_server.py  Sent response: {'command': 'rejected', 'data': {'reason': 'Could not connect to ur: timed out'}}
 15:14:11  INFO      communication_server.py  Signal 2 received, shutting down
 15:14:11  INFO      communication_server.py  Shutting down server
+15:19:50  INFO      main.py  Starting backend server on tcp://*:5555
+15:19:50  DEBUG     message_handler.py  Controller available: 'mock' -> MockRobotController
+15:19:50  DEBUG     message_handler.py  Controller available: 'ur' -> URController
+15:19:50  INFO      communication_server.py  Server ready and listening on tcp://*:5555
+15:21:10  INFO      communication_server.py  Signal 2 received, shutting down
+15:21:10  INFO      communication_server.py  Shutting down server
+15:23:13  INFO      main.py  Starting backend server on tcp://*:5555
+15:23:13  DEBUG     message_handler.py  Controller available: 'mock' -> MockRobotController
+15:23:13  DEBUG     message_handler.py  Controller available: 'ur' -> URController
+15:23:13  INFO      communication_server.py  Server ready and listening on tcp://*:5555
+15:23:13  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}], 'message': ''}}
+15:23:13  DEBUG     communication_server.py  Sent response: {'command': 'rejected', 'data': {'reason': 'Unsupported robot type: franka'}}
+15:23:20  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'franka', 'commands': [{'action': 'wait', 'duration_s': 2.0}], 'message': ''}}
+15:23:20  DEBUG     communication_server.py  Sent response: {'command': 'rejected', 'data': {'reason': 'Unsupported robot type: franka'}}
+15:23:31  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'mock', 'commands': [{'action': 'wait', 'duration_s': 2.0}], 'message': ''}}
+15:23:32  INFO      mock_controller.py  Connected
+15:23:34  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
