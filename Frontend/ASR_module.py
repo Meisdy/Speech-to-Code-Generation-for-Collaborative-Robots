@@ -31,7 +31,7 @@ class SpeechRecognizer:
         self.threshold: float = config_frontend.ASR_CONFIDENCE_THRESHOLD
         self.sample_rate: int = config_frontend.ASR_SAMPLE_RATE
         self.use_fp16: bool = config_frontend.ASR_FP16
-        self.log_audio: bool = config.LOGGING_SAVE_AUDIO
+        self.log_audio: bool = config_frontend.LOGGING_SAVE_AUDIO
         self.log_path: str = config_frontend.DATA_DIR
 
         # Recording data

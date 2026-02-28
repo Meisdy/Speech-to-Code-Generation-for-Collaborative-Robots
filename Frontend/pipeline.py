@@ -35,7 +35,7 @@ class Controller:
         self.parser = CodeParser()
         self.client = ClientZeroMQ(config_frontend.BACKEND_IP)
         self.gui = None
-        self.confidence_threshold = config.ASR_CONFIDENCE_THRESHOLD
+        self.confidence_threshold = config_frontend.ASR_CONFIDENCE_THRESHOLD
 
         # Recording thread control
         self.recording_active = threading.Event()

@@ -4327,3 +4327,75 @@ NoneType: None
 15:13:05  DEBUG     pipeline.py  Sending data: {"mode": "live", "robot": "ur", "commands": [{"action": "move", "motion_type": "moveJ", "target": {"type": "named_pose", "name": "home"}}], "message": ""}
 15:13:10  WARNING   pipeline.py  Execution: Command rejected — Could not connect to ur: timed out
 15:14:10  INFO      main.py  Application shutting down
+15:20:42  INFO      main.py  Application starting
+15:20:42  ERROR     ASR_module.py  Error closing PyAudio: 'SpeechRecognizer' object has no attribute 'stream'
+15:21:15  INFO      main.py  Application starting
+15:21:39  INFO      main.py  Application starting
+15:22:21  INFO      main.py  Application starting
+15:22:23  INFO      main.py  Application ready
+15:22:25  INFO      pipeline.py  Recording started
+15:22:25  INFO      pipeline.py  Recording stopped, starting transcription
+15:22:26  INFO      ASR_module.py  ASR: transcribed text '', confidence = 0.00
+15:22:26  WARNING   pipeline.py  Transcription failed: no text detected or zero confidence
+15:22:30  INFO      pipeline.py  Recording started
+15:22:32  INFO      pipeline.py  Recording stopped, starting transcription
+15:22:32  INFO      ASR_module.py  ASR: transcribed text 'Move to home.', confidence = 0.78
+15:22:36  DEBUG     parsing_module.py  Parser: LLM raw response preview: {
+  "mode": "live",
+  "robot": "franka",
+  "commands": [
+    {
+      "action": "move",
+      "motion_type": "moveJ",
+      "target": {
+        "type": "named_pose",
+        "name": "home"
+      }
+    }
+  ]
+}
+15:22:36  DEBUG     parsing_module.py  Parser: Parsed JSON after cleanup: {"mode": "live", "robot": "franka", "commands": [{"action": "move", "motion_type": "moveJ", "target": {"type": "named_pose", "name": "home"}}]}
+15:22:36  INFO      parsing_module.py  Parser: Parsing successful
+15:22:36  INFO      pipeline.py  Parser: Command summary "Move to home pos."
+15:22:36  INFO      pipeline.py  Client: Sending data to backend
+15:22:36  DEBUG     pipeline.py  Sending data: {"mode": "live", "robot": "franka", "commands": [{"action": "move", "motion_type": "moveJ", "target": {"type": "named_pose", "name": "home"}}], "message": ""}
+15:23:06  ERROR     pipeline.py  Execution: Backend error — {'command': 'timeout', 'data': {'error': 'Backend timeout'}}
+15:23:15  INFO      pipeline.py  Recording started
+15:23:17  INFO      pipeline.py  Recording stopped, starting transcription
+15:23:17  INFO      ASR_module.py  ASR: transcribed text 'Wait two seconds.', confidence = 0.75
+15:23:20  DEBUG     parsing_module.py  Parser: LLM raw response preview: {
+  "mode": "live",
+  "robot": "franka",
+  "commands": [
+    {
+      "action": "wait",
+      "duration_s": 2.0
+    }
+  ]
+}
+15:23:20  DEBUG     parsing_module.py  Parser: Parsed JSON after cleanup: {"mode": "live", "robot": "franka", "commands": [{"action": "wait", "duration_s": 2.0}]}
+15:23:20  INFO      parsing_module.py  Parser: Parsing successful
+15:23:20  INFO      pipeline.py  Parser: Command summary "Wait 2.0s"
+15:23:20  INFO      pipeline.py  Client: Sending data to backend
+15:23:20  DEBUG     pipeline.py  Sending data: {"mode": "live", "robot": "franka", "commands": [{"action": "wait", "duration_s": 2.0}], "message": ""}
+15:23:20  WARNING   pipeline.py  Execution: Command rejected — Unsupported robot type: franka
+15:23:25  INFO      pipeline.py  Recording started
+15:23:27  INFO      pipeline.py  Recording stopped, starting transcription
+15:23:28  INFO      ASR_module.py  ASR: transcribed text 'Wait two seconds.', confidence = 0.69
+15:23:28  WARNING   pipeline.py  ASR confidence low: 0.69 - parsing may fail
+15:23:31  DEBUG     parsing_module.py  Parser: LLM raw response preview: {
+  "mode": "live",
+  "robot": "mock",
+  "commands": [
+    {
+      "action": "wait",
+      "duration_s": 2.0
+    }
+  ]
+}
+15:23:31  DEBUG     parsing_module.py  Parser: Parsed JSON after cleanup: {"mode": "live", "robot": "mock", "commands": [{"action": "wait", "duration_s": 2.0}]}
+15:23:31  INFO      parsing_module.py  Parser: Parsing successful
+15:23:31  INFO      pipeline.py  Parser: Command summary "Wait 2.0s"
+15:23:31  INFO      pipeline.py  Client: Sending data to backend
+15:23:31  DEBUG     pipeline.py  Sending data: {"mode": "live", "robot": "mock", "commands": [{"action": "wait", "duration_s": 2.0}], "message": ""}
+15:23:34  INFO      pipeline.py  Execution: Backend executed command successfully

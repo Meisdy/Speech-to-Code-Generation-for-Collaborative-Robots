@@ -29,7 +29,7 @@ class CodeParser:
         """Initialize parser with LLM config and load command definitions."""
         # LLM API configuration
         self.api_base: str = config_frontend.LLM_API_BASE
-        self.model_name: str = config.LLM_MODEL_NAME
+        self.model_name: str = config_frontend.LLM_MODEL_NAME
         self.temperature: float = config_frontend.LLM_TEMPERATURE
         self.max_tokens: int = config_frontend.LLM_MAX_TOKENS
         self.timeout: int = config_frontend.LLM_TIMEOUT
