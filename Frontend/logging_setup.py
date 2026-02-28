@@ -15,7 +15,7 @@ class GuiHandler(logging.Handler):
         level = level if level is not None else getattr(logging, config.LOGGING_LEVEL.upper(), logging.INFO)
         super().__init__(level)
         self.gui = gui
-        self.setFormatter(logging.Formatter("%(asctime)s [%(levelname)s] %(message)s", datefmt="%Y-%m-%d %H:%M:%S"))
+        self.setFormatter(logging.Formatter("%(asctime)s [%(levelname)s] %(message)s", datefmt="%H:%M:%S"))
 
     def emit(self, record: logging.LogRecord) -> None:
         try:
