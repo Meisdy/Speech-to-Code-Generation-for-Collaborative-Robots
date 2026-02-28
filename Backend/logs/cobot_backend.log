@@ -2257,3 +2257,49 @@ TypeError: ServerZeroMQ._handle_signal() takes 2 positional arguments but 3 were
 11:17:06  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'mock', 'commands': [{'action': 'pose', 'command': 'delete', 'pose_name': 'home'}], 'message': ''}}
 11:17:06  INFO      base_robot_controller.py  Deleted position 'home'
 11:17:06  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+14:56:35  INFO      main.py  Starting backend server on tcp://*:5555
+14:56:35  INFO      communication_server.py  Server ready and listening on tcp://*:5555
+14:57:36  INFO      communication_server.py  Signal 2 received, shutting down
+14:57:36  INFO      communication_server.py  Shutting down server
+14:57:39  INFO      main.py  Starting backend server on tcp://*:5555
+14:57:39  INFO      communication_server.py  Server ready and listening on tcp://*:5555
+14:58:26  INFO      communication_server.py  Signal 2 received, shutting down
+14:58:26  INFO      communication_server.py  Shutting down server
+14:58:34  INFO      main.py  Starting backend server on tcp://*:5555
+14:58:34  INFO      communication_server.py  Server ready and listening on tcp://*:5555
+14:59:11  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'mock', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'half_position'}}], 'message': ''}}
+14:59:11  INFO      mock_controller.py  Connected
+14:59:11  WARNING   message_handler.py  Sequence rejected due to 1 validation error(s)
+14:59:11  DEBUG     communication_server.py  Sent response: {'command': 'rejected', 'data': {'reasons': ["Unknown pose: 'half_position'"]}}
+14:59:24  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'mock', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}], 'message': ''}}
+14:59:24  INFO      mock_controller.py  Moving with moveJ to 'home'
+14:59:26  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+15:05:32  INFO      communication_server.py  Signal 2 received, shutting down
+15:05:32  INFO      communication_server.py  Shutting down server
+15:05:33  INFO      mock_controller.py  Disconnected
+15:05:35  INFO      main.py  Starting backend server on tcp://*:5555
+15:05:35  DEBUG     message_handler.py  Controller available: 'mock' -> MockRobotController
+15:05:35  DEBUG     message_handler.py  Controller available: 'ur' -> URController
+15:05:35  INFO      communication_server.py  Server ready and listening on tcp://*:5555
+15:06:18  INFO      communication_server.py  Signal 2 received, shutting down
+15:06:18  INFO      communication_server.py  Shutting down server
+15:06:21  INFO      main.py  Starting backend server on tcp://*:5555
+15:06:21  INFO      communication_server.py  Server ready and listening on tcp://*:5555
+15:07:45  INFO      communication_server.py  Signal 2 received, shutting down
+15:07:45  INFO      communication_server.py  Shutting down server
+15:07:47  INFO      main.py  Starting backend server on tcp://*:5555
+15:07:47  DEBUG     message_handler.py  Controller available: 'mock' -> MockRobotController
+15:07:47  DEBUG     message_handler.py  Controller available: 'ur' -> URController
+15:07:47  INFO      communication_server.py  Server ready and listening on tcp://*:5555
+15:12:12  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}], 'message': ''}}
+15:12:12  DEBUG     communication_server.py  Sent response: {'command': 'rejected', 'data': {'reason': 'Unsupported robot type: franka'}}
+15:12:37  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'mock', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}], 'message': ''}}
+15:12:38  INFO      mock_controller.py  Connected
+15:12:38  INFO      mock_controller.py  Moving with moveJ to 'home'
+15:12:40  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+15:13:05  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'ur', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}], 'message': ''}}
+15:13:05  INFO      mock_controller.py  Disconnected
+15:13:10  WARNING   message_handler.py  Could not connect to ur: timed out
+15:13:10  DEBUG     communication_server.py  Sent response: {'command': 'rejected', 'data': {'reason': 'Could not connect to ur: timed out'}}
+15:14:11  INFO      communication_server.py  Signal 2 received, shutting down
+15:14:11  INFO      communication_server.py  Shutting down server

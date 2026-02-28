@@ -1,31 +1,43 @@
+import importlib
+import inspect
 import logging
 import time
-from typing import Optional
+from typing import Dict, Optional, Type
 
 from Backend.robot_controllers.base_robot_controller import BaseRobotController
-from Backend.robot_controllers.mock_robot_controller import MockRobotController
-
-try:
-    from Backend.robot_controllers.franka_controller import FrankaController
-except ImportError:
-    FrankaController = None
-
-try:
-    from Backend.robot_controllers.ur_controller import URController
-except ImportError:
-    URController = None
+from config_backend import AVAILABLE_ROBOTS
 
 logger = logging.getLogger("cobot_backend")
+
+
+def _load_controllers() -> Dict[str, Type[BaseRobotController]]:
+    """Import controller adapters listed in config, skipping any that fail to load."""
+    controllers = {}
+    for robot_type in AVAILABLE_ROBOTS:
+        module_name = f"Backend.robot_controllers.{robot_type}_controller"
+        try:
+            module = importlib.import_module(module_name)
+            for _, obj in inspect.getmembers(module, inspect.isclass):
+                if issubclass(obj, BaseRobotController) and obj is not BaseRobotController:
+                    controllers[robot_type] = obj
+                    break
+        except ImportError as e:
+            logger.info("Controller '%s' from config not available: %s", robot_type, e)
+    return controllers
+
+
+CONTROLLERS: Dict[str, Type[BaseRobotController]] = _load_controllers()
 
 
 class MessageHandler:
     """Processes incoming commands and dispatches them to the robot controller."""
 
     ALLOWED_COMMANDS = ["ping", "get_status", "execute_sequence"]
-    ROBOT_TYPES = ["franka", "ur", "mock"]
 
     def __init__(self):
         self.robot: Optional[BaseRobotController] = None
+        for robot_type, cls in CONTROLLERS.items():
+            logger.debug("Controller available: '%s' -> %s", robot_type, cls.__name__)
 
     def disconnect_robot(self) -> None:
         """Disconnect and release the current robot controller."""
@@ -56,10 +68,10 @@ class MessageHandler:
             return self._formatted_response("error", {"error message": str(e)})
 
     def _ensure_robot_ready(self, robot_type: str) -> dict:
-        expected = {"ur": "URController", "franka": "FrankaController", "mock": "MockRobotController"}
+        expected_class = CONTROLLERS[robot_type]
 
         # Already the right robot and fully ready — nothing to do
-        if self.robot and type(self.robot).__name__ == expected[robot_type]:
+        if self.robot and type(self.robot) is expected_class:
             if self.robot.is_ready():
                 return {"success": True, "message": "Ready"}
             # Right robot, wrong state — try to recover without full reconnect
@@ -71,24 +83,14 @@ class MessageHandler:
         if self.robot:
             self.robot.disconnect()
 
-        if robot_type == "ur":
-            self.robot = URController()
-        elif robot_type == "franka":
-            if FrankaController is None:
-                logger.warning("Cannot load Franka adapter: dependencies not installed")
-                return {"success": False, "message": "FrankaController dependencies not installed"}
-            self.robot = FrankaController()
-        elif robot_type == "mock":
-            self.robot = MockRobotController()
-        else:
-            return {"success": False, "message": f"Unknown robot type: {robot_type}"}
+        self.robot = expected_class()
 
         result = self.robot.connect()
         if not result["success"]:
             logger.warning("Could not connect to %s: %s", robot_type, result["message"])
             return result
 
-        result = self.robot.activate_robot()  # This will be passed automatically if robot has no defined activation
+        result = self.robot.activate_robot()  # No-op for controllers that handle activation internally
         if not result["success"]:
             logger.error("Failed to activate %s: %s", robot_type, result["message"])
             return result
@@ -109,7 +111,7 @@ class MessageHandler:
 
     def _execute_sequence(self, data: dict) -> dict:
         robot_type = data["robot"]
-        if robot_type not in self.ROBOT_TYPES:
+        if robot_type not in CONTROLLERS:
             return self._formatted_response("rejected", {"reason": f"Unsupported robot type: {robot_type}"})
 
         result = self._ensure_robot_ready(robot_type)
