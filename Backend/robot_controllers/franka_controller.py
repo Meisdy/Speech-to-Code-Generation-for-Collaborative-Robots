@@ -157,14 +157,13 @@ class FrankaController(BaseRobotController):
 
     def _launch_ros(self) -> None:
         """Launch the MoveIt stack as a background process, logging to file."""
-        log_file = open(ROS_LOG_FILE, "w")
-        self._ros_process = subprocess.Popen(
-            ["bash", "-c",
-             f"source ~/ws_moveit/devel/setup.bash && "
-             f"roslaunch panda_moveit_config franka_control.launch "
-             f"robot_ip:={ROBOT_IP} load_gripper:=true use_rviz:=false"],
-            stdout=log_file,
-            stderr=log_file
-        )
-        log_file.close()  # safe to close — Popen duplicates the fd at OS level
+        with open(ROS_LOG_FILE, "w") as log_file:
+            self._ros_process = subprocess.Popen(
+                ["bash", "-c",
+                 f"source ~/ws_moveit/devel/setup.bash && "
+                 f"roslaunch panda_moveit_config franka_control.launch "
+                 f"robot_ip:={ROBOT_IP} load_gripper:=true use_rviz:=false"],
+                stdout=log_file,
+                stderr=log_file
+            )
         time.sleep(LAUNCH_DELAY)
