@@ -4025,3 +4025,174 @@ NoneType: None
 16:07:10  DEBUG     pipeline.py  Sending data: {"mode": "live", "robot": "ur", "commands": [{"action": "gripper", "command": "close"}], "message": ""}
 16:07:13  DEBUG     pipeline.py  Execution: Backend executed command successfully: {'command': 'success', 'data': {'responses': [{'success': True, 'message': 'Gripper closed'}]}}
 16:07:13  INFO      pipeline.py  Execution: Backend executed command successfully. Details available in logfile
+10:27:29  INFO      main.py  Application starting
+10:27:32  INFO      main.py  Application ready
+10:28:21  INFO      pipeline.py  Recording started
+10:28:22  INFO      pipeline.py  Recording stopped, starting transcription
+10:28:26  INFO      ASR_module.py  ASR: transcribed text 'Move to room.', confidence = 0.76
+10:28:40  DEBUG     parsing_module.py  Parser: LLM raw response preview: {
+  "mode": "live",
+  "robot": "ur",
+  "commands": [
+    {
+      "action": "move",
+      "motion_type": "moveJ",
+      "target": {
+        "type": "named_pose",
+        "name": "room"
+      }
+    }
+  ]
+}
+10:28:40  DEBUG     parsing_module.py  Parser: Parsed JSON after cleanup: {"mode": "live", "robot": "ur", "commands": [{"action": "move", "motion_type": "moveJ", "target": {"type": "named_pose", "name": "room"}}]}
+10:28:40  INFO      parsing_module.py  Parser: Parsing successful
+10:28:40  INFO      pipeline.py  Parser: Command summary "Move to room pos."
+10:28:40  INFO      pipeline.py  Client: Sending data to backend
+10:28:40  DEBUG     pipeline.py  Sending data: {"mode": "live", "robot": "ur", "commands": [{"action": "move", "motion_type": "moveJ", "target": {"type": "named_pose", "name": "room"}}], "message": ""}
+10:29:10  ERROR     pipeline.py  Execution: Backend failed to execute command: {'command': 'timeout', 'data': {'error': 'Backend timeout'}}
+NoneType: None
+10:30:36  INFO      main.py  Application shutting down
+10:30:42  INFO      main.py  Application starting
+10:30:45  INFO      main.py  Application ready
+10:31:11  INFO      pipeline.py  Recording started
+10:31:13  INFO      pipeline.py  Recording stopped, starting transcription
+10:31:14  INFO      ASR_module.py  ASR: transcribed text 'move to roll', confidence = 0.68
+10:31:14  WARNING   pipeline.py  ASR confidence low: 0.68 - parsing may fail
+10:31:17  DEBUG     parsing_module.py  Parser: LLM raw response preview: {
+  "mode": "live",
+  "robot": "mock",
+  "commands": [
+    {
+      "action": "move",
+      "motion_type": "moveJ",
+      "target": {
+        "type": "named_pose",
+        "name": "roll"
+      }
+    }
+  ]
+}
+10:31:17  DEBUG     parsing_module.py  Parser: Parsed JSON after cleanup: {"mode": "live", "robot": "mock", "commands": [{"action": "move", "motion_type": "moveJ", "target": {"type": "named_pose", "name": "roll"}}]}
+10:31:17  INFO      parsing_module.py  Parser: Parsing successful
+10:31:17  INFO      pipeline.py  Parser: Command summary "Move to roll pos."
+10:31:17  INFO      pipeline.py  Client: Sending data to backend
+10:31:17  DEBUG     pipeline.py  Sending data: {"mode": "live", "robot": "mock", "commands": [{"action": "move", "motion_type": "moveJ", "target": {"type": "named_pose", "name": "roll"}}], "message": ""}
+10:31:18  DEBUG     pipeline.py  Execution: Backend executed command successfully: {'command': 'success', 'data': {'responses': [{'success': False, 'message': 'Unknown pose: roll'}]}}
+10:31:18  INFO      pipeline.py  Execution: Backend executed command successfully. Details available in logfile
+10:48:23  INFO      main.py  Application shutting down
+10:59:15  INFO      main.py  Application starting
+10:59:18  INFO      main.py  Application ready
+10:59:28  INFO      pipeline.py  Recording started
+10:59:30  INFO      pipeline.py  Recording stopped, starting transcription
+10:59:31  INFO      ASR_module.py  ASR: transcribed text 'Move to a bone.', confidence = 0.81
+10:59:41  DEBUG     parsing_module.py  Parser: LLM raw response preview: {
+  "mode": "live",
+  "robot": "mock",
+  "commands": [
+    {
+      "action": "move",
+      "motion_type": "moveJ",
+      "target": {
+        "type": "named_pose",
+        "name": "bone"
+      }
+    }
+  ]
+}
+10:59:41  DEBUG     parsing_module.py  Parser: Parsed JSON after cleanup: {"mode": "live", "robot": "mock", "commands": [{"action": "move", "motion_type": "moveJ", "target": {"type": "named_pose", "name": "bone"}}]}
+10:59:41  INFO      parsing_module.py  Parser: Parsing successful
+10:59:41  INFO      pipeline.py  Parser: Command summary "Move to bone pos."
+10:59:41  INFO      pipeline.py  Client: Sending data to backend
+10:59:41  DEBUG     pipeline.py  Sending data: {"mode": "live", "robot": "mock", "commands": [{"action": "move", "motion_type": "moveJ", "target": {"type": "named_pose", "name": "bone"}}], "message": ""}
+10:59:42  ERROR     pipeline.py  Execution: Backend failed to execute command: {'command': 'rejected', 'data': {'reasons': ["Unknown pose: 'bone'"]}}
+NoneType: None
+11:01:04  INFO      pipeline.py  Recording started
+11:01:07  INFO      pipeline.py  Recording stopped, starting transcription
+11:01:07  INFO      ASR_module.py  ASR: transcribed text 'Teach position home.', confidence = 0.80
+11:01:11  DEBUG     parsing_module.py  Parser: LLM raw response preview: {
+  "mode": "live",
+  "robot": "mock",
+  "commands": [
+    {
+      "action": "pose",
+      "command": "teach",
+      "pose_name": "home_position"
+    }
+  ]
+}
+11:01:11  DEBUG     parsing_module.py  Parser: Parsed JSON after cleanup: {"mode": "live", "robot": "mock", "commands": [{"action": "pose", "command": "teach", "pose_name": "home_position"}]}
+11:01:11  INFO      parsing_module.py  Parser: Parsing successful
+11:01:11  INFO      pipeline.py  Parser: Command summary "Pose"
+11:01:11  INFO      pipeline.py  Client: Sending data to backend
+11:01:11  DEBUG     pipeline.py  Sending data: {"mode": "live", "robot": "mock", "commands": [{"action": "pose", "command": "teach", "pose_name": "home_position"}], "message": ""}
+11:01:11  DEBUG     pipeline.py  Execution: Backend executed command successfully: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+11:01:11  INFO      pipeline.py  Execution: Backend executed command successfully. Details available in logfile
+11:13:50  INFO      main.py  Application shutting down
+11:15:32  INFO      main.py  Application starting
+11:15:34  INFO      main.py  Application ready
+11:15:42  INFO      pipeline.py  Recording started
+11:15:44  INFO      pipeline.py  Recording stopped, starting transcription
+11:15:45  INFO      ASR_module.py  ASR: transcribed text 'Move to home position.', confidence = 0.85
+11:15:48  DEBUG     parsing_module.py  Parser: LLM raw response preview: {
+  "mode": "live",
+  "robot": "mock",
+  "commands": [
+    {
+      "action": "move",
+      "motion_type": "moveJ",
+      "target": {
+        "type": "named_pose",
+        "name": "home"
+      }
+    }
+  ]
+}
+11:15:48  DEBUG     parsing_module.py  Parser: Parsed JSON after cleanup: {"mode": "live", "robot": "mock", "commands": [{"action": "move", "motion_type": "moveJ", "target": {"type": "named_pose", "name": "home"}}]}
+11:15:48  INFO      parsing_module.py  Parser: Parsing successful
+11:15:48  INFO      pipeline.py  Parser: Command summary "Move to home pos."
+11:15:48  INFO      pipeline.py  Client: Sending data to backend
+11:15:48  DEBUG     pipeline.py  Sending data: {"mode": "live", "robot": "mock", "commands": [{"action": "move", "motion_type": "moveJ", "target": {"type": "named_pose", "name": "home"}}], "message": ""}
+11:15:51  INFO      pipeline.py  Execution: Backend executed command successfully
+11:15:58  INFO      pipeline.py  Recording started
+11:16:00  INFO      pipeline.py  Recording stopped, starting transcription
+11:16:01  INFO      ASR_module.py  ASR: transcribed text 'Move to Bro Composition.', confidence = 0.91
+11:16:05  DEBUG     parsing_module.py  Parser: LLM raw response preview: {
+  "mode": "live",
+  "robot": "mock",
+  "commands": [
+    {
+      "action": "move",
+      "motion_type": "moveJ",
+      "target": {
+        "type": "named_pose",
+        "name": "bro_composition"
+      }
+    }
+  ]
+}
+11:16:05  DEBUG     parsing_module.py  Parser: Parsed JSON after cleanup: {"mode": "live", "robot": "mock", "commands": [{"action": "move", "motion_type": "moveJ", "target": {"type": "named_pose", "name": "bro_composition"}}]}
+11:16:05  INFO      parsing_module.py  Parser: Parsing successful
+11:16:05  INFO      pipeline.py  Parser: Command summary "Move to bro_composition pos."
+11:16:05  INFO      pipeline.py  Client: Sending data to backend
+11:16:05  DEBUG     pipeline.py  Sending data: {"mode": "live", "robot": "mock", "commands": [{"action": "move", "motion_type": "moveJ", "target": {"type": "named_pose", "name": "bro_composition"}}], "message": ""}
+11:16:05  WARNING   pipeline.py  Execution: Command rejected — Unknown pose: 'bro_composition'
+11:17:00  INFO      pipeline.py  Recording started
+11:17:02  INFO      pipeline.py  Recording stopped, starting transcription
+11:17:03  INFO      ASR_module.py  ASR: transcribed text 'Delete home position.', confidence = 0.72
+11:17:06  DEBUG     parsing_module.py  Parser: LLM raw response preview: {
+  "mode": "live",
+  "robot": "mock",
+  "commands": [
+    {
+      "action": "pose",
+      "command": "delete",
+      "pose_name": "home"
+    }
+  ]
+}
+11:17:06  DEBUG     parsing_module.py  Parser: Parsed JSON after cleanup: {"mode": "live", "robot": "mock", "commands": [{"action": "pose", "command": "delete", "pose_name": "home"}]}
+11:17:06  INFO      parsing_module.py  Parser: Parsing successful
+11:17:06  INFO      pipeline.py  Parser: Command summary "Pose"
+11:17:06  INFO      pipeline.py  Client: Sending data to backend
+11:17:06  DEBUG     pipeline.py  Sending data: {"mode": "live", "robot": "mock", "commands": [{"action": "pose", "command": "delete", "pose_name": "home"}], "message": ""}
+11:17:06  INFO      pipeline.py  Execution: Backend executed command successfully
