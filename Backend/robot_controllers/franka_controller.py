@@ -1,7 +1,8 @@
 # franka_controller.py
+import logging
 import subprocess
 import time
-import logging
+from typing import Optional
 
 import moveit_commander
 import rospy
@@ -22,14 +23,11 @@ class FrankaController(BaseRobotController):
 
     def __init__(self):
         super().__init__(POSES_FILE)
-        self._robot             = None
-        self._ros_process       = None
-
-    # ------------------------------------------------------------------ #
-    # Connection
-    # ------------------------------------------------------------------ #
+        self._robot       = None
+        self._ros_process = None
 
     def connect(self) -> dict:
+        """Connect to the Franka, launching MoveIt if not already running."""
         try:
             if self._is_move_group_running():
                 logger.info("Franka: MoveIt already running, skipping launch")
@@ -52,6 +50,7 @@ class FrankaController(BaseRobotController):
             return {"success": False, "message": str(e)}
 
     def disconnect(self) -> None:
+        """Shut down MoveIt commander and terminate the ROS stack if we launched it."""
         try:
             moveit_commander.roscpp_shutdown()
         except Exception as e:
@@ -62,12 +61,13 @@ class FrankaController(BaseRobotController):
             self._ros_process.wait()
             logger.info("Franka: MoveIt stack stopped")
 
-        self._robot = None
+        self._robot       = None
         self._ros_process = None
-        self.connected = False
+        self.connected    = False
         logger.info("Franka: Disconnected successfully")
 
     def is_connected(self) -> bool:
+        """Return True if the arm is reachable via MoveIt."""
         if not self._robot:
             return False
         try:
@@ -76,35 +76,8 @@ class FrankaController(BaseRobotController):
         except Exception:
             return False
 
-    def _is_move_group_running(self) -> bool:
-        """Check if /move_group node is active on the ROS master."""
-        try:
-            result = subprocess.run(
-                ["rosnode", "list"],
-                capture_output=True, text=True, timeout=5
-            )
-            return MOVE_GROUP_NODE in result.stdout
-        except Exception:
-            return False
-
-    def _launch_ros(self) -> None:
-        """Launch the MoveIt stack as a background process, logging to file."""
-        with open(ROS_LOG_FILE, "w") as log_file:
-            self._ros_process = subprocess.Popen(
-                ["bash", "-c",
-                 f"source ~/ws_moveit/devel/setup.bash && "
-                 f"roslaunch panda_moveit_config franka_control.launch "
-                 f"robot_ip:={ROBOT_IP} load_gripper:=true use_rviz:=false"],
-                stdout=log_file,
-                stderr=log_file
-            )
-        time.sleep(LAUNCH_DELAY)
-
-    # ------------------------------------------------------------------ #
-    # Motion
-    # ------------------------------------------------------------------ #
-
-    def move_joint(self, pose: dict, speed: float = None, offset: list = None) -> dict:
+    def move_joint(self, pose: dict, speed: Optional[float] = None, offset: Optional[list] = None) -> dict:
+        """Execute a joint-space move to the given pose."""
         try:
             if speed:
                 self._robot.arm.set_max_velocity_scaling_factor(speed)
@@ -117,7 +90,8 @@ class FrankaController(BaseRobotController):
         except Exception as e:
             return {"success": False, "message": str(e)}
 
-    def move_linear(self, pose: dict, speed: float = None, offset: list = None) -> dict:
+    def move_linear(self, pose: dict, speed: Optional[float] = None, offset: Optional[list] = None) -> dict:
+        """Execute a linear Cartesian move to the given pose."""
         try:
             if speed:
                 self._robot.arm.set_max_velocity_scaling_factor(speed)
@@ -127,11 +101,8 @@ class FrankaController(BaseRobotController):
         except Exception as e:
             return {"success": False, "message": str(e)}
 
-    # ------------------------------------------------------------------ #
-    # Gripper
-    # ------------------------------------------------------------------ #
-
     def gripper_open(self) -> dict:
+        """Open the Franka gripper."""
         try:
             self._robot.gripper_open()
             self.gripper_state = "open"
@@ -140,6 +111,7 @@ class FrankaController(BaseRobotController):
             return {"success": False, "message": str(e)}
 
     def gripper_close(self) -> dict:
+        """Close the Franka gripper."""
         try:
             self._robot.gripper_close()
             self.gripper_state = "closed"
@@ -147,11 +119,8 @@ class FrankaController(BaseRobotController):
         except Exception as e:
             return {"success": False, "message": str(e)}
 
-    # ------------------------------------------------------------------ #
-    # State
-    # ------------------------------------------------------------------ #
-
     def get_current_pose(self) -> dict:
+        """Return current joint positions, TCP pose, and gripper state."""
         try:
             joints   = self._robot.arm.get_current_joint_values()
             ros_pose = self._robot.arm.get_current_pose().pose
@@ -174,3 +143,28 @@ class FrankaController(BaseRobotController):
             }
         except Exception as e:
             return {"success": False, "message": str(e)}
+
+    def _is_move_group_running(self) -> bool:
+        """Check if /move_group node is active on the ROS master."""
+        try:
+            result = subprocess.run(
+                ["rosnode", "list"],
+                capture_output=True, text=True, timeout=5
+            )
+            return MOVE_GROUP_NODE in result.stdout
+        except (subprocess.TimeoutExpired, OSError):
+            return False
+
+    def _launch_ros(self) -> None:
+        """Launch the MoveIt stack as a background process, logging to file."""
+        log_file = open(ROS_LOG_FILE, "w")
+        self._ros_process = subprocess.Popen(
+            ["bash", "-c",
+             f"source ~/ws_moveit/devel/setup.bash && "
+             f"roslaunch panda_moveit_config franka_control.launch "
+             f"robot_ip:={ROBOT_IP} load_gripper:=true use_rviz:=false"],
+            stdout=log_file,
+            stderr=log_file
+        )
+        log_file.close()  # safe to close — Popen duplicates the fd at OS level
+        time.sleep(LAUNCH_DELAY)
