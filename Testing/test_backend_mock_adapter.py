@@ -1,5 +1,5 @@
 import unittest
-from Backend.robot_controllers.mock_robot_controller import MockRobotController
+from Backend.robot_controllers.mock_controller import MockRobotController
 
 class TestMockRobotController(unittest.TestCase):
     def setUp(self):
