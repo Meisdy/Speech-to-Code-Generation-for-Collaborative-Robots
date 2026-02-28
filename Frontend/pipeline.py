@@ -1,4 +1,4 @@
-import config
+import config_frontend
 import threading
 import logging
 import json
@@ -33,7 +33,7 @@ class Controller:
         self.state = State.IDLE
         self.asr = SpeechRecognizer()
         self.parser = CodeParser()
-        self.client = ClientZeroMQ(config.BACKEND_IP)
+        self.client = ClientZeroMQ(config_frontend.BACKEND_IP)
         self.gui = None
         self.confidence_threshold = config.ASR_CONFIDENCE_THRESHOLD
 
