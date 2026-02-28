@@ -2224,3 +2224,36 @@ TypeError: ServerZeroMQ._handle_signal() takes 2 positional arguments but 3 were
 16:21:21  INFO      ur_controller.py  Moving with moveJ to 'home' with speed 1.57
 16:21:24  INFO      ur_controller.py  Moving with moveJ to 'linear_1' with speed 1.57
 16:21:26  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'responses': [{'success': True, 'message': 'Motion complete'}, {'success': True, 'message': 'Motion complete'}]}}
+10:31:08  INFO      main.py  Starting backend server on tcp://*:5555
+10:31:08  INFO      communication_server.py  Server ready and listening on tcp://*:5555
+10:31:17  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'mock', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'roll'}}], 'message': ''}}
+10:31:18  INFO      mock_robot_controller.py  Connected
+10:31:18  ERROR     message_handler.py  Unknown pose requested: roll
+10:31:18  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'responses': [{'success': False, 'message': 'Unknown pose: roll'}]}}
+10:48:23  INFO      communication_server.py  Signal 2 received, shutting down
+10:48:23  INFO      communication_server.py  Shutting down server
+10:48:23  INFO      mock_robot_controller.py  Disconnected
+10:59:07  INFO      main.py  Starting backend server on tcp://*:5555
+10:59:07  INFO      communication_server.py  Server ready and listening on tcp://*:5555
+10:59:41  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'mock', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'bone'}}], 'message': ''}}
+10:59:42  INFO      mock_robot_controller.py  Connected
+10:59:42  WARNING   message_handler.py  Sequence rejected due to 1 validation error(s)
+10:59:42  DEBUG     communication_server.py  Sent response: {'command': 'rejected', 'data': {'reasons': ["Unknown pose: 'bone'"]}}
+11:01:11  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'mock', 'commands': [{'action': 'pose', 'command': 'teach', 'pose_name': 'home_position'}], 'message': ''}}
+11:01:11  INFO      base_robot_controller.py  Saved position 'home_position'
+11:01:11  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+11:13:51  INFO      communication_server.py  Signal 2 received, shutting down
+11:13:51  INFO      communication_server.py  Shutting down server
+11:13:51  INFO      mock_robot_controller.py  Disconnected
+11:15:32  INFO      main.py  Starting backend server on tcp://*:5555
+11:15:32  INFO      communication_server.py  Server ready and listening on tcp://*:5555
+11:15:48  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'mock', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}], 'message': ''}}
+11:15:49  INFO      mock_robot_controller.py  Connected
+11:15:49  INFO      mock_robot_controller.py  Moving with moveJ to 'home'
+11:15:51  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+11:16:05  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'mock', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'bro_composition'}}], 'message': ''}}
+11:16:05  WARNING   message_handler.py  Sequence rejected due to 1 validation error(s)
+11:16:05  DEBUG     communication_server.py  Sent response: {'command': 'rejected', 'data': {'reasons': ["Unknown pose: 'bro_composition'"]}}
+11:17:06  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'mock', 'commands': [{'action': 'pose', 'command': 'delete', 'pose_name': 'home'}], 'message': ''}}
+11:17:06  INFO      base_robot_controller.py  Deleted position 'home'
+11:17:06  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
