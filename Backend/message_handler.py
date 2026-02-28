@@ -179,6 +179,7 @@ class MessageHandler:
                 return robot.gripper_close()
 
         elif action == "wait":
+            logger.info(f"Waiting for {command["duration_s"]}s")
             time.sleep(command["duration_s"])
             return {"success": True, "message": f"Waited for {command['duration_s']} seconds"}
 
