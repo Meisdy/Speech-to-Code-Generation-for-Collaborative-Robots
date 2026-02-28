@@ -58,7 +58,7 @@ class Controller:
 
         # Start recording thread
         self.recording_active.set()
-        self.recording_thread = threading.Thread(target=self._recording_loop, daemon=True)
+        self.recording_thread = threading.Thread(target=self._recording_loop, daemon=True, name="thread_recording")
         self.recording_thread.start()
 
         logger.info("Recording started")
@@ -92,7 +92,7 @@ class Controller:
         logger.info("Recording stopped, starting transcription")
 
         # Process audio in background thread
-        threading.Thread(target=lambda: self._process_audio(robot_type), daemon=True).start()
+        threading.Thread(target=lambda: self._process_audio(robot_type), daemon=True, name="thread_asr_processing").start()
 
     def _process_audio(self, robot_type: str):
         """Transcribe audio and display result."""
@@ -128,7 +128,7 @@ class Controller:
         self.gui.set_gui_status_line("Parsing command...", "info")
 
         # Parse in background thread
-        threading.Thread(target=lambda: self._parse_command(result["text"], robot_type), daemon=True).start()
+        threading.Thread(target=lambda: self._parse_command(result["text"], robot_type), daemon=True, name="thread_parsing").start()
 
     def _parse_command(self, text: str, robot_type: str):
         """
@@ -153,23 +153,17 @@ class Controller:
 
         if parse_result["status"] == "success":
             command_as_string = self._command_to_string(parse_result["command"])
-            self.gui.set_gui_status_line("✅ Command parsed successfully", "success")
-            logger.info(f'Parser: Command summary \"{command_as_string}\"')
+            self.gui.set_gui_status_line("✅ Command parsed — waiting for backend...", "info")
+            logger.info(f'Parser: Command summary "{command_as_string}"')
 
-            # Execute Backend now
-            threading.Thread(
-                target=lambda: self._send_command(parse_result["command"]),
-                daemon=True
-            ).start()
+            # Block UI during execution
+            self.state = State.EXECUTING
+            self._set_button_state("secondary", enabled=False)
 
+            threading.Thread(target=self._send_command, args=(parse_result["command"],), name="backend-send", daemon=True).start()
         else:
-            error_msg = parse_result.get("error", "Unknown parsing error")
-            self.gui.set_gui_status_line(f"❌ Parsing error", "danger")
-            logger.error("Parsing failed: %s", error_msg)
-
-        # Return to idle state
-        self.state = State.IDLE
-        self._set_button_state()
+            self.state = State.IDLE
+            self._set_button_state()
 
     def _send_command(self, command: dict):
         data = {
@@ -248,8 +242,7 @@ class Controller:
                 self.recording_thread.join(timeout=1.0)
 
             # Now actually close the stream
-            if self.asr.is_listening():
-                self.asr.close()
             self.asr.close()
+
         except Exception as e:
             logger.warning(f"Cleanup error: {e}")
