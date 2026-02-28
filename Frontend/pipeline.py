@@ -185,13 +185,21 @@ class Controller:
         self.gui.root.after(0, lambda: self._display_execution_result(success, response))
 
     def _display_execution_result(self, success: bool, response: dict):
-        if success and response.get("command") == "success":
+        status = response.get("command")
+        data = response.get("data", {})
+
+        if success and status == "success":
             self.gui.set_gui_status_line("✅ Execution complete", "success")
-            logger.debug("Execution: Backend executed command successfully: %s", response)
-            logger.info("Execution: Backend executed command successfully. Details available in logfile")
+            logger.info("Execution: Backend executed command successfully")
+        elif status == "rejected":
+            reasons = data.get("reasons") or [data.get("reason", "Unknown reason")]
+            for reason in reasons:
+                logger.warning("Execution: Command rejected — %s", reason)
+            self.gui.set_gui_status_line("❌ Command rejected", "danger")
         else:
+            logger.error("Execution: Backend error — %s", data.get("message", response))
             self.gui.set_gui_status_line("❌ Execution failed", "danger")
-            logger.exception("Execution: Backend failed to execute command: %s", response)
+
         self.state = State.IDLE
         self._set_button_state()
 
@@ -219,7 +227,7 @@ class Controller:
                 parts.append(f"Teach position '{cmd.get('name', '?')}'")
 
             elif action == "wait":
-                parts.append(f"Wait {cmd.get('duration', '?')}s")
+                parts.append(f"Wait {cmd.get('duration_s', '?')}s")
 
             else:
                 parts.append(action.capitalize())

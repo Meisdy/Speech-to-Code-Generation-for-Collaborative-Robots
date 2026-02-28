@@ -88,7 +88,7 @@ class MessageHandler:
             logger.warning("Could not connect to %s: %s", robot_type, result["message"])
             return result
 
-        result = self.robot.activate_robot() # This will be passed automatically if robot has no defined activation
+        result = self.robot.activate_robot()  # This will be passed automatically if robot has no defined activation
         if not result["success"]:
             logger.error("Failed to activate %s: %s", robot_type, result["message"])
             return result
@@ -116,8 +116,36 @@ class MessageHandler:
         if not result["success"]:
             return self._formatted_response("rejected", {"reason": f"Could not connect to {robot_type}: {result['message']}"})
 
-        responses = [self._process_command(cmd, self.robot) for cmd in data.get("commands", [])]
-        return self._formatted_response("success", {"responses": responses})
+        commands = data.get("commands", [])
+
+        validation_errors = [
+            error
+            for cmd in commands
+            if (error := self._validate_command(cmd, self.robot)) is not None
+        ]
+        if validation_errors:
+            logger.warning("Sequence rejected due to %d validation error(s)", len(validation_errors))
+            return self._formatted_response("rejected", {"reasons": validation_errors})
+
+        for cmd in commands:
+            result = self._process_command(cmd, self.robot)
+            if not result["success"]:
+                logger.error("Sequence aborted at runtime: %s", result["message"])
+                return self._formatted_response("error", {"message": result["message"]})
+
+        return self._formatted_response("success", {"message": f"Sequence of {len(commands)} command(s) completed"})
+
+    def _validate_command(self, command: dict, robot: BaseRobotController) -> Optional[str]:
+        """Check a command for errors without executing it. Returns an error string or None.
+
+        Structural validation is handled by the parser. This only checks runtime state
+        that the frontend cannot know — specifically whether named poses exist on the robot.
+        """
+        if command.get("action") == "move":
+            pose_name = command.get("target", {}).get("name")
+            if robot.get_pose(pose_name) is None:
+                return f"Unknown pose: '{pose_name}'"
+        return None
 
     def _process_command(self, command: dict, robot: BaseRobotController) -> dict:
         """Dispatch a single command to the appropriate robot method."""
@@ -130,9 +158,6 @@ class MessageHandler:
             speed = command.get("speed")
 
             pose = robot.get_pose(pose_name)
-            if pose is None:
-                logger.error("Unknown pose requested: %s", pose_name)
-                return {"success": False, "message": f"Unknown pose: {pose_name}"}
 
             offset = None
             if target.get("type") == "offset_from_pose":
@@ -148,10 +173,8 @@ class MessageHandler:
             gripper_operation = command["command"]
             if gripper_operation == "open":
                 return robot.gripper_open()
-            elif gripper_operation == "close":
-                return robot.gripper_close()
             else:
-                return {"success": False, "message": f"Unknown gripper command: {gripper_operation}"}
+                return robot.gripper_close()
 
         elif action == "wait":
             time.sleep(command["duration_s"])
@@ -164,16 +187,13 @@ class MessageHandler:
 
             if mode == "teach":
                 return robot.save_pose(pose_name, overwrite)
-            elif mode == "delete":
-                return robot.delete_pose(pose_name)
             else:
-                return {"success": False, "message": f"Unknown pose management mode: {mode}"}
+                return robot.delete_pose(pose_name)
 
         elif action == "freedrive":
             if command["active"]:
                 return robot.enable_freedrive()
             else:
                 return robot.disable_freedrive()
-
         else:
             return {"success": False, "message": f"Unknown action: {action}"}
