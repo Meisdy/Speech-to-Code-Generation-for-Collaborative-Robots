@@ -241,8 +241,8 @@ class Controller:
             if self.recording_thread and self.recording_thread.is_alive():
                 self.recording_thread.join(timeout=1.0)
 
-            # Now actually close the stream
-            self.asr.close()
+            self.asr.close() # Now actually close the stream
+            self.client.close()  # terminates zmq.Context → kills handle thread
 
         except Exception as e:
             logger.warning(f"Cleanup error: {e}")

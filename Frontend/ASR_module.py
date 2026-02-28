@@ -45,7 +45,7 @@ class SpeechRecognizer:
             logger.exception(f"Failed to load Whisper model '{config_frontend.ASR_MODEL_SIZE}': {e}")
 
         try:
-            self.audio_interpreter: pyaudio.PyAudio = pyaudio.PyAudio()
+            self.audio_interpreter: pyaudio.PyAudio | None = pyaudio.PyAudio()
         except Exception as e:
             logger.exception(f"Failed to initialize PyAudio: {e}")
 
@@ -139,12 +139,10 @@ class SpeechRecognizer:
     def close(self) -> None:
         """Clean up audio resources safely."""
         try:
-            # Close stream if open
             if self.stream:
+                self.stream.stop_stream()
                 self.stream.close()
                 self.stream = None
-
-            # Terminate PyAudio
             if hasattr(self, 'audio_interpreter') and self.audio_interpreter:
                 self.audio_interpreter.terminate()
                 self.audio_interpreter = None
