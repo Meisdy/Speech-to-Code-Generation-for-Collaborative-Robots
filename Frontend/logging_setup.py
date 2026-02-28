@@ -1,7 +1,7 @@
 import os
 import logging
 from logging.handlers import RotatingFileHandler
-import config
+import config_frontend
 
 LOG_DIR = os.path.join(os.path.dirname(__file__), "logs")
 
@@ -63,7 +63,7 @@ def setup_logging() -> logging.Logger:
     logger.propagate = False
 
     console_level = getattr(logging, config.LOGGING_LEVEL.upper(), logging.INFO)
-    file_level = getattr(logging, config.LOGGING_LEVEL_FILE.upper(), logging.DEBUG)
+    file_level = getattr(logging, config_frontend.LOGGING_LEVEL_FILE.upper(), logging.DEBUG)
 
     # Allow handlers to filter independently: set logger to the most permissive level
     logger.setLevel(min(console_level, file_level))

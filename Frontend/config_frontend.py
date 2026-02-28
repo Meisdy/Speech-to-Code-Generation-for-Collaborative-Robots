@@ -1,4 +1,4 @@
-# config.py
+# config_frontend.py
 """
 Configuration for Speech-to-Code Framework
 All values can be edited directly in this file

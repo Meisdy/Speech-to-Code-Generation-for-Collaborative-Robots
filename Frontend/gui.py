@@ -5,7 +5,7 @@ This module provides a pure view layer following MVP pattern.
 The GUI emits events and displays data - contains no business logic.
 """
 
-import config
+import config_frontend
 import logging
 import tkinter as tk
 import ttkbootstrap as ttkb
@@ -51,7 +51,7 @@ class UserGUI:
 
         # UI state for robot type selection (default value)
         self.robot_type: tk.StringVar = tk.StringVar(value="Franka Emika")
-        self.robot_types = config.ROBOT_TYPES
+        self.robot_types = config_frontend.ROBOT_TYPES
 
         # Widget references with type hints for better readability and IDE support
         self.record_btn: ttkb.Button

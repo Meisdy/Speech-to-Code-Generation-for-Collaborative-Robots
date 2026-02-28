@@ -7,7 +7,7 @@ import whisper
 import pyaudio
 import numpy as np
 import threading
-import config
+import config_frontend
 import logging
 import wave
 import os
@@ -26,13 +26,13 @@ class SpeechRecognizer:
 
     def __init__(self):
         # Parameters from config
-        self.model_size: str = config.ASR_MODEL_SIZE
-        self.language: str = config.ASR_LANGUAGE
-        self.threshold: float = config.ASR_CONFIDENCE_THRESHOLD
-        self.sample_rate: int = config.ASR_SAMPLE_RATE
-        self.use_fp16: bool = config.ASR_FP16
+        self.model_size: str = config_frontend.ASR_MODEL_SIZE
+        self.language: str = config_frontend.ASR_LANGUAGE
+        self.threshold: float = config_frontend.ASR_CONFIDENCE_THRESHOLD
+        self.sample_rate: int = config_frontend.ASR_SAMPLE_RATE
+        self.use_fp16: bool = config_frontend.ASR_FP16
         self.log_audio: bool = config.LOGGING_SAVE_AUDIO
-        self.log_path: str = config.DATA_DIR
+        self.log_path: str = config_frontend.DATA_DIR
 
         # Recording data
         self.stream: pyaudio.Stream | None = None
@@ -42,7 +42,7 @@ class SpeechRecognizer:
         try:
             self.model = whisper.load_model(self.model_size)
         except Exception as e:
-            logger.exception(f"Failed to load Whisper model '{config.ASR_MODEL_SIZE}': {e}")
+            logger.exception(f"Failed to load Whisper model '{config_frontend.ASR_MODEL_SIZE}': {e}")
 
         try:
             self.audio_interpreter: pyaudio.PyAudio = pyaudio.PyAudio()

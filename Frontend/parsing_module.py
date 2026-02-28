@@ -8,7 +8,7 @@ into structured JSON commands according to defined rulesets and schemas.
 
 import json
 import time
-import config
+import config_frontend
 import requests
 from typing import Dict, Any
 from pathlib import Path
@@ -28,12 +28,12 @@ class CodeParser:
     def __init__(self):
         """Initialize parser with LLM config and load command definitions."""
         # LLM API configuration
-        self.api_base: str = config.LLM_API_BASE
+        self.api_base: str = config_frontend.LLM_API_BASE
         self.model_name: str = config.LLM_MODEL_NAME
-        self.temperature: float = config.LLM_TEMPERATURE
-        self.max_tokens: int = config.LLM_MAX_TOKENS
-        self.timeout: int = config.LLM_TIMEOUT
-        self.mode: str = config.FRAMEWORK_MODE
+        self.temperature: float = config_frontend.LLM_TEMPERATURE
+        self.max_tokens: int = config_frontend.LLM_MAX_TOKENS
+        self.timeout: int = config_frontend.LLM_TIMEOUT
+        self.mode: str = config_frontend.FRAMEWORK_MODE
 
         # Load command definitions
         self.ruleset: Dict = self._load_json("ruleset.json")
@@ -41,8 +41,8 @@ class CodeParser:
         self.system_prompt: str = self._build_system_prompt()
 
         # Logging configuration
-        self.log_parsing: bool = config.LOGGING_SAVE_PARSE
-        self.log_path: str = config.DATA_DIR
+        self.log_parsing: bool = config_frontend.LOGGING_SAVE_PARSE
+        self.log_path: str = config_frontend.DATA_DIR
 
     def _load_json(self, filename: str) -> Any | None:
         """
