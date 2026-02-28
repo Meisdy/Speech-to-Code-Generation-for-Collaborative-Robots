@@ -9,6 +9,7 @@ import config_frontend
 import logging
 import tkinter as tk
 import ttkbootstrap as ttkb
+import threading
 from tkinter import scrolledtext
 from typing import Callable, Optional
 from ttkbootstrap.constants import LEFT, BOTH, X, PRIMARY
@@ -54,15 +55,10 @@ class UserGUI:
         self.robot_types = config_frontend.ROBOT_TYPES
 
         # Widget references with type hints for better readability and IDE support
-        self.record_btn: ttkb.Button
-        self.status_label: ttkb.Label
-        self.log_text: scrolledtext.ScrolledText
-        self._space_down: bool = False  # Track spacebar state to stop trigger spam of system
-
-        # Widget references - initialize to None (explicit declaration)
         self.record_btn: Optional[ttkb.Button] = None
         self.status_label: Optional[ttkb.Label] = None
         self.log_text: Optional[scrolledtext.ScrolledText] = None
+        self._space_down: bool = False  # Track spacebar state to stop trigger spam of system
 
         # Build the UI and bind events
         self._setup_ui()
@@ -217,6 +213,9 @@ class UserGUI:
             level: logging level (int) - controls color/tag
         """
         # Determine tag name from level
+        assert threading.current_thread() is threading.main_thread(), \
+            "gui.log() must be called from the main thread"
+
         level_name = logging.getLevelName(level)
         if not isinstance(level_name, str):
             level_name = 'INFO'
