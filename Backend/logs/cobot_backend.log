@@ -2357,3 +2357,17 @@ TypeError: ServerZeroMQ._handle_signal() takes 2 positional arguments but 3 were
 15:54:20  DEBUG     communication_server.py  Sent response: {'command': 'rejected', 'data': {'reason': 'Could not connect to ur: timed out'}}
 15:54:26  INFO      communication_server.py  Signal 2 received, shutting down
 15:54:26  INFO      communication_server.py  Shutting down server
+16:07:33  INFO      main.py  Starting backend server on tcp://*:5555
+16:07:33  DEBUG     message_handler.py  Controller available: 'mock' -> MockRobotController
+16:07:33  DEBUG     message_handler.py  Controller available: 'ur' -> URController
+16:07:33  INFO      communication_server.py  Server ready and listening on tcp://*:5555
+16:07:33  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}], 'message': ''}}
+16:07:33  DEBUG     communication_server.py  Sent response: {'command': 'rejected', 'data': {'reason': 'Unsupported robot type: franka'}}
+16:07:33  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}], 'message': ''}}
+16:07:33  DEBUG     communication_server.py  Sent response: {'command': 'rejected', 'data': {'reason': 'Unsupported robot type: franka'}}
+16:07:34  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}], 'message': ''}}
+16:07:34  DEBUG     communication_server.py  Sent response: {'command': 'rejected', 'data': {'reason': 'Unsupported robot type: franka'}}
+16:08:02  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}], 'message': ''}}
+16:08:02  DEBUG     communication_server.py  Sent response: {'command': 'rejected', 'data': {'reason': 'Unsupported robot type: franka'}}
+16:11:28  INFO      communication_server.py  Signal 2 received, shutting down
+16:11:28  INFO      communication_server.py  Shutting down server

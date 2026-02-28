@@ -4586,3 +4586,58 @@ NoneType: None
 15:54:15  DEBUG     pipeline.py  Sending data: {"mode": "live", "robot": "ur", "commands": [{"action": "move", "motion_type": "moveJ", "target": {"type": "named_pose", "name": "home"}}], "message": ""}
 15:54:20  WARNING   pipeline.py  Execution: Command rejected — Could not connect to ur: timed out
 15:54:24  INFO      main.py  Application shutting down
+15:58:38  INFO      main.py  Application starting
+15:58:41  INFO      main.py  Application ready
+15:59:06  INFO      main.py  Application shutting down
+16:00:59  INFO      main.py  Application starting
+16:01:02  INFO      main.py  Application ready
+16:01:06  INFO      main.py  Application shutting down
+16:04:45  INFO      main.py  Application starting
+16:04:50  INFO      main.py  Application ready
+16:04:51  INFO      pipeline.py  Recording started
+16:04:52  INFO      pipeline.py  Recording stopped, starting transcription
+16:04:53  INFO      ASR_module.py  ASR: transcribed text 'Move to home.', confidence = 0.72
+16:05:07  DEBUG     parsing_module.py  Parser: LLM raw response preview: {
+  "mode": "live",
+  "robot": "franka",
+  "commands": [
+    {
+      "action": "move",
+      "motion_type": "moveJ",
+      "target": {
+        "type": "named_pose",
+        "name": "home"
+      }
+    }
+  ]
+}
+16:05:07  DEBUG     parsing_module.py  Parser: Parsed JSON after cleanup: {"mode": "live", "robot": "franka", "commands": [{"action": "move", "motion_type": "moveJ", "target": {"type": "named_pose", "name": "home"}}]}
+16:05:07  INFO      parsing_module.py  Parser: Parsing successful
+16:05:07  INFO      pipeline.py  Parser: Command summary "Move to home pos."
+16:05:07  INFO      pipeline.py  Client: Sending data to backend
+16:05:07  DEBUG     pipeline.py  Sending data: {"mode": "live", "robot": "franka", "commands": [{"action": "move", "motion_type": "moveJ", "target": {"type": "named_pose", "name": "home"}}], "message": ""}
+16:06:37  ERROR     pipeline.py  Execution: Backend error — {'command': 'timeout', 'data': {'error': 'Backend unreachable after 3 attempts'}}
+16:07:57  INFO      pipeline.py  Recording started
+16:07:58  INFO      pipeline.py  Recording stopped, starting transcription
+16:07:59  INFO      ASR_module.py  ASR: transcribed text 'Move to home.', confidence = 0.76
+16:08:02  DEBUG     parsing_module.py  Parser: LLM raw response preview: {
+  "mode": "live",
+  "robot": "franka",
+  "commands": [
+    {
+      "action": "move",
+      "motion_type": "moveJ",
+      "target": {
+        "type": "named_pose",
+        "name": "home"
+      }
+    }
+  ]
+}
+16:08:02  DEBUG     parsing_module.py  Parser: Parsed JSON after cleanup: {"mode": "live", "robot": "franka", "commands": [{"action": "move", "motion_type": "moveJ", "target": {"type": "named_pose", "name": "home"}}]}
+16:08:02  INFO      parsing_module.py  Parser: Parsing successful
+16:08:02  INFO      pipeline.py  Parser: Command summary "Move to home pos."
+16:08:02  INFO      pipeline.py  Client: Sending data to backend
+16:08:02  DEBUG     pipeline.py  Sending data: {"mode": "live", "robot": "franka", "commands": [{"action": "move", "motion_type": "moveJ", "target": {"type": "named_pose", "name": "home"}}], "message": ""}
+16:08:02  WARNING   pipeline.py  Execution: Command rejected — Unsupported robot type: franka
+16:08:07  INFO      main.py  Application shutting down
