@@ -116,7 +116,7 @@ class Controller:
             self.gui.set_gui_status_line("❌ Transcription failed", "danger")
             self._set_button_state()
             self.state = State.IDLE
-            logger.error("Transcription failed: no text or zero confidence")
+            logger.warning("Transcription failed: no text detected or zero confidence")
             return
 
         # Check for low confidence and warn user
