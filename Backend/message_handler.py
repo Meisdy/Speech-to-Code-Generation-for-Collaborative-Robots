@@ -42,8 +42,10 @@ class MessageHandler:
     def disconnect_robot(self) -> None:
         """Disconnect and release the current robot controller."""
         if self.robot:
-            if self.robot.is_connected():
+            try:
                 self.robot.disconnect()
+            except Exception as e:
+                logger.error("Error during robot disconnect: %s", e)
             self.robot = None
 
     def process_message(self, message: dict) -> dict:

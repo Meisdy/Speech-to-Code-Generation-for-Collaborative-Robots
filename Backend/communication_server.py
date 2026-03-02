@@ -18,6 +18,7 @@ class ServerZeroMQ:
         self.running : bool = False
         self.context = zmq.Context()
         self.socket = self.context.socket(zmq.REP)
+        self.socket.setsockopt(zmq.LINGER, 0)
 
     def start(self) -> None:
         """Bind socket, register signals, and enter the receive-respond loop."""
