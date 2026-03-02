@@ -10,3 +10,4 @@
 /Backend/__pycache__/
 /Backend/robot_controllers/__pycache__/
 Backend/robot_controllers/__pycache__/franka_controller.cpython-38.pyc
+Backend/logs/franka_ros.log
