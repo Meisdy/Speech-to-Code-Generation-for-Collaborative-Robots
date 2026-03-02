@@ -1,5 +1,7 @@
 # franka_controller.py
+import atexit
 import logging
+import os
 import subprocess
 import time
 from typing import Optional
@@ -23,48 +25,84 @@ class FrankaController(BaseRobotController):
 
     def __init__(self):
         super().__init__(POSES_FILE)
-        self._robot       = None
-        self._ros_process = None
+        self._robot              = None
+        self._ros_process        = None
+        self._roscpp_initialized = False
 
     def connect(self) -> dict:
         """Connect to the Franka, launching MoveIt if not already running."""
         try:
             if self._is_move_group_running():
-                logger.info("Franka: MoveIt already running, skipping launch")
+                logger.info("MoveIt already running, skipping launch")
             else:
-                logger.info("Franka: Starting MoveIt stack")
+                logger.info("Starting MoveIt stack")
                 self._launch_ros()
 
             rospy.init_node("speech_to_code_franka", anonymous=True)
+            # Suppress rosconsole "[ERROR] registerSubscriber" spam on shutdown.
+            # These errors are expected and harmless — they fire when rosmaster
+            # dies before roscpp finishes cleanup. Setting FATAL means nothing
+            # below that level will be printed by the ROS C++ logging framework.
+            os.environ["ROSCONSOLE_MIN_SEVERITY"] = "FATAL"
             moveit_commander.roscpp_initialize([])
-            logger.debug("Franka: MoveIt commander initialized")
+            self._roscpp_initialized = True
+            logger.debug("MoveIt commander initialized")
 
             self._robot    = FrankaRobot("panda_arm", "panda_hand", moveit_commander, POSES_FILE)
             self.connected = True
 
-            logger.info("Franka: Connected successfully")
+            logger.info(" Connected successfully")
             return {"success": True, "message": "Franka connected"}
 
         except Exception as e:
-            logger.error("Franka: Error while connecting - %s", e)
+            logger.error(" Error while connecting - %s", e)
             return {"success": False, "message": str(e)}
 
     def disconnect(self) -> None:
         """Shut down MoveIt commander and terminate the ROS stack if we launched it."""
+        # The xmlrpc-c C++ library calls fprintf(stderr) directly — it has no
+        # configurable logger, so the only way to silence it is at the fd level.
+        # We point fd 2 at /dev/null for the shutdown window only, then restore it.
+        old_stderr_fd = os.dup(2)
         try:
-            moveit_commander.roscpp_shutdown()
-        except Exception as e:
-            logger.warning("Franka: roscpp_shutdown error - %s", e)
+            with open(os.devnull, "w") as devnull:
+                os.dup2(devnull.fileno(), 2)
 
-        if self._ros_process:
-            self._ros_process.terminate()
+            try:
+                rospy.signal_shutdown("FrankaController disconnecting")
+            except Exception as e:
+                logger.warning("rospy.signal_shutdown error - %s", e)
+
+            if self._roscpp_initialized:
+                try:
+                    moveit_commander.roscpp_shutdown()
+                except Exception as e:
+                    logger.warning("roscpp_shutdown error - %s", e)
+                self._roscpp_initialized = False
+
+        finally:
+            os.dup2(old_stderr_fd, 2)
+            os.close(old_stderr_fd)
+
+        self._kill_ros_process()
+
+        self._robot    = None
+        self.connected = False
+        logger.info("Disconnected successfully")
+
+    def _kill_ros_process(self) -> None:
+        """Terminate the roslaunch child process if we own it."""
+        if not self._ros_process:
+            return
+        self._ros_process.terminate()
+        try:
+            self._ros_process.wait(timeout=10)
+        except subprocess.TimeoutExpired:
+            logger.warning("ROS process did not exit cleanly, killing it")
+            self._ros_process.kill()
             self._ros_process.wait()
-            logger.info("Franka: MoveIt stack stopped")
-
-        self._robot       = None
         self._ros_process = None
-        self.connected    = False
-        logger.info("Franka: Disconnected successfully")
+        logger.info("MoveIt stack stopped")
 
     def is_connected(self) -> bool:
         """Return True if the arm is reachable via MoveIt."""
@@ -78,11 +116,15 @@ class FrankaController(BaseRobotController):
 
     def move_joint(self, pose: dict, speed: Optional[float] = None, offset: Optional[list] = None) -> dict:
         """Execute a joint-space move to the given pose."""
+        logger.info("Moving with moveJ to '%s'", pose["name"])
+        
         try:
             if speed:
                 self._robot.arm.set_max_velocity_scaling_factor(speed)
                 self._robot.arm.set_max_acceleration_scaling_factor(speed)
             if offset:
+                logger.info(f"Offset used: {offset}")
+                offset = [x / 1000 for x in offset] # Switch to m for backend module
                 self._robot.MoveJ(pose["name"], offset=offset)
             else:
                 self._robot.MoveJ_J(pose["name"])
@@ -92,11 +134,15 @@ class FrankaController(BaseRobotController):
 
     def move_linear(self, pose: dict, speed: Optional[float] = None, offset: Optional[list] = None) -> dict:
         """Execute a linear Cartesian move to the given pose."""
+        logger.info("Moving with moveL to '%s'", pose["name"])
+        if offset:
+            logger.info(f"Offset used: {offset}")   
+            offset = [x / 1000 for x in offset] # Switch to m for backend module
         try:
             if speed:
                 self._robot.arm.set_max_velocity_scaling_factor(speed)
                 self._robot.arm.set_max_acceleration_scaling_factor(speed)
-            self._robot.MoveL(pose["name"], offset=offset)
+            self._robot.MoveL(pose["name"], offset)
             return {"success": True, "message": "moveL complete"}
         except Exception as e:
             return {"success": False, "message": str(e)}
@@ -166,4 +212,7 @@ class FrankaController(BaseRobotController):
                 stdout=log_file,
                 stderr=log_file
             )
+        # Guarantee the child is killed at interpreter exit even if disconnect()
+        # is never called (e.g. crash before connect completes).
+        atexit.register(self._kill_ros_process)
         time.sleep(LAUNCH_DELAY)

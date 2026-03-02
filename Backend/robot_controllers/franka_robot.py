@@ -19,7 +19,6 @@ class FrankaRobot:
         self.set_mode_ptp()
 
         self._positions = self._load_points(poses_file)
-        print("Loaded positions:", list(self._positions.keys()))
 
     # --------------------------
     #       PLANNERS
@@ -85,12 +84,16 @@ class FrankaRobot:
         pose_goal.position.z   = pose.position.z
         pose_goal.orientation  = pose.orientation
 
+
         if offset:
             pose_goal.position.x += offset[0]
             pose_goal.position.y += offset[1]
             pose_goal.position.z += offset[2]
 
+
+
         self._normalize_quaternion(pose_goal)
+
         self.arm.set_pose_target(pose_goal)
 
         success = self.arm.go(wait=True)
