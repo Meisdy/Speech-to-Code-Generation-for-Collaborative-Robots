@@ -51,11 +51,11 @@ class FrankaController(BaseRobotController):
             self._robot    = FrankaRobot("panda_arm", "panda_hand", moveit_commander, POSES_FILE)
             self.connected = True
 
-            logger.info(" Connected successfully")
+            logger.info("Connected successfully")
             return {"success": True, "message": "Franka connected"}
 
         except Exception as e:
-            logger.error(" Error while connecting - %s", e)
+            logger.error("Error while connecting - %s", e)
             return {"success": False, "message": str(e)}
 
     def disconnect(self) -> None:
@@ -150,6 +150,7 @@ class FrankaController(BaseRobotController):
     def gripper_open(self) -> dict:
         """Open the Franka gripper."""
         try:
+            logger.info("Opening gripper")
             self._robot.gripper_open()
             self.gripper_state = "open"
             return {"success": True, "message": "Gripper opened"}
@@ -159,6 +160,7 @@ class FrankaController(BaseRobotController):
     def gripper_close(self) -> dict:
         """Close the Franka gripper."""
         try:
+            logger.info("Closing gripper")
             self._robot.gripper_close()
             self.gripper_state = "closed"
             return {"success": True, "message": "Gripper closed"}
