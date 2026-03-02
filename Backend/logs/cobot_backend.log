@@ -2378,3 +2378,864 @@ TypeError: ServerZeroMQ._handle_signal() takes 2 positional arguments but 3 were
 10:21:18  INFO      communication_server.py  Server ready and listening on tcp://*:5555
 10:21:21  INFO      communication_server.py  Signal 2 received, shutting down
 10:21:22  INFO      communication_server.py  Shutting down server
+10:35:17  INFO      main.py  Starting backend server on tcp://*:5555
+10:35:17  DEBUG     message_handler.py  Controller available: 'mock' -> MockRobotController
+10:35:17  DEBUG     message_handler.py  Controller available: 'franka' -> FrankaController
+10:35:17  DEBUG     message_handler.py  Controller available: 'ur' -> URController
+10:35:17  INFO      communication_server.py  Server ready and listening on tcp://*:5555
+10:37:08  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}, {'action': 'gripper', 'command': 'close'}], 'message': ''}}
+10:37:08  INFO      franka_controller.py  Franka: Starting MoveIt stack
+10:37:18  DEBUG     franka_controller.py  Franka: MoveIt commander initialized
+10:37:20  INFO      franka_controller.py  Franka: Connected successfully
+10:37:23  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 2 command(s) completed'}}
+10:37:40  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'pos1'}}, {'action': 'gripper', 'command': 'open'}], 'message': ''}}
+10:37:42  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 2 command(s) completed'}}
+10:38:40  INFO      communication_server.py  Signal 2 received, shutting down
+10:38:41  INFO      communication_server.py  Shutting down server
+10:42:00  INFO      main.py  Starting backend server on tcp://*:5555
+10:42:00  DEBUG     message_handler.py  Controller available: 'mock' -> MockRobotController
+10:42:00  DEBUG     message_handler.py  Controller available: 'franka' -> FrankaController
+10:42:00  DEBUG     message_handler.py  Controller available: 'ur' -> URController
+10:42:00  ERROR     main.py  Unhandled server error: Address already in use (addr='tcp://*:5555')
+Traceback (most recent call last):
+  File "/home/hv/Downloads/Sandy/Speech-to-Code-Generation-for-Collaborative-Robots/Backend/main.py", line 19, in main
+    server.start()
+  File "/home/hv/Downloads/Sandy/Speech-to-Code-Generation-for-Collaborative-Robots/Backend/communication_server.py", line 24, in start
+    self.socket.bind(self.bind_address)
+  File "/home/hv/.local/lib/python3.8/site-packages/zmq/sugar/socket.py", line 320, in bind
+    super().bind(addr)
+  File "zmq/backend/cython/_zmq.py", line 1009, in zmq.backend.cython._zmq.Socket.bind
+  File "zmq/backend/cython/_zmq.py", line 190, in zmq.backend.cython._zmq._check_rc
+zmq.error.ZMQError: Address already in use (addr='tcp://*:5555')
+10:42:44  INFO      main.py  Starting backend server on tcp://*:5555
+10:42:44  DEBUG     message_handler.py  Controller available: 'mock' -> MockRobotController
+10:42:44  DEBUG     message_handler.py  Controller available: 'franka' -> FrankaController
+10:42:44  DEBUG     message_handler.py  Controller available: 'ur' -> URController
+10:42:44  INFO      communication_server.py  Server ready and listening on tcp://*:5555
+10:42:51  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'franka', 'commands': [{'action': 'pose', 'command': 'teach', 'pose_name': 'position_1', 'overwrite': False}, {'action': 'gripper', 'command': 'open'}], 'message': ''}}
+10:42:51  INFO      franka_controller.py  Franka: Starting MoveIt stack
+10:43:01  DEBUG     franka_controller.py  Franka: MoveIt commander initialized
+10:43:03  INFO      franka_controller.py  Franka: Connected successfully
+10:43:03  INFO      base_robot_controller.py  Saved position 'position_1'
+10:43:04  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 2 command(s) completed'}}
+10:43:45  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'franka', 'commands': [{'action': 'pose', 'command': 'teach', 'pose_name': 'position_2', 'overwrite': False}, {'action': 'gripper', 'command': 'open'}], 'message': ''}}
+10:43:45  INFO      base_robot_controller.py  Saved position 'position_2'
+10:43:46  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 2 command(s) completed'}}
+10:44:39  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'franka', 'commands': [{'action': 'pose', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'position_1'}}, {'action': 'gripper', 'command': 'close'}], 'message': ''}}
+10:44:39  ERROR     message_handler.py  Error processing message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'franka', 'commands': [{'action': 'pose', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'position_1'}}, {'action': 'gripper', 'command': 'close'}], 'message': ''}}
+Traceback (most recent call last):
+  File "/home/hv/Downloads/Sandy/Speech-to-Code-Generation-for-Collaborative-Robots/Backend/message_handler.py", line 64, in process_message
+    return commands[command]()
+  File "/home/hv/Downloads/Sandy/Speech-to-Code-Generation-for-Collaborative-Robots/Backend/message_handler.py", line 61, in <lambda>
+    "execute_sequence": lambda: self._execute_sequence(data),
+  File "/home/hv/Downloads/Sandy/Speech-to-Code-Generation-for-Collaborative-Robots/Backend/message_handler.py", line 133, in _execute_sequence
+    result = self._process_command(cmd, self.robot)
+  File "/home/hv/Downloads/Sandy/Speech-to-Code-Generation-for-Collaborative-Robots/Backend/message_handler.py", line 187, in _process_command
+    mode = command["command"]
+KeyError: 'command'
+10:44:39  DEBUG     communication_server.py  Sent response: {'command': 'error', 'data': {'error message': "'command'"}}
+10:44:52  INFO      communication_server.py  Signal 2 received, shutting down
+10:44:53  INFO      communication_server.py  Shutting down server
+10:44:54  INFO      franka_controller.py  Franka: MoveIt stack stopped
+10:44:54  INFO      franka_controller.py  Franka: Disconnected successfully
+10:45:13  INFO      main.py  Starting backend server on tcp://*:5555
+10:45:13  DEBUG     message_handler.py  Controller available: 'mock' -> MockRobotController
+10:45:13  DEBUG     message_handler.py  Controller available: 'franka' -> FrankaController
+10:45:13  DEBUG     message_handler.py  Controller available: 'ur' -> URController
+10:45:13  INFO      communication_server.py  Server ready and listening on tcp://*:5555
+10:45:37  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'franka', 'commands': [{'action': 'pose', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'position_1'}}, {'action': 'pose', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'position_2'}}, {'action': 'gripper', 'command': 'open'}], 'message': ''}}
+10:45:37  INFO      franka_controller.py  Franka: Starting MoveIt stack
+10:45:48  DEBUG     franka_controller.py  Franka: MoveIt commander initialized
+10:45:49  INFO      franka_controller.py  Franka: Connected successfully
+10:45:49  ERROR     message_handler.py  Error processing message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'franka', 'commands': [{'action': 'pose', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'position_1'}}, {'action': 'pose', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'position_2'}}, {'action': 'gripper', 'command': 'open'}], 'message': ''}}
+Traceback (most recent call last):
+  File "/home/hv/Downloads/Sandy/Speech-to-Code-Generation-for-Collaborative-Robots/Backend/message_handler.py", line 64, in process_message
+    return commands[command]()
+  File "/home/hv/Downloads/Sandy/Speech-to-Code-Generation-for-Collaborative-Robots/Backend/message_handler.py", line 61, in <lambda>
+    "execute_sequence": lambda: self._execute_sequence(data),
+  File "/home/hv/Downloads/Sandy/Speech-to-Code-Generation-for-Collaborative-Robots/Backend/message_handler.py", line 133, in _execute_sequence
+    result = self._process_command(cmd, self.robot)
+  File "/home/hv/Downloads/Sandy/Speech-to-Code-Generation-for-Collaborative-Robots/Backend/message_handler.py", line 187, in _process_command
+    mode = command["command"]
+KeyError: 'command'
+10:45:49  DEBUG     communication_server.py  Sent response: {'command': 'error', 'data': {'error message': "'command'"}}
+10:46:10  INFO      communication_server.py  Signal 2 received, shutting down
+10:46:11  INFO      communication_server.py  Shutting down server
+10:46:30  INFO      main.py  Starting backend server on tcp://*:5555
+10:46:30  DEBUG     message_handler.py  Controller available: 'mock' -> MockRobotController
+10:46:30  DEBUG     message_handler.py  Controller available: 'franka' -> FrankaController
+10:46:30  DEBUG     message_handler.py  Controller available: 'ur' -> URController
+10:46:30  ERROR     main.py  Unhandled server error: Address already in use (addr='tcp://*:5555')
+Traceback (most recent call last):
+  File "/home/hv/Downloads/Sandy/Speech-to-Code-Generation-for-Collaborative-Robots/Backend/main.py", line 19, in main
+    server.start()
+  File "/home/hv/Downloads/Sandy/Speech-to-Code-Generation-for-Collaborative-Robots/Backend/communication_server.py", line 24, in start
+    self.socket.bind(self.bind_address)
+  File "/home/hv/.local/lib/python3.8/site-packages/zmq/sugar/socket.py", line 320, in bind
+    super().bind(addr)
+  File "zmq/backend/cython/_zmq.py", line 1009, in zmq.backend.cython._zmq.Socket.bind
+  File "zmq/backend/cython/_zmq.py", line 190, in zmq.backend.cython._zmq._check_rc
+zmq.error.ZMQError: Address already in use (addr='tcp://*:5555')
+10:46:43  INFO      main.py  Starting backend server on tcp://*:5555
+10:46:43  DEBUG     message_handler.py  Controller available: 'mock' -> MockRobotController
+10:46:43  DEBUG     message_handler.py  Controller available: 'franka' -> FrankaController
+10:46:43  DEBUG     message_handler.py  Controller available: 'ur' -> URController
+10:46:43  INFO      communication_server.py  Server ready and listening on tcp://*:5555
+10:47:24  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'franka', 'commands': [{'action': 'pose', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'position_1'}}, {'action': 'pose', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'position_2'}}, {'action': 'gripper', 'command': 'open'}], 'message': ''}}
+10:47:24  INFO      franka_controller.py  Franka: Starting MoveIt stack
+10:47:34  DEBUG     franka_controller.py  Franka: MoveIt commander initialized
+10:47:35  INFO      franka_controller.py  Franka: Connected successfully
+10:47:35  ERROR     message_handler.py  Error processing message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'franka', 'commands': [{'action': 'pose', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'position_1'}}, {'action': 'pose', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'position_2'}}, {'action': 'gripper', 'command': 'open'}], 'message': ''}}
+Traceback (most recent call last):
+  File "/home/hv/Downloads/Sandy/Speech-to-Code-Generation-for-Collaborative-Robots/Backend/message_handler.py", line 64, in process_message
+    return commands[command]()
+  File "/home/hv/Downloads/Sandy/Speech-to-Code-Generation-for-Collaborative-Robots/Backend/message_handler.py", line 61, in <lambda>
+    "execute_sequence": lambda: self._execute_sequence(data),
+  File "/home/hv/Downloads/Sandy/Speech-to-Code-Generation-for-Collaborative-Robots/Backend/message_handler.py", line 133, in _execute_sequence
+    result = self._process_command(cmd, self.robot)
+  File "/home/hv/Downloads/Sandy/Speech-to-Code-Generation-for-Collaborative-Robots/Backend/message_handler.py", line 187, in _process_command
+    mode = command["command"]
+KeyError: 'command'
+10:47:35  DEBUG     communication_server.py  Sent response: {'command': 'error', 'data': {'error message': "'command'"}}
+10:48:24  INFO      communication_server.py  Signal 2 received, shutting down
+10:48:25  INFO      communication_server.py  Shutting down server
+10:48:39  INFO      main.py  Starting backend server on tcp://*:5555
+10:48:39  DEBUG     message_handler.py  Controller available: 'mock' -> MockRobotController
+10:48:39  DEBUG     message_handler.py  Controller available: 'franka' -> FrankaController
+10:48:39  DEBUG     message_handler.py  Controller available: 'ur' -> URController
+10:48:39  INFO      communication_server.py  Server ready and listening on tcp://*:5555
+10:48:49  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'franka', 'commands': [{'action': 'gripper', 'command': 'close'}], 'message': ''}}
+10:48:50  INFO      franka_controller.py  Franka: Starting MoveIt stack
+10:49:00  DEBUG     franka_controller.py  Franka: MoveIt commander initialized
+10:49:01  INFO      franka_controller.py  Franka: Connected successfully
+10:49:02  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+10:49:11  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'franka', 'commands': [{'action': 'gripper', 'command': 'open'}], 'message': ''}}
+10:49:12  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+10:49:46  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'franka', 'commands': [{'action': 'pose', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}, {'action': 'pose', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'pos1'}}, {'action': 'gripper', 'command': 'open'}], 'message': ''}}
+10:49:46  ERROR     message_handler.py  Error processing message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'franka', 'commands': [{'action': 'pose', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}, {'action': 'pose', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'pos1'}}, {'action': 'gripper', 'command': 'open'}], 'message': ''}}
+Traceback (most recent call last):
+  File "/home/hv/Downloads/Sandy/Speech-to-Code-Generation-for-Collaborative-Robots/Backend/message_handler.py", line 64, in process_message
+    return commands[command]()
+  File "/home/hv/Downloads/Sandy/Speech-to-Code-Generation-for-Collaborative-Robots/Backend/message_handler.py", line 61, in <lambda>
+    "execute_sequence": lambda: self._execute_sequence(data),
+  File "/home/hv/Downloads/Sandy/Speech-to-Code-Generation-for-Collaborative-Robots/Backend/message_handler.py", line 133, in _execute_sequence
+    result = self._process_command(cmd, self.robot)
+  File "/home/hv/Downloads/Sandy/Speech-to-Code-Generation-for-Collaborative-Robots/Backend/message_handler.py", line 187, in _process_command
+    mode = command["command"]
+KeyError: 'command'
+10:49:46  DEBUG     communication_server.py  Sent response: {'command': 'error', 'data': {'error message': "'command'"}}
+10:52:53  INFO      communication_server.py  Signal 2 received, shutting down
+10:52:53  INFO      communication_server.py  Signal 2 received, shutting down
+10:52:54  INFO      communication_server.py  Shutting down server
+10:59:31  INFO      main.py  Starting backend server on tcp://*:5555
+10:59:31  DEBUG     message_handler.py  Controller available: 'mock' -> MockRobotController
+10:59:31  DEBUG     message_handler.py  Controller available: 'franka' -> FrankaController
+10:59:31  DEBUG     message_handler.py  Controller available: 'ur' -> URController
+10:59:31  INFO      communication_server.py  Server ready and listening on tcp://*:5555
+10:59:32  INFO      communication_server.py  Signal 2 received, shutting down
+10:59:33  INFO      communication_server.py  Shutting down server
+11:00:16  INFO      main.py  Starting backend server on tcp://*:5555
+11:00:16  DEBUG     message_handler.py  Controller available: 'mock' -> MockRobotController
+11:00:16  DEBUG     message_handler.py  Controller available: 'franka' -> FrankaController
+11:00:16  DEBUG     message_handler.py  Controller available: 'ur' -> URController
+11:00:16  INFO      communication_server.py  Server ready and listening on tcp://*:5555
+11:00:55  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'franka', 'commands': [{'action': 'gripper', 'command': 'close'}], 'message': ''}}
+11:00:56  INFO      franka_controller.py  Franka: Starting MoveIt stack
+11:01:06  DEBUG     franka_controller.py  Franka: MoveIt commander initialized
+11:01:08  INFO      franka_controller.py  Franka: Connected successfully
+11:01:09  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+11:01:29  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'franka', 'commands': [{'action': 'gripper', 'command': 'open'}], 'message': ''}}
+11:01:30  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+11:02:04  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}, {'action': 'gripper', 'command': 'open'}], 'message': ''}}
+11:02:06  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 2 command(s) completed'}}
+11:02:27  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'position_1'}}, {'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'position_2'}}, {'action': 'gripper', 'command': 'open'}], 'message': ''}}
+11:02:31  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 3 command(s) completed'}}
+11:02:40  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'named_pose', 'name': 'position_1'}}, {'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'named_pose', 'name': 'position_2'}}, {'action': 'gripper', 'command': 'open'}], 'message': ''}}
+11:02:55  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 3 command(s) completed'}}
+11:06:04  INFO      communication_server.py  Signal 2 received, shutting down
+11:06:05  INFO      communication_server.py  Shutting down server
+11:17:57  INFO      main.py  Starting backend server on tcp://*:5555
+11:17:57  DEBUG     message_handler.py  Controller available: 'mock' -> MockRobotController
+11:17:57  DEBUG     message_handler.py  Controller available: 'franka' -> FrankaController
+11:17:57  DEBUG     message_handler.py  Controller available: 'ur' -> URController
+11:17:57  INFO      communication_server.py  Server ready and listening on tcp://*:5555
+11:17:58  INFO      communication_server.py  Signal 2 received, shutting down
+11:17:59  INFO      communication_server.py  Shutting down server
+11:18:04  INFO      main.py  Starting backend server on tcp://*:5555
+11:18:04  DEBUG     message_handler.py  Controller available: 'mock' -> MockRobotController
+11:18:04  DEBUG     message_handler.py  Controller available: 'franka' -> FrankaController
+11:18:04  DEBUG     message_handler.py  Controller available: 'ur' -> URController
+11:18:04  INFO      communication_server.py  Server ready and listening on tcp://*:5555
+11:18:17  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'mock', 'commands': [{'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'named_pose', 'name': 'position_1'}}, {'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'named_pose', 'name': 'position_2'}}, {'action': 'gripper', 'command': 'open'}], 'message': ''}}
+11:18:18  INFO      mock_controller.py  Connected
+11:18:18  WARNING   message_handler.py  Sequence rejected due to 2 validation error(s)
+11:18:18  DEBUG     communication_server.py  Sent response: {'command': 'rejected', 'data': {'reasons': ["Unknown pose: 'position_1'", "Unknown pose: 'position_2'"]}}
+11:18:29  INFO      communication_server.py  Signal 2 received, shutting down
+11:18:30  INFO      communication_server.py  Shutting down server
+11:18:30  INFO      mock_controller.py  Disconnected
+11:18:33  INFO      main.py  Starting backend server on tcp://*:5555
+11:18:33  DEBUG     message_handler.py  Controller available: 'mock' -> MockRobotController
+11:18:33  DEBUG     message_handler.py  Controller available: 'franka' -> FrankaController
+11:18:33  DEBUG     message_handler.py  Controller available: 'ur' -> URController
+11:18:33  INFO      communication_server.py  Server ready and listening on tcp://*:5555
+11:19:08  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'position_1'}}, {'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'position_2'}}, {'action': 'gripper', 'command': 'open'}], 'message': ''}}
+11:19:08  INFO      franka_controller.py  Franka: Starting MoveIt stack
+11:19:18  DEBUG     franka_controller.py  Franka: MoveIt commander initialized
+11:19:20  INFO      franka_controller.py  Franka: Connected successfully
+11:19:24  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 3 command(s) completed'}}
+11:19:56  INFO      communication_server.py  Signal 2 received, shutting down
+11:19:57  INFO      communication_server.py  Shutting down server
+11:26:19  INFO      main.py  Starting backend server on tcp://*:5555
+11:26:19  DEBUG     message_handler.py  Controller available: 'mock' -> MockRobotController
+11:26:19  DEBUG     message_handler.py  Controller available: 'franka' -> FrankaController
+11:26:19  DEBUG     message_handler.py  Controller available: 'ur' -> URController
+11:26:19  INFO      communication_server.py  Server ready and listening on tcp://*:5555
+11:26:21  INFO      communication_server.py  Signal 2 received, shutting down
+11:26:22  INFO      communication_server.py  Shutting down server
+11:26:27  INFO      main.py  Starting backend server on tcp://*:5555
+11:26:27  DEBUG     message_handler.py  Controller available: 'mock' -> MockRobotController
+11:26:27  DEBUG     message_handler.py  Controller available: 'franka' -> FrankaController
+11:26:27  DEBUG     message_handler.py  Controller available: 'ur' -> URController
+11:26:27  INFO      communication_server.py  Server ready and listening on tcp://*:5555
+11:26:38  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}, {'action': 'pose', 'command': 'teach', 'pose_name': 'home', 'overwrite': True}, {'action': 'gripper', 'command': 'open'}], 'message': ''}}
+11:26:39  INFO      franka_controller.py  Franka: Starting MoveIt stack
+11:26:49  DEBUG     franka_controller.py  Franka: MoveIt commander initialized
+11:26:50  INFO      franka_controller.py  Franka: Connected successfully
+11:26:52  INFO      base_robot_controller.py  Saved position 'home'
+11:26:52  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 3 command(s) completed'}}
+11:27:00  INFO      communication_server.py  Signal 2 received, shutting down
+11:27:01  INFO      communication_server.py  Shutting down server
+11:27:01  INFO      franka_controller.py  Franka: MoveIt stack stopped
+11:27:01  INFO      franka_controller.py  Franka: Disconnected successfully
+11:29:20  INFO      main.py  Starting backend server on tcp://*:5555
+11:29:20  DEBUG     message_handler.py  Controller available: 'mock' -> MockRobotController
+11:29:20  DEBUG     message_handler.py  Controller available: 'franka' -> FrankaController
+11:29:20  DEBUG     message_handler.py  Controller available: 'ur' -> URController
+11:29:20  INFO      communication_server.py  Server ready and listening on tcp://*:5555
+11:29:25  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}, {'action': 'pose', 'command': 'teach', 'pose_name': 'home', 'overwrite': True}, {'action': 'gripper', 'command': 'open'}], 'message': ''}}
+11:29:25  INFO      franka_controller.py  Franka: Starting MoveIt stack
+11:29:35  DEBUG     franka_controller.py  Franka: MoveIt commander initialized
+11:29:37  INFO      franka_controller.py  Franka: Connected successfully
+11:29:38  INFO      base_robot_controller.py  Saved position 'home'
+11:29:38  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 3 command(s) completed'}}
+11:30:16  INFO      communication_server.py  Signal 2 received, shutting down
+11:30:17  INFO      communication_server.py  Shutting down server
+11:30:17  INFO      franka_controller.py  Franka: MoveIt stack stopped
+11:30:17  INFO      franka_controller.py  Franka: Disconnected successfully
+11:38:48  INFO      main.py  Starting backend server on tcp://*:5555
+11:38:48  DEBUG     message_handler.py  Controller available: 'mock' -> MockRobotController
+11:38:48  DEBUG     message_handler.py  Controller available: 'franka' -> FrankaController
+11:38:48  DEBUG     message_handler.py  Controller available: 'ur' -> URController
+11:38:48  INFO      communication_server.py  Server ready and listening on tcp://*:5555
+11:38:50  INFO      communication_server.py  Signal 2 received, shutting down
+11:38:51  INFO      communication_server.py  Shutting down server
+11:39:31  INFO      main.py  Starting backend server on tcp://*:5555
+11:39:31  DEBUG     message_handler.py  Controller available: 'mock' -> MockRobotController
+11:39:31  DEBUG     message_handler.py  Controller available: 'franka' -> FrankaController
+11:39:31  DEBUG     message_handler.py  Controller available: 'ur' -> URController
+11:39:31  INFO      communication_server.py  Server ready and listening on tcp://*:5555
+11:39:36  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'position_1'}}, {'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}], 'message': ''}}
+11:39:36  INFO      franka_controller.py  Franka: Starting MoveIt stack
+11:39:46  DEBUG     franka_controller.py  Franka: MoveIt commander initialized
+11:39:48  INFO      franka_controller.py  Franka: Connected successfully
+11:39:51  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 2 command(s) completed'}}
+11:40:03  INFO      communication_server.py  Signal 2 received, shutting down
+11:40:04  INFO      communication_server.py  Shutting down server
+11:40:04  INFO      franka_controller.py  Franka: MoveIt stack stopped
+11:40:04  INFO      franka_controller.py  Franka: Disconnected successfully
+11:40:33  INFO      main.py  Starting backend server on tcp://*:5555
+11:40:33  DEBUG     message_handler.py  Controller available: 'mock' -> MockRobotController
+11:40:33  DEBUG     message_handler.py  Controller available: 'franka' -> FrankaController
+11:40:33  DEBUG     message_handler.py  Controller available: 'ur' -> URController
+11:40:33  INFO      communication_server.py  Server ready and listening on tcp://*:5555
+11:40:51  INFO      communication_server.py  Signal 2 received, shutting down
+11:40:52  INFO      communication_server.py  Shutting down server
+11:50:24  INFO      main.py  Starting backend server on tcp://*:5555
+11:50:24  DEBUG     message_handler.py  Controller available: 'mock' -> MockRobotController
+11:50:24  DEBUG     message_handler.py  Controller available: 'franka' -> FrankaController
+11:50:24  DEBUG     message_handler.py  Controller available: 'ur' -> URController
+11:50:24  INFO      communication_server.py  Server ready and listening on tcp://*:5555
+11:50:38  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'position_1'}}, {'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}], 'message': ''}}
+11:50:38  INFO      franka_controller.py  Franka: Starting MoveIt stack
+11:50:49  DEBUG     franka_controller.py  Franka: MoveIt commander initialized
+11:50:51  INFO      franka_controller.py  Franka: Connected successfully
+11:50:54  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 2 command(s) completed'}}
+11:50:58  INFO      communication_server.py  Signal 2 received, shutting down
+11:50:59  INFO      communication_server.py  Shutting down server
+11:50:59  INFO      franka_controller.py  Franka: MoveIt stack stopped
+11:50:59  INFO      franka_controller.py  Franka: Disconnected successfully
+11:58:27  INFO      main.py  Starting backend server on tcp://*:5555
+11:58:27  DEBUG     message_handler.py  Controller available: 'mock' -> MockRobotController
+11:58:27  DEBUG     message_handler.py  Controller available: 'franka' -> FrankaController
+11:58:27  DEBUG     message_handler.py  Controller available: 'ur' -> URController
+11:58:27  INFO      communication_server.py  Server ready and listening on tcp://*:5555
+11:58:29  INFO      communication_server.py  Signal 2 received, shutting down
+11:58:30  INFO      communication_server.py  Shutting down server
+11:58:33  INFO      main.py  Starting backend server on tcp://*:5555
+11:58:33  DEBUG     message_handler.py  Controller available: 'mock' -> MockRobotController
+11:58:33  DEBUG     message_handler.py  Controller available: 'franka' -> FrankaController
+11:58:33  DEBUG     message_handler.py  Controller available: 'ur' -> URController
+11:58:33  INFO      communication_server.py  Server ready and listening on tcp://*:5555
+11:58:55  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'position_1'}}, {'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}], 'message': ''}}
+11:58:55  INFO      franka_controller.py  Franka: Starting MoveIt stack
+11:59:05  DEBUG     franka_controller.py  Franka: MoveIt commander initialized
+11:59:07  INFO      franka_controller.py  Franka: Connected successfully
+11:59:10  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 2 command(s) completed'}}
+11:59:20  INFO      communication_server.py  Signal 2 received, shutting down
+11:59:21  INFO      communication_server.py  Shutting down server
+11:59:21  INFO      franka_controller.py  Franka: MoveIt stack stopped
+11:59:21  INFO      franka_controller.py  Franka: Disconnected successfully
+13:19:37  INFO      main.py  Starting backend server on tcp://*:5555
+13:19:37  DEBUG     message_handler.py  Controller available: 'mock' -> MockRobotController
+13:19:37  DEBUG     message_handler.py  Controller available: 'franka' -> FrankaController
+13:19:37  DEBUG     message_handler.py  Controller available: 'ur' -> URController
+13:19:37  INFO      communication_server.py  Server ready and listening on tcp://*:5555
+13:19:49  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}, {'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'offset_from_pose', 'name': 'Home', 'offset': {'x_mm': 0.0, 'y_mm': 0.0, 'z_mm': 1.0}}}], 'message': ''}}
+13:19:49  INFO      franka_controller.py  Franka: Starting MoveIt stack
+13:19:59  DEBUG     franka_controller.py  Franka: MoveIt commander initialized
+13:20:00  INFO      franka_controller.py  Franka: Connected successfully
+13:20:00  WARNING   message_handler.py  Sequence rejected due to 1 validation error(s)
+13:20:00  DEBUG     communication_server.py  Sent response: {'command': 'rejected', 'data': {'reasons': ["Unknown pose: 'Home'"]}}
+13:20:23  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}, {'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'offset_from_pose', 'name': 'home', 'offset': {'x_mm': 0.0, 'y_mm': 0.0, 'z_mm': 1.0}}}], 'message': ''}}
+13:20:24  ERROR     message_handler.py  Sequence aborted at runtime: Pose PTP/LIN failed.
+13:20:24  DEBUG     communication_server.py  Sent response: {'command': 'error', 'data': {'message': 'Pose PTP/LIN failed.'}}
+13:20:45  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}, {'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'offset_from_pose', 'name': 'home', 'offset': {'x_mm': 0.0, 'y_mm': 0.0, 'z_mm': 10.0}}}], 'message': ''}}
+13:20:45  ERROR     message_handler.py  Sequence aborted at runtime: Pose PTP/LIN failed.
+13:20:45  DEBUG     communication_server.py  Sent response: {'command': 'error', 'data': {'message': 'Pose PTP/LIN failed.'}}
+13:24:07  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}, {'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'offset_from_pose', 'name': 'home', 'offset': {'x_mm': 0.0, 'y_mm': 0.0, 'z_mm': 10.0}}}], 'message': ''}}
+13:24:07  ERROR     message_handler.py  Sequence aborted at runtime: Pose PTP/LIN failed.
+13:24:07  DEBUG     communication_server.py  Sent response: {'command': 'error', 'data': {'message': 'Pose PTP/LIN failed.'}}
+13:25:47  INFO      communication_server.py  Signal 2 received, shutting down
+13:25:48  INFO      communication_server.py  Shutting down server
+13:25:48  INFO      franka_controller.py  Franka: MoveIt stack stopped
+13:25:48  INFO      franka_controller.py  Franka: Disconnected successfully
+13:30:34  INFO      main.py  Starting backend server on tcp://*:5555
+13:30:34  DEBUG     message_handler.py  Controller available: 'mock' -> MockRobotController
+13:30:34  DEBUG     message_handler.py  Controller available: 'franka' -> FrankaController
+13:30:34  DEBUG     message_handler.py  Controller available: 'ur' -> URController
+13:30:34  INFO      communication_server.py  Server ready and listening on tcp://*:5555
+13:33:45  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}, {'action': 'pose', 'command': 'teach', 'pose_name': 'home', 'overwrite': True}, {'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'offset_from_pose', 'name': 'home', 'offset': {'x_mm': 1.0, 'y_mm': 1.0, 'z_mm': 1.0}}}], 'message': ''}}
+13:33:45  INFO      franka_controller.py  Franka: Starting MoveIt stack
+13:33:55  DEBUG     franka_controller.py  Franka: MoveIt commander initialized
+13:33:57  INFO      franka_controller.py  Franka: Connected successfully
+13:33:57  INFO      base_robot_controller.py  Saved position 'home'
+13:33:57  ERROR     message_handler.py  Sequence aborted at runtime: Pose PTP/LIN failed.
+13:33:57  DEBUG     communication_server.py  Sent response: {'command': 'error', 'data': {'message': 'Pose PTP/LIN failed.'}}
+13:34:15  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}, {'action': 'pose', 'command': 'teach', 'pose_name': 'home', 'overwrite': True}, {'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'offset_from_pose', 'name': 'home', 'offset': {'x_mm': 0.0, 'y_mm': 0.0, 'z_mm': 0.0}}}], 'message': ''}}
+13:34:16  INFO      base_robot_controller.py  Saved position 'home'
+13:34:16  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 3 command(s) completed'}}
+13:34:26  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'pos1'}}, {'action': 'pose', 'command': 'teach', 'pose_name': 'home', 'overwrite': True}, {'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'offset_from_pose', 'name': 'home', 'offset': {'x_mm': 0.0, 'y_mm': 0.0, 'z_mm': 0.0}}}], 'message': ''}}
+13:34:27  INFO      base_robot_controller.py  Saved position 'home'
+13:34:28  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 3 command(s) completed'}}
+13:35:52  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}, {'action': 'pose', 'command': 'teach', 'pose_name': 'home', 'overwrite': True}, {'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'offset_from_pose', 'name': 'home', 'offset': {'x_mm': 0.0, 'y_mm': 0.0, 'z_mm': 0.0}}}], 'message': ''}}
+13:35:53  INFO      base_robot_controller.py  Saved position 'home'
+13:35:53  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 3 command(s) completed'}}
+13:39:59  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}, {'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'offset_from_pose', 'name': 'home', 'offset': {'x_mm': 0.0, 'y_mm': 0.0, 'z_mm': 0.0}}}], 'message': ''}}
+13:40:00  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 2 command(s) completed'}}
+13:40:31  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'pos1'}}, {'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'offset_from_pose', 'name': 'home', 'offset': {'x_mm': 0.0, 'y_mm': 0.0, 'z_mm': 0.0}}}], 'message': ''}}
+13:40:33  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 2 command(s) completed'}}
+13:42:48  INFO      communication_server.py  Signal 2 received, shutting down
+13:42:49  INFO      communication_server.py  Shutting down server
+13:42:49  INFO      franka_controller.py  Franka: MoveIt stack stopped
+13:42:49  INFO      franka_controller.py  Franka: Disconnected successfully
+13:42:52  INFO      main.py  Starting backend server on tcp://*:5555
+13:42:52  DEBUG     message_handler.py  Controller available: 'mock' -> MockRobotController
+13:42:52  DEBUG     message_handler.py  Controller available: 'franka' -> FrankaController
+13:42:52  DEBUG     message_handler.py  Controller available: 'ur' -> URController
+13:42:52  INFO      communication_server.py  Server ready and listening on tcp://*:5555
+13:42:59  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'pos1'}}, {'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'offset_from_pose', 'name': 'home', 'offset': {'x_mm': 0.0, 'y_mm': 0.0, 'z_mm': 0.0}}}], 'message': ''}}
+13:42:59  INFO      franka_controller.py  Franka: Starting MoveIt stack
+13:43:09  DEBUG     franka_controller.py  Franka: MoveIt commander initialized
+13:43:11  INFO      franka_controller.py  Franka: Connected successfully
+13:43:11  INFO      franka_controller.py  MoveL to {'name': 'pos1', 'pos': [-0.10661757066817133, 0.547133949861986, 0.5153601468931985], 'quat': [-0.9205450066998555, -0.3905879252104547, -0.00234181594824075, 0.0056990541162410795], 'joints': [1.204485118299593, -0.019113332605611374, 0.07248115810097745, -1.8759756975089148, -0.0008692700534774134, 1.8690346928919863, 0.9606188202325044]}
+13:43:12  INFO      franka_controller.py  MoveL to {'name': 'home', 'pos': [-8.463463128750902e-05, 0.5549430045917139, 0.6227664211086416], 'quat': [0.9240198874970482, 0.3823395517373821, -0.0009137606896454346, 0.001696976311637468], 'joints': [1.570357261038162, 0.0018647993558848228, 0.0005167772312650389, -1.5721661324100167, 0.0003903581812046506, 1.5701961388438013, 0.7862181946366454]}
+13:43:12  INFO      franka_controller.py  Offset: [0.0, 0.0, 0.0]
+13:43:13  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 2 command(s) completed'}}
+13:45:38  INFO      communication_server.py  Signal 2 received, shutting down
+13:45:39  INFO      communication_server.py  Shutting down server
+13:45:39  INFO      franka_controller.py  Franka: MoveIt stack stopped
+13:45:39  INFO      franka_controller.py  Franka: Disconnected successfully
+13:45:40  INFO      main.py  Starting backend server on tcp://*:5555
+13:45:40  DEBUG     message_handler.py  Controller available: 'mock' -> MockRobotController
+13:45:40  DEBUG     message_handler.py  Controller available: 'franka' -> FrankaController
+13:45:40  DEBUG     message_handler.py  Controller available: 'ur' -> URController
+13:45:40  INFO      communication_server.py  Server ready and listening on tcp://*:5555
+13:45:56  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'pos1'}}, {'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'offset_from_pose', 'name': 'home', 'offset': {'x_mm': 0.0, 'y_mm': 0.0, 'z_mm': 0.0}}}], 'message': ''}}
+13:45:56  INFO      franka_controller.py  Franka: Starting MoveIt stack
+13:46:06  DEBUG     franka_controller.py  Franka: MoveIt commander initialized
+13:46:08  INFO      franka_controller.py  Franka: Connected successfully
+13:46:09  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 2 command(s) completed'}}
+13:46:15  INFO      communication_server.py  Signal 2 received, shutting down
+13:46:16  INFO      communication_server.py  Shutting down server
+13:46:16  INFO      franka_controller.py  Franka: MoveIt stack stopped
+13:46:16  INFO      franka_controller.py  Franka: Disconnected successfully
+13:46:21  INFO      main.py  Starting backend server on tcp://*:5555
+13:46:21  DEBUG     message_handler.py  Controller available: 'mock' -> MockRobotController
+13:46:21  DEBUG     message_handler.py  Controller available: 'franka' -> FrankaController
+13:46:21  DEBUG     message_handler.py  Controller available: 'ur' -> URController
+13:46:21  INFO      communication_server.py  Server ready and listening on tcp://*:5555
+13:48:30  INFO      communication_server.py  Signal 2 received, shutting down
+13:48:31  INFO      communication_server.py  Shutting down server
+13:48:33  INFO      main.py  Starting backend server on tcp://*:5555
+13:48:33  DEBUG     message_handler.py  Controller available: 'mock' -> MockRobotController
+13:48:33  DEBUG     message_handler.py  Controller available: 'franka' -> FrankaController
+13:48:33  DEBUG     message_handler.py  Controller available: 'ur' -> URController
+13:48:33  INFO      communication_server.py  Server ready and listening on tcp://*:5555
+13:48:37  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'pos1'}}, {'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'offset_from_pose', 'name': 'home', 'offset': {'x_mm': 0.0, 'y_mm': 0.0, 'z_mm': 0.0}}}], 'message': ''}}
+13:48:38  INFO      franka_controller.py  Franka: Starting MoveIt stack
+13:48:48  DEBUG     franka_controller.py  Franka: MoveIt commander initialized
+13:48:49  INFO      franka_controller.py  Franka: Connected successfully
+13:48:49  INFO      franka_controller.py  Moving with moveJ to 'pos1'
+13:48:50  INFO      franka_controller.py  Moving with moveJ to 'home'
+13:48:50  INFO      franka_controller.py  Offset used: [0.0, 0.0, 0.0]
+13:48:51  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 2 command(s) completed'}}
+13:49:17  INFO      communication_server.py  Signal 2 received, shutting down
+13:49:18  INFO      communication_server.py  Shutting down server
+13:49:18  INFO      franka_controller.py  Franka: MoveIt stack stopped
+13:49:18  INFO      franka_controller.py  Franka: Disconnected successfully
+13:49:20  INFO      main.py  Starting backend server on tcp://*:5555
+13:49:20  DEBUG     message_handler.py  Controller available: 'mock' -> MockRobotController
+13:49:20  DEBUG     message_handler.py  Controller available: 'franka' -> FrankaController
+13:49:20  DEBUG     message_handler.py  Controller available: 'ur' -> URController
+13:49:20  INFO      communication_server.py  Server ready and listening on tcp://*:5555
+13:49:51  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'pos1'}}, {'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'offset_from_pose', 'name': 'home', 'offset': {'x_mm': 1.0, 'y_mm': 0.0, 'z_mm': 0.0}}}], 'message': ''}}
+13:49:52  INFO      franka_controller.py  Franka: Starting MoveIt stack
+13:50:02  DEBUG     franka_controller.py  Franka: MoveIt commander initialized
+13:50:04  INFO      franka_controller.py  Franka: Connected successfully
+13:50:04  INFO      franka_controller.py  Moving with moveJ to 'pos1'
+13:50:05  INFO      franka_controller.py  Moving with moveJ to 'home'
+13:50:05  INFO      franka_controller.py  Offset used: [1.0, 0.0, 0.0]
+13:50:05  ERROR     message_handler.py  Sequence aborted at runtime: Pose PTP/LIN failed.
+13:50:05  DEBUG     communication_server.py  Sent response: {'command': 'error', 'data': {'message': 'Pose PTP/LIN failed.'}}
+13:51:28  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'position_1'}}, {'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'offset_from_pose', 'name': 'position_2', 'offset': {'x_mm': 1.0, 'y_mm': 0.0, 'z_mm': 0.0}}}], 'message': ''}}
+13:51:28  INFO      franka_controller.py  Moving with moveJ to 'position_1'
+13:51:30  ERROR     message_handler.py  Sequence aborted at runtime: Pose PTP/LIN failed.
+13:51:30  DEBUG     communication_server.py  Sent response: {'command': 'error', 'data': {'message': 'Pose PTP/LIN failed.'}}
+13:51:51  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'named_pose', 'name': 'position_1'}}, {'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'offset_from_pose', 'name': 'position_2', 'offset': {'x_mm': 1.0, 'y_mm': 0.0, 'z_mm': 0.0}}}], 'message': ''}}
+13:51:51  ERROR     message_handler.py  Sequence aborted at runtime: Pose PTP/LIN failed.
+13:51:51  DEBUG     communication_server.py  Sent response: {'command': 'error', 'data': {'message': 'Pose PTP/LIN failed.'}}
+13:54:47  INFO      communication_server.py  Signal 2 received, shutting down
+13:54:48  INFO      communication_server.py  Shutting down server
+13:54:49  INFO      franka_controller.py  Franka: MoveIt stack stopped
+13:54:49  INFO      franka_controller.py  Franka: Disconnected successfully
+13:54:51  INFO      main.py  Starting backend server on tcp://*:5555
+13:54:51  DEBUG     message_handler.py  Controller available: 'mock' -> MockRobotController
+13:54:51  DEBUG     message_handler.py  Controller available: 'franka' -> FrankaController
+13:54:51  DEBUG     message_handler.py  Controller available: 'ur' -> URController
+13:54:51  INFO      communication_server.py  Server ready and listening on tcp://*:5555
+13:54:56  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'named_pose', 'name': 'position_1'}}, {'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'offset_from_pose', 'name': 'position_2', 'offset': {'x_mm': 1.0, 'y_mm': 0.0, 'z_mm': 0.0}}}], 'message': ''}}
+13:54:57  INFO      franka_controller.py  Franka: Starting MoveIt stack
+13:55:07  DEBUG     franka_controller.py  Franka: MoveIt commander initialized
+13:55:08  INFO      franka_controller.py  Franka: Connected successfully
+13:55:08  ERROR     message_handler.py  Sequence aborted at runtime: Pose PTP/LIN failed.
+13:55:08  DEBUG     communication_server.py  Sent response: {'command': 'error', 'data': {'message': 'Pose PTP/LIN failed.'}}
+13:56:46  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'movej', 'target': {'type': 'named_pose', 'name': 'home'}}, {'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'offset_from_pose', 'name': 'home', 'offset': {'x_mm': 1.0, 'y_mm': 0.0, 'z_mm': 0.0}}}], 'message': ''}}
+13:56:53  ERROR     message_handler.py  Sequence aborted at runtime: Pose PTP/LIN failed.
+13:56:53  DEBUG     communication_server.py  Sent response: {'command': 'error', 'data': {'message': 'Pose PTP/LIN failed.'}}
+13:57:22  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'offset_from_pose', 'name': 'home', 'offset': {'x_mm': 1.0, 'y_mm': 0.0, 'z_mm': 0.0}}}], 'message': ''}}
+13:57:22  ERROR     message_handler.py  Sequence aborted at runtime: Pose PTP/LIN failed.
+13:57:22  DEBUG     communication_server.py  Sent response: {'command': 'error', 'data': {'message': 'Pose PTP/LIN failed.'}}
+13:58:51  INFO      communication_server.py  Signal 2 received, shutting down
+13:58:52  INFO      communication_server.py  Shutting down server
+13:58:53  INFO      franka_controller.py  Franka: MoveIt stack stopped
+13:58:53  INFO      franka_controller.py  Franka: Disconnected successfully
+13:58:54  INFO      main.py  Starting backend server on tcp://*:5555
+13:58:54  DEBUG     message_handler.py  Controller available: 'mock' -> MockRobotController
+13:58:54  DEBUG     message_handler.py  Controller available: 'franka' -> FrankaController
+13:58:54  DEBUG     message_handler.py  Controller available: 'ur' -> URController
+13:58:54  INFO      communication_server.py  Server ready and listening on tcp://*:5555
+13:59:00  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'offset_from_pose', 'name': 'home', 'offset': {'x_mm': 1.0, 'y_mm': 0.0, 'z_mm': 0.0}}}], 'message': ''}}
+13:59:00  INFO      franka_controller.py  Franka: Starting MoveIt stack
+13:59:10  DEBUG     franka_controller.py  Franka: MoveIt commander initialized
+13:59:12  INFO      franka_controller.py  Franka: Connected successfully
+13:59:12  INFO      franka_controller.py  Moving with moveL to 'home'
+13:59:12  INFO      franka_controller.py  Offset used: [1.0, 0.0, 0.0]
+13:59:12  ERROR     message_handler.py  Sequence aborted at runtime: Pose PTP/LIN failed.
+13:59:12  DEBUG     communication_server.py  Sent response: {'command': 'error', 'data': {'message': 'Pose PTP/LIN failed.'}}
+14:01:01  INFO      communication_server.py  Signal 2 received, shutting down
+14:01:02  INFO      communication_server.py  Shutting down server
+14:01:02  INFO      franka_controller.py  Franka: MoveIt stack stopped
+14:01:02  INFO      franka_controller.py  Franka: Disconnected successfully
+14:01:04  INFO      main.py  Starting backend server on tcp://*:5555
+14:01:04  DEBUG     message_handler.py  Controller available: 'mock' -> MockRobotController
+14:01:04  DEBUG     message_handler.py  Controller available: 'franka' -> FrankaController
+14:01:04  DEBUG     message_handler.py  Controller available: 'ur' -> URController
+14:01:04  INFO      communication_server.py  Server ready and listening on tcp://*:5555
+14:01:07  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'offset_from_pose', 'name': 'home', 'offset': {'x_mm': 1.0, 'y_mm': 0.0, 'z_mm': 0.0}}}], 'message': ''}}
+14:01:08  INFO      franka_controller.py  Franka: Starting MoveIt stack
+14:01:18  DEBUG     franka_controller.py  Franka: MoveIt commander initialized
+14:01:19  INFO      franka_controller.py  Franka: Connected successfully
+14:01:19  INFO      franka_controller.py  Moving with moveL to 'home'
+14:01:19  INFO      franka_controller.py  Offset used: [1.0, 0.0, 0.0]
+14:01:19  ERROR     message_handler.py  Sequence aborted at runtime: Pose PTP/LIN failed.
+14:01:19  DEBUG     communication_server.py  Sent response: {'command': 'error', 'data': {'message': 'Pose PTP/LIN failed.'}}
+14:07:47  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'offset_from_pose', 'name': 'home', 'offset': {'x_mm': 0.01, 'y_mm': 0.0, 'z_mm': 0.0}}}], 'message': ''}}
+14:07:47  INFO      franka_controller.py  Moving with moveL to 'home'
+14:07:47  INFO      franka_controller.py  Offset used: [0.01, 0.0, 0.0]
+14:07:48  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+14:12:15  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'offset_from_pose', 'name': 'home', 'offset': {'x_mm': 0.0, 'y_mm': 0.0, 'z_mm': 0.03}}}], 'message': ''}}
+14:12:15  INFO      franka_controller.py  Moving with moveL to 'home'
+14:12:15  INFO      franka_controller.py  Offset used: [0.0, 0.0, 0.03]
+14:12:16  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+14:12:23  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'offset_from_pose', 'name': 'home', 'offset': {'x_mm': 0.0, 'y_mm': 0.0, 'z_mm': -0.03}}}], 'message': ''}}
+14:12:23  INFO      franka_controller.py  Moving with moveL to 'home'
+14:12:23  INFO      franka_controller.py  Offset used: [0.0, 0.0, -0.03]
+14:12:24  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+14:13:25  INFO      communication_server.py  Signal 2 received, shutting down
+14:13:26  INFO      communication_server.py  Shutting down server
+14:13:26  INFO      franka_controller.py  Franka: MoveIt stack stopped
+14:13:26  INFO      franka_controller.py  Franka: Disconnected successfully
+14:13:52  INFO      main.py  Starting backend server on tcp://*:5555
+14:13:52  DEBUG     message_handler.py  Controller available: 'mock' -> MockRobotController
+14:13:52  DEBUG     message_handler.py  Controller available: 'franka' -> FrankaController
+14:13:52  DEBUG     message_handler.py  Controller available: 'ur' -> URController
+14:13:52  INFO      communication_server.py  Server ready and listening on tcp://*:5555
+14:14:32  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'named_pose', 'name': 'home'}}, {'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'offset_from_pose', 'name': 'home', 'offset': {'x_mm': 50.0, 'y_mm': 0.0, 'z_mm': 0.0}}}], 'message': ''}}
+14:14:32  INFO      franka_controller.py  Franka: Starting MoveIt stack
+14:14:42  DEBUG     franka_controller.py  Franka: MoveIt commander initialized
+14:14:44  INFO      franka_controller.py  Franka: Connected successfully
+14:14:44  INFO      franka_controller.py  Moving with moveL to 'home'
+14:14:45  INFO      franka_controller.py  Moving with moveL to 'home'
+14:14:45  INFO      franka_controller.py  Offset used: [50.0, 0.0, 0.0]
+14:14:45  ERROR     message_handler.py  Error processing message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'named_pose', 'name': 'home'}}, {'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'offset_from_pose', 'name': 'home', 'offset': {'x_mm': 50.0, 'y_mm': 0.0, 'z_mm': 0.0}}}], 'message': ''}}
+Traceback (most recent call last):
+  File "/home/hv/Downloads/Sandy/Speech-to-Code-Generation-for-Collaborative-Robots/Backend/message_handler.py", line 69, in process_message
+    return commands[command]()
+  File "/home/hv/Downloads/Sandy/Speech-to-Code-Generation-for-Collaborative-Robots/Backend/message_handler.py", line 66, in <lambda>
+    "execute_sequence": lambda: self._execute_sequence(data),
+  File "/home/hv/Downloads/Sandy/Speech-to-Code-Generation-for-Collaborative-Robots/Backend/message_handler.py", line 138, in _execute_sequence
+    result = self._process_command(cmd, self.robot)
+  File "/home/hv/Downloads/Sandy/Speech-to-Code-Generation-for-Collaborative-Robots/Backend/message_handler.py", line 177, in _process_command
+    return robot.move_linear(pose, speed, offset)
+  File "/home/hv/Downloads/Sandy/Speech-to-Code-Generation-for-Collaborative-Robots/Backend/robot_controllers/franka_controller.py", line 139, in move_linear
+    offset = offset/1000 # Switch to m for backend module
+TypeError: unsupported operand type(s) for /: 'list' and 'int'
+14:14:45  DEBUG     communication_server.py  Sent response: {'command': 'error', 'data': {'error message': "unsupported operand type(s) for /: 'list' and 'int'"}}
+14:15:57  INFO      communication_server.py  Signal 2 received, shutting down
+14:15:58  INFO      communication_server.py  Shutting down server
+14:15:58  INFO      franka_controller.py  Franka: MoveIt stack stopped
+14:15:58  INFO      franka_controller.py  Franka: Disconnected successfully
+14:16:14  INFO      main.py  Starting backend server on tcp://*:5555
+14:16:14  DEBUG     message_handler.py  Controller available: 'mock' -> MockRobotController
+14:16:14  DEBUG     message_handler.py  Controller available: 'franka' -> FrankaController
+14:16:14  DEBUG     message_handler.py  Controller available: 'ur' -> URController
+14:16:14  INFO      communication_server.py  Server ready and listening on tcp://*:5555
+14:16:18  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'named_pose', 'name': 'home'}}, {'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'offset_from_pose', 'name': 'home', 'offset': {'x_mm': 50.0, 'y_mm': 0.0, 'z_mm': 0.0}}}], 'message': ''}}
+14:16:19  INFO      franka_controller.py  Franka: Starting MoveIt stack
+14:16:29  DEBUG     franka_controller.py  Franka: MoveIt commander initialized
+14:16:31  INFO      franka_controller.py  Franka: Connected successfully
+14:16:31  INFO      franka_controller.py  Moving with moveL to 'home'
+14:16:31  INFO      franka_controller.py  Moving with moveL to 'home'
+14:16:31  INFO      franka_controller.py  Offset used: [50.0, 0.0, 0.0]
+14:16:32  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 2 command(s) completed'}}
+14:16:48  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'named_pose', 'name': 'home'}}, {'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'offset_from_pose', 'name': 'home', 'offset': {'x_mm': 100.0, 'y_mm': 0.0, 'z_mm': 0.0}}}], 'message': ''}}
+14:16:48  INFO      franka_controller.py  Moving with moveL to 'home'
+14:16:49  INFO      franka_controller.py  Moving with moveL to 'home'
+14:16:49  INFO      franka_controller.py  Offset used: [100.0, 0.0, 0.0]
+14:16:50  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 2 command(s) completed'}}
+14:17:04  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}, {'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'offset_from_pose', 'name': 'home', 'offset': {'x_mm': 100.0, 'y_mm': 0.0, 'z_mm': 0.0}}}], 'message': ''}}
+14:17:04  INFO      franka_controller.py  Moving with moveJ to 'home'
+14:17:05  INFO      franka_controller.py  Moving with moveJ to 'home'
+14:17:05  INFO      franka_controller.py  Offset used: [100.0, 0.0, 0.0]
+14:17:05  ERROR     message_handler.py  Sequence aborted at runtime: Pose PTP/LIN failed.
+14:17:05  DEBUG     communication_server.py  Sent response: {'command': 'error', 'data': {'message': 'Pose PTP/LIN failed.'}}
+14:17:13  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}, {'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'offset_from_pose', 'name': 'home', 'offset': {'x_mm': 100.0, 'y_mm': 0.0, 'z_mm': 0.0}}}], 'message': ''}}
+14:17:13  INFO      franka_controller.py  Moving with moveJ to 'home'
+14:17:13  INFO      franka_controller.py  Moving with moveJ to 'home'
+14:17:13  INFO      franka_controller.py  Offset used: [100.0, 0.0, 0.0]
+14:17:13  ERROR     message_handler.py  Sequence aborted at runtime: Pose PTP/LIN failed.
+14:17:13  DEBUG     communication_server.py  Sent response: {'command': 'error', 'data': {'message': 'Pose PTP/LIN failed.'}}
+14:17:23  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}, {'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'offset_from_pose', 'name': 'home', 'offset': {'x_mm': 10.0, 'y_mm': 0.0, 'z_mm': 0.0}}}], 'message': ''}}
+14:17:23  INFO      franka_controller.py  Moving with moveJ to 'home'
+14:17:23  INFO      franka_controller.py  Moving with moveJ to 'home'
+14:17:23  INFO      franka_controller.py  Offset used: [10.0, 0.0, 0.0]
+14:17:23  ERROR     message_handler.py  Sequence aborted at runtime: Pose PTP/LIN failed.
+14:17:23  DEBUG     communication_server.py  Sent response: {'command': 'error', 'data': {'message': 'Pose PTP/LIN failed.'}}
+14:20:35  INFO      communication_server.py  Signal 2 received, shutting down
+14:20:36  INFO      communication_server.py  Shutting down server
+14:20:36  INFO      franka_controller.py  Franka: MoveIt stack stopped
+14:20:36  INFO      franka_controller.py  Franka: Disconnected successfully
+14:20:43  INFO      main.py  Starting backend server on tcp://*:5555
+14:20:43  DEBUG     message_handler.py  Controller available: 'mock' -> MockRobotController
+14:20:43  DEBUG     message_handler.py  Controller available: 'franka' -> FrankaController
+14:20:43  DEBUG     message_handler.py  Controller available: 'ur' -> URController
+14:20:43  INFO      communication_server.py  Server ready and listening on tcp://*:5555
+14:21:14  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}, {'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'offset_from_pose', 'name': 'home', 'offset': {'x_mm': 10.0, 'y_mm': 0.0, 'z_mm': 0.0}}}], 'message': ''}}
+14:21:14  INFO      franka_controller.py  Franka: Starting MoveIt stack
+14:21:24  DEBUG     franka_controller.py  Franka: MoveIt commander initialized
+14:21:26  INFO      franka_controller.py  Franka: Connected successfully
+14:21:26  INFO      franka_controller.py  Moving with moveJ to 'home'
+14:21:26  ERROR     message_handler.py  Error processing message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}, {'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'offset_from_pose', 'name': 'home', 'offset': {'x_mm': 10.0, 'y_mm': 0.0, 'z_mm': 0.0}}}], 'message': ''}}
+Traceback (most recent call last):
+  File "/home/hv/Downloads/Sandy/Speech-to-Code-Generation-for-Collaborative-Robots/Backend/message_handler.py", line 69, in process_message
+    return commands[command]()
+  File "/home/hv/Downloads/Sandy/Speech-to-Code-Generation-for-Collaborative-Robots/Backend/message_handler.py", line 66, in <lambda>
+    "execute_sequence": lambda: self._execute_sequence(data),
+  File "/home/hv/Downloads/Sandy/Speech-to-Code-Generation-for-Collaborative-Robots/Backend/message_handler.py", line 138, in _execute_sequence
+    result = self._process_command(cmd, self.robot)
+  File "/home/hv/Downloads/Sandy/Speech-to-Code-Generation-for-Collaborative-Robots/Backend/message_handler.py", line 175, in _process_command
+    return robot.move_joint(pose, speed, offset)
+  File "/home/hv/Downloads/Sandy/Speech-to-Code-Generation-for-Collaborative-Robots/Backend/robot_controllers/franka_controller.py", line 120, in move_joint
+    offset = [x / 1000 for x in offset] # Switch to m for backend module
+TypeError: 'NoneType' object is not iterable
+14:21:26  DEBUG     communication_server.py  Sent response: {'command': 'error', 'data': {'error message': "'NoneType' object is not iterable"}}
+14:25:59  INFO      communication_server.py  Signal 2 received, shutting down
+14:26:00  INFO      communication_server.py  Shutting down server
+14:26:00  INFO      franka_controller.py  Franka: MoveIt stack stopped
+14:26:00  INFO      franka_controller.py  Franka: Disconnected successfully
+14:26:03  INFO      main.py  Starting backend server on tcp://*:5555
+14:26:03  DEBUG     message_handler.py  Controller available: 'mock' -> MockRobotController
+14:26:03  DEBUG     message_handler.py  Controller available: 'franka' -> FrankaController
+14:26:03  DEBUG     message_handler.py  Controller available: 'ur' -> URController
+14:26:03  INFO      communication_server.py  Server ready and listening on tcp://*:5555
+14:26:11  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}, {'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'offset_from_pose', 'name': 'home', 'offset': {'x_mm': 10.0, 'y_mm': 0.0, 'z_mm': 0.0}}}], 'message': ''}}
+14:26:11  INFO      franka_controller.py  Starting MoveIt stack
+14:26:21  DEBUG     franka_controller.py  MoveIt commander initialized
+14:26:23  INFO      franka_controller.py   Connected successfully
+14:26:23  INFO      franka_controller.py  Moving with moveJ to 'home'
+14:26:23  ERROR     message_handler.py  Error processing message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}, {'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'offset_from_pose', 'name': 'home', 'offset': {'x_mm': 10.0, 'y_mm': 0.0, 'z_mm': 0.0}}}], 'message': ''}}
+Traceback (most recent call last):
+  File "/home/hv/Downloads/Sandy/Speech-to-Code-Generation-for-Collaborative-Robots/Backend/message_handler.py", line 69, in process_message
+    return commands[command]()
+  File "/home/hv/Downloads/Sandy/Speech-to-Code-Generation-for-Collaborative-Robots/Backend/message_handler.py", line 66, in <lambda>
+    "execute_sequence": lambda: self._execute_sequence(data),
+  File "/home/hv/Downloads/Sandy/Speech-to-Code-Generation-for-Collaborative-Robots/Backend/message_handler.py", line 138, in _execute_sequence
+    result = self._process_command(cmd, self.robot)
+  File "/home/hv/Downloads/Sandy/Speech-to-Code-Generation-for-Collaborative-Robots/Backend/message_handler.py", line 175, in _process_command
+    return robot.move_joint(pose, speed, offset)
+  File "/home/hv/Downloads/Sandy/Speech-to-Code-Generation-for-Collaborative-Robots/Backend/robot_controllers/franka_controller.py", line 120, in move_joint
+    offset = [x / 1000 for x in offset] # Switch to m for backend module
+TypeError: 'NoneType' object is not iterable
+14:26:23  DEBUG     communication_server.py  Sent response: {'command': 'error', 'data': {'error message': "'NoneType' object is not iterable"}}
+14:29:41  INFO      communication_server.py  Signal 2 received, shutting down
+14:29:42  INFO      communication_server.py  Shutting down server
+14:29:43  INFO      franka_controller.py  MoveIt stack stopped
+14:29:43  INFO      franka_controller.py  Disconnected successfully
+14:30:13  INFO      main.py  Starting backend server on tcp://*:5555
+14:30:13  DEBUG     message_handler.py  Controller available: 'mock' -> MockRobotController
+14:30:13  DEBUG     message_handler.py  Controller available: 'franka' -> FrankaController
+14:30:13  DEBUG     message_handler.py  Controller available: 'ur' -> URController
+14:30:13  INFO      communication_server.py  Server ready and listening on tcp://*:5555
+14:30:33  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}, {'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'offset_from_pose', 'name': 'home', 'offset': {'x_mm': 10.0, 'y_mm': 0.0, 'z_mm': 0.0}}}], 'message': ''}}
+14:30:34  INFO      franka_controller.py  Starting MoveIt stack
+14:30:44  DEBUG     franka_controller.py  MoveIt commander initialized
+14:30:45  INFO      franka_controller.py   Connected successfully
+14:30:45  INFO      franka_controller.py  Moving with moveJ to 'home'
+14:30:45  INFO      franka_controller.py  Moving with moveJ to 'home'
+14:30:45  INFO      franka_controller.py  Offset used: [0.01, 0.0, 0.0]
+14:30:45  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 2 command(s) completed'}}
+14:31:16  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}, {'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'offset_from_pose', 'name': 'home', 'offset': {'x_mm': 100.0, 'y_mm': 0.0, 'z_mm': 0.0}}}], 'message': ''}}
+14:31:16  INFO      franka_controller.py  Moving with moveJ to 'home'
+14:31:17  INFO      franka_controller.py  Moving with moveJ to 'home'
+14:31:17  INFO      franka_controller.py  Offset used: [0.1, 0.0, 0.0]
+14:31:17  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 2 command(s) completed'}}
+14:31:39  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'position_1'}}, {'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'offset_from_pose', 'name': 'position_2', 'offset': {'x_mm': 100.0, 'y_mm': 0.0, 'z_mm': 0.0}}}], 'message': ''}}
+14:31:39  INFO      franka_controller.py  Moving with moveJ to 'position_1'
+14:31:40  INFO      franka_controller.py  Moving with moveJ to 'position_2'
+14:31:40  INFO      franka_controller.py  Offset used: [0.1, 0.0, 0.0]
+14:31:42  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 2 command(s) completed'}}
+14:31:57  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}, {'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'offset_from_pose', 'name': 'home', 'offset': {'x_mm': 100.0, 'y_mm': 100.0, 'z_mm': 100.0}}}], 'message': ''}}
+14:31:57  INFO      franka_controller.py  Moving with moveJ to 'home'
+14:31:59  INFO      franka_controller.py  Moving with moveJ to 'home'
+14:31:59  INFO      franka_controller.py  Offset used: [0.1, 0.1, 0.1]
+14:31:59  ERROR     message_handler.py  Sequence aborted at runtime: Pose PTP/LIN failed.
+14:31:59  DEBUG     communication_server.py  Sent response: {'command': 'error', 'data': {'message': 'Pose PTP/LIN failed.'}}
+14:32:03  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}, {'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'offset_from_pose', 'name': 'home', 'offset': {'x_mm': 100.0, 'y_mm': 100.0, 'z_mm': 100.0}}}], 'message': ''}}
+14:32:03  INFO      franka_controller.py  Moving with moveJ to 'home'
+14:32:03  INFO      franka_controller.py  Moving with moveJ to 'home'
+14:32:03  INFO      franka_controller.py  Offset used: [0.1, 0.1, 0.1]
+14:32:03  ERROR     message_handler.py  Sequence aborted at runtime: Pose PTP/LIN failed.
+14:32:03  DEBUG     communication_server.py  Sent response: {'command': 'error', 'data': {'message': 'Pose PTP/LIN failed.'}}
+14:32:28  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}, {'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'offset_from_pose', 'name': 'home', 'offset': {'x_mm': 100.0, 'y_mm': 0.0, 'z_mm': 0.0}}}], 'message': ''}}
+14:32:28  INFO      franka_controller.py  Moving with moveJ to 'home'
+14:32:28  INFO      franka_controller.py  Moving with moveJ to 'home'
+14:32:28  INFO      franka_controller.py  Offset used: [0.1, 0.0, 0.0]
+14:32:29  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 2 command(s) completed'}}
+14:32:36  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}, {'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'offset_from_pose', 'name': 'home', 'offset': {'x_mm': 100.0, 'y_mm': -100.0, 'z_mm': 0.0}}}], 'message': ''}}
+14:32:36  INFO      franka_controller.py  Moving with moveJ to 'home'
+14:32:37  INFO      franka_controller.py  Moving with moveJ to 'home'
+14:32:37  INFO      franka_controller.py  Offset used: [0.1, -0.1, 0.0]
+14:32:38  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 2 command(s) completed'}}
+14:32:45  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}, {'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'offset_from_pose', 'name': 'home', 'offset': {'x_mm': 100.0, 'y_mm': -100.0, 'z_mm': -100.0}}}], 'message': ''}}
+14:32:45  INFO      franka_controller.py  Moving with moveJ to 'home'
+14:32:46  INFO      franka_controller.py  Moving with moveJ to 'home'
+14:32:46  INFO      franka_controller.py  Offset used: [0.1, -0.1, -0.1]
+14:32:47  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 2 command(s) completed'}}
+14:33:10  INFO      communication_server.py  Signal 2 received, shutting down
+14:33:11  INFO      communication_server.py  Shutting down server
+14:33:11  INFO      franka_controller.py  MoveIt stack stopped
+14:33:11  INFO      franka_controller.py  Disconnected successfully
+14:33:41  INFO      main.py  Starting backend server on tcp://*:5555
+14:33:41  DEBUG     message_handler.py  Controller available: 'mock' -> MockRobotController
+14:33:41  DEBUG     message_handler.py  Controller available: 'franka' -> FrankaController
+14:33:41  DEBUG     message_handler.py  Controller available: 'ur' -> URController
+14:33:41  INFO      communication_server.py  Server ready and listening on tcp://*:5555
+14:34:17  INFO      communication_server.py  Signal 2 received, shutting down
+14:34:18  INFO      communication_server.py  Shutting down server
+14:34:19  INFO      main.py  Starting backend server on tcp://*:5555
+14:34:19  DEBUG     message_handler.py  Controller available: 'mock' -> MockRobotController
+14:34:19  DEBUG     message_handler.py  Controller available: 'franka' -> FrankaController
+14:34:19  DEBUG     message_handler.py  Controller available: 'ur' -> URController
+14:34:19  INFO      communication_server.py  Server ready and listening on tcp://*:5555
+14:34:28  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}, {'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'offset_from_pose', 'name': 'home', 'offset': {'x_mm': 100.0, 'y_mm': -100.0, 'z_mm': -100.0}}}], 'message': ''}}
+14:34:28  INFO      franka_controller.py  Starting MoveIt stack
+14:34:38  DEBUG     franka_controller.py  MoveIt commander initialized
+14:34:40  INFO      franka_controller.py   Connected successfully
+14:34:40  INFO      franka_controller.py  Moving with moveJ to 'home'
+14:34:41  INFO      franka_controller.py  Moving with moveJ to 'home'
+14:34:41  INFO      franka_controller.py  Offset used: [100.0, -100.0, -100.0]
+14:34:42  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 2 command(s) completed'}}
+14:51:20  INFO      communication_server.py  Signal 2 received, shutting down
+14:51:21  INFO      communication_server.py  Shutting down server
+14:51:21  INFO      franka_controller.py  MoveIt stack stopped
+14:51:21  INFO      franka_controller.py  Disconnected successfully
+15:05:25  INFO      main.py  Starting backend server on tcp://*:5555
+15:05:25  DEBUG     message_handler.py  Controller available: 'mock' -> MockRobotController
+15:05:25  DEBUG     message_handler.py  Controller available: 'franka' -> FrankaController
+15:05:25  DEBUG     message_handler.py  Controller available: 'ur' -> URController
+15:05:25  INFO      communication_server.py  Server ready and listening on tcp://*:5555
+15:05:29  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}, {'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'offset_from_pose', 'name': 'home', 'offset': {'x_mm': 100.0, 'y_mm': -100.0, 'z_mm': -100.0}}}], 'message': ''}}
+15:05:29  INFO      franka_controller.py  Starting MoveIt stack
+15:05:40  DEBUG     franka_controller.py  MoveIt commander initialized
+15:05:41  INFO      franka_controller.py  Connected successfully
+15:05:41  INFO      franka_controller.py  Moving with moveJ to 'home'
+15:05:43  INFO      franka_controller.py  Moving with moveJ to 'home'
+15:05:43  INFO      franka_controller.py  Offset used: [100.0, -100.0, -100.0]
+15:05:44  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 2 command(s) completed'}}
+15:06:40  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'franka', 'commands': [{'action': 'gripper', 'command': 'close'}, {'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}, {'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'offset_from_pose', 'name': 'home', 'offset': {'x_mm': 100.0, 'y_mm': -100.0, 'z_mm': -100.0}}}, {'action': 'gripper', 'command': 'open'}], 'message': ''}}
+15:06:40  INFO      franka_controller.py  Closing gripper
+15:06:41  INFO      franka_controller.py  Moving with moveJ to 'home'
+15:06:42  INFO      franka_controller.py  Moving with moveJ to 'home'
+15:06:42  INFO      franka_controller.py  Offset used: [100.0, -100.0, -100.0]
+15:06:44  INFO      franka_controller.py  Opening gripper
+15:06:45  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 4 command(s) completed'}}
+15:06:46  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'franka', 'commands': [{'action': 'gripper', 'command': 'close'}, {'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}, {'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'offset_from_pose', 'name': 'home', 'offset': {'x_mm': 100.0, 'y_mm': -100.0, 'z_mm': -100.0}}}, {'action': 'gripper', 'command': 'open'}], 'message': ''}}
+15:06:46  INFO      franka_controller.py  Closing gripper
+15:06:47  INFO      franka_controller.py  Moving with moveJ to 'home'
+15:06:48  INFO      franka_controller.py  Moving with moveJ to 'home'
+15:06:48  INFO      franka_controller.py  Offset used: [100.0, -100.0, -100.0]
+15:06:49  INFO      franka_controller.py  Opening gripper
+15:06:51  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 4 command(s) completed'}}
+15:18:11  INFO      communication_server.py  Signal 2 received, shutting down
+15:18:12  INFO      communication_server.py  Shutting down server
+15:18:13  INFO      franka_controller.py  MoveIt stack stopped
+15:18:13  INFO      franka_controller.py  Disconnected successfully
+15:18:32  INFO      main.py  Starting backend server on tcp://*:5555
+15:18:32  DEBUG     message_handler.py  Controller available: 'mock' -> MockRobotController
+15:18:32  DEBUG     message_handler.py  Controller available: 'franka' -> FrankaController
+15:18:32  DEBUG     message_handler.py  Controller available: 'ur' -> URController
+15:18:32  INFO      communication_server.py  Server ready and listening on tcp://*:5555
+15:18:38  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'franka', 'commands': [{'action': 'gripper', 'command': 'close'}, {'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}, {'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'offset_from_pose', 'name': 'home', 'offset': {'x_mm': 100.0, 'y_mm': -100.0, 'z_mm': -100.0}}}, {'action': 'gripper', 'command': 'open'}], 'message': ''}}
+15:18:39  INFO      franka_controller.py  Starting MoveIt stack
+15:18:39  WARNING   franka_controller.py  xterm not found — launching ROS hidden, output in Backend/logs/franka_ros.log
+15:18:49  DEBUG     franka_controller.py  MoveIt commander initialized
+15:18:51  INFO      franka_controller.py  Connected successfully
+15:18:51  INFO      franka_controller.py  Closing gripper
+15:18:52  INFO      franka_controller.py  Moving with moveJ to 'home'
+15:18:53  INFO      franka_controller.py  Moving with moveJ to 'home'
+15:18:53  INFO      franka_controller.py  Offset used: [100.0, -100.0, -100.0]
+15:18:54  INFO      franka_controller.py  Opening gripper
+15:18:55  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 4 command(s) completed'}}
+15:18:57  INFO      communication_server.py  Signal 2 received, shutting down
+15:18:58  INFO      communication_server.py  Shutting down server
+15:18:59  INFO      franka_controller.py  MoveIt stack stopped
+15:18:59  INFO      franka_controller.py  Disconnected successfully
+15:19:39  INFO      main.py  Starting backend server on tcp://*:5555
+15:19:39  DEBUG     message_handler.py  Controller available: 'mock' -> MockRobotController
+15:19:39  DEBUG     message_handler.py  Controller available: 'franka' -> FrankaController
+15:19:39  DEBUG     message_handler.py  Controller available: 'ur' -> URController
+15:19:39  INFO      communication_server.py  Server ready and listening on tcp://*:5555
+15:19:41  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'franka', 'commands': [{'action': 'gripper', 'command': 'close'}, {'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}, {'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'offset_from_pose', 'name': 'home', 'offset': {'x_mm': 100000.0, 'y_mm': -100.0, 'z_mm': -100.0}}}, {'action': 'gripper', 'command': 'open'}], 'message': ''}}
+15:19:41  INFO      franka_controller.py  Starting MoveIt stack
+15:19:41  WARNING   franka_controller.py  xterm not found — launching ROS hidden, output in Backend/logs/franka_ros.log
+15:19:51  DEBUG     franka_controller.py  MoveIt commander initialized
+15:19:53  INFO      franka_controller.py  Connected successfully
+15:19:53  INFO      franka_controller.py  Closing gripper
+15:19:54  INFO      franka_controller.py  Moving with moveJ to 'home'
+15:19:55  INFO      franka_controller.py  Moving with moveJ to 'home'
+15:19:55  INFO      franka_controller.py  Offset used: [100000.0, -100.0, -100.0]
+15:19:55  ERROR     message_handler.py  Sequence aborted at runtime: Pose PTP/LIN failed.
+15:19:55  DEBUG     communication_server.py  Sent response: {'command': 'error', 'data': {'message': 'Pose PTP/LIN failed.'}}
+15:20:30  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'franka', 'commands': [{'action': 'gripper', 'command': 'close'}, {'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}, {'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'offset_from_pose', 'name': 'home', 'offset': {'x_mm': 100.0, 'y_mm': -100.0, 'z_mm': -100.0}}}, {'action': 'gripper', 'command': 'open'}], 'message': ''}}
+15:20:30  INFO      franka_controller.py  Closing gripper
+15:20:31  INFO      franka_controller.py  Moving with moveJ to 'home'
+15:20:31  INFO      franka_controller.py  Moving with moveJ to 'home'
+15:20:31  INFO      franka_controller.py  Offset used: [100.0, -100.0, -100.0]
+15:20:32  INFO      franka_controller.py  Opening gripper
+15:20:34  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 4 command(s) completed'}}
+15:23:57  INFO      communication_server.py  Signal 2 received, shutting down
+15:23:58  INFO      communication_server.py  Shutting down server
+15:24:00  INFO      franka_controller.py  MoveIt stack stopped
+15:24:00  INFO      franka_controller.py  Disconnected successfully
+16:24:33  INFO      main.py  Starting backend server on tcp://*:5555
+16:24:33  DEBUG     message_handler.py  Controller available: 'mock' -> MockRobotController
+16:24:33  DEBUG     message_handler.py  Controller available: 'franka' -> FrankaController
+16:24:33  DEBUG     message_handler.py  Controller available: 'ur' -> URController
+16:24:33  INFO      communication_server.py  Server ready and listening on tcp://*:5555
+16:25:31  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'ur', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home_position'}}, {'action': 'gripper', 'command': 'open'}, {'action': 'wait', 'duration_s': 0.5}], 'message': ''}}
+16:25:36  WARNING   message_handler.py  Could not connect to ur: timed out
+16:25:36  DEBUG     communication_server.py  Sent response: {'command': 'rejected', 'data': {'reason': 'Could not connect to ur: timed out'}}
+16:25:48  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'mock', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home_position'}}, {'action': 'gripper', 'command': 'open'}, {'action': 'wait', 'duration_s': 0.5}], 'message': ''}}
+16:25:48  INFO      ur_controller.py  Disconnected
+16:25:48  INFO      mock_controller.py  Connected
+16:25:48  WARNING   message_handler.py  Sequence rejected due to 1 validation error(s)
+16:25:48  DEBUG     communication_server.py  Sent response: {'command': 'rejected', 'data': {'reasons': ["Unknown pose: 'home_position'"]}}
+16:27:24  INFO      communication_server.py  Signal 2 received, shutting down
+16:27:25  INFO      communication_server.py  Shutting down server
+16:27:25  INFO      mock_controller.py  Disconnected
+16:27:27  INFO      main.py  Starting backend server on tcp://*:5555
+16:27:27  DEBUG     message_handler.py  Controller available: 'mock' -> MockRobotController
+16:27:27  DEBUG     message_handler.py  Controller available: 'franka' -> FrankaController
+16:27:27  DEBUG     message_handler.py  Controller available: 'ur' -> URController
+16:27:27  INFO      communication_server.py  Server ready and listening on tcp://*:5555
+16:27:49  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}], 'message': ''}}
+16:27:49  INFO      franka_controller.py  Starting MoveIt stack
+16:27:49  WARNING   franka_controller.py  xterm not found — launching ROS hidden, output in Backend/logs/franka_ros.log
+16:27:59  DEBUG     franka_controller.py  MoveIt commander initialized
+16:28:01  INFO      franka_controller.py  Connected successfully
+16:28:01  INFO      franka_controller.py  Moving with moveJ to 'home'
+16:28:02  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+16:28:09  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'franka', 'commands': [{'action': 'gripper', 'command': 'close'}], 'message': ''}}
+16:28:09  INFO      franka_controller.py  Closing gripper
+16:28:10  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+16:28:24  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'position_1'}}, {'action': 'gripper', 'command': 'open'}], 'message': ''}}
+16:28:24  INFO      franka_controller.py  Moving with moveJ to 'position_1'
+16:28:26  INFO      franka_controller.py  Opening gripper
+16:28:27  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 2 command(s) completed'}}
+16:28:44  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}, {'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'offset_from_pose', 'name': 'home', 'offset': {'x_mm': 20.0, 'y_mm': 0.0, 'z_mm': 100.0}}}], 'message': ''}}
+16:28:44  INFO      franka_controller.py  Moving with moveJ to 'home'
+16:28:45  INFO      franka_controller.py  Moving with moveL to 'home'
+16:28:45  INFO      franka_controller.py  Offset used: [20.0, 0.0, 100.0]
+16:28:47  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 2 command(s) completed'}}
+16:29:49  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}], 'message': ''}}
+16:29:49  INFO      franka_controller.py  Moving with moveJ to 'home'
+16:29:50  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+16:30:09  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}, {'action': 'gripper', 'command': 'open'}, {'action': 'wait', 'duration_s': 1.0}, {'action': 'pose', 'command': 'teach', 'pose_name': 'low_toning_position', 'overwrite': False}], 'message': ''}}
+16:30:09  INFO      franka_controller.py  Moving with moveJ to 'home'
+16:30:09  INFO      franka_controller.py  Opening gripper
+16:30:10  INFO      message_handler.py  Waiting for 1s
+16:30:11  INFO      base_robot_controller.py  Saved position 'low_toning_position'
+16:30:11  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 4 command(s) completed'}}
+16:30:40  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'franka', 'commands': [{'action': 'gripper', 'command': 'close'}], 'message': ''}}
+16:30:40  INFO      franka_controller.py  Closing gripper
+16:30:41  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+16:31:15  INFO      communication_server.py  Signal 2 received, shutting down
+16:31:16  INFO      communication_server.py  Shutting down server
+16:31:17  INFO      franka_controller.py  MoveIt stack stopped
+16:31:17  INFO      franka_controller.py  Disconnected successfully
+16:31:26  INFO      main.py  Starting backend server on tcp://*:5555
+16:31:26  DEBUG     message_handler.py  Controller available: 'mock' -> MockRobotController
+16:31:26  DEBUG     message_handler.py  Controller available: 'franka' -> FrankaController
+16:31:26  DEBUG     message_handler.py  Controller available: 'ur' -> URController
+16:31:26  INFO      communication_server.py  Server ready and listening on tcp://*:5555
+16:32:04  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'mode': 'live', 'robot': 'franka', 'commands': [{'action': 'gripper', 'command': 'open'}], 'message': ''}}
+16:32:04  INFO      franka_controller.py  Starting MoveIt stack
+16:32:04  WARNING   franka_controller.py  xterm not found — launching ROS hidden, output in Backend/logs/franka_ros.log
+16:32:14  DEBUG     franka_controller.py  MoveIt commander initialized
+16:32:16  INFO      franka_controller.py  Connected successfully
+16:32:16  INFO      franka_controller.py  Opening gripper
+16:32:17  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+16:32:25  INFO      communication_server.py  Signal 2 received, shutting down
+16:32:26  INFO      communication_server.py  Shutting down server
+16:32:28  INFO      franka_controller.py  MoveIt stack stopped
+16:32:28  INFO      franka_controller.py  Disconnected successfully
