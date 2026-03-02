@@ -5,7 +5,7 @@ import time
 from typing import Dict, Optional, Type
 
 from Backend.robot_controllers.base_robot_controller import BaseRobotController
-from config_backend import AVAILABLE_ROBOTS
+from Backend.config_backend import AVAILABLE_ROBOTS
 
 logger = logging.getLogger("cobot_backend")
 
@@ -179,7 +179,7 @@ class MessageHandler:
                 return robot.gripper_close()
 
         elif action == "wait":
-            logger.info(f"Waiting for {command["duration_s"]}s")
+            logger.info("Waiting for %is", command["duration_s"])
             time.sleep(command["duration_s"])
             return {"success": True, "message": f"Waited for {command['duration_s']} seconds"}
 
