@@ -204,17 +204,49 @@ class FrankaController(BaseRobotController):
             return False
 
     def _launch_ros(self) -> None:
-        """Launch the MoveIt stack as a background process, logging to file."""
-        with open(ROS_LOG_FILE, "w") as log_file:
+        """Launch the MoveIt stack in a separate xterm window.
+
+        Using xterm keeps all ROS and xmlrpc-c output out of the backend terminal.
+        xterm's PID is tracked so we can shut it down cleanly without sending
+        signals to the backend process group. Falls back to a hidden background
+        process (with start_new_session=True) if xterm is not available.
+        """
+        if self._xterm_available():
+            # Run roslaunch inside xterm; tee mirrors output to the log file too.
+            # 'read' at the end keeps the window open so the user can see any
+            # final ROS output before it disappears.
             self._ros_process = subprocess.Popen(
-                ["bash", "-c",
-                 f"source ~/ws_moveit/devel/setup.bash && "
+                ["xterm", "-T", "ROS MoveIt Stack", "-e",
+                 "bash -c '"
+                 "source ~/ws_moveit/devel/setup.bash && "
                  f"roslaunch panda_moveit_config franka_control.launch "
-                 f"robot_ip:={ROBOT_IP} load_gripper:=true use_rviz:=false"],
-                stdout=log_file,
-                stderr=log_file
+                 f"robot_ip:={ROBOT_IP} load_gripper:=true use_rviz:=false "
+                 f"2>&1 | tee {ROS_LOG_FILE}; "
+                 "read -p \"ROS stopped - press Enter to close\"'"],
+                start_new_session=True,
             )
-        # Guarantee the child is killed at interpreter exit even if disconnect()
-        # is never called (e.g. crash before connect completes).
+            logger.info("MoveIt stack launched in separate xterm window")
+        else:
+            logger.warning("xterm not found — launching ROS hidden, output in %s", ROS_LOG_FILE)
+            with open(ROS_LOG_FILE, "w") as log_file:
+                self._ros_process = subprocess.Popen(
+                    ["bash", "-c",
+                     f"source ~/ws_moveit/devel/setup.bash && "
+                     f"roslaunch panda_moveit_config franka_control.launch "
+                     f"robot_ip:={ROBOT_IP} load_gripper:=true use_rviz:=false"],
+                    stdout=log_file,
+                    stderr=log_file,
+                    # Isolate from Ctrl+C so the backend terminal stays clean.
+                    start_new_session=True,
+                )
+
         atexit.register(self._kill_ros_process)
         time.sleep(LAUNCH_DELAY)
+
+    def _xterm_available(self) -> bool:
+        """Return True if xterm is installed on this machine."""
+        try:
+            subprocess.run(["xterm", "-version"], capture_output=True, timeout=3)
+            return True
+        except (FileNotFoundError, subprocess.TimeoutExpired):
+            return False
