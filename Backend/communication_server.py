@@ -4,7 +4,7 @@ import signal
 import zmq
 
 from Backend.message_handler import MessageHandler
-from config_backend import ZMQ_TIMEOUT_MS
+from Backend.config_backend import ZMQ_TIMEOUT_MS
 
 logger = logging.getLogger("cobot_backend")
 

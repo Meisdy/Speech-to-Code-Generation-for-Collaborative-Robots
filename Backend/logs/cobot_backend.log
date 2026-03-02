@@ -2371,3 +2371,10 @@ TypeError: ServerZeroMQ._handle_signal() takes 2 positional arguments but 3 were
 16:08:02  DEBUG     communication_server.py  Sent response: {'command': 'rejected', 'data': {'reason': 'Unsupported robot type: franka'}}
 16:11:28  INFO      communication_server.py  Signal 2 received, shutting down
 16:11:28  INFO      communication_server.py  Shutting down server
+10:21:18  INFO      main.py  Starting backend server on tcp://*:5555
+10:21:18  DEBUG     message_handler.py  Controller available: 'mock' -> MockRobotController
+10:21:18  DEBUG     message_handler.py  Controller available: 'franka' -> FrankaController
+10:21:18  DEBUG     message_handler.py  Controller available: 'ur' -> URController
+10:21:18  INFO      communication_server.py  Server ready and listening on tcp://*:5555
+10:21:21  INFO      communication_server.py  Signal 2 received, shutting down
+10:21:22  INFO      communication_server.py  Shutting down server
