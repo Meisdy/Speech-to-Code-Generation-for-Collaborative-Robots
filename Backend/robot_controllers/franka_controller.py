@@ -50,7 +50,20 @@ class FrankaController(BaseRobotController):
                 rospy.init_node("speech_to_code_franka", anonymous=True)
                 moveit_commander.roscpp_initialize([])
                 self._roscpp_initialized = True
+
+                # After FrankaRobot is created, verify it can actually respond
                 self._robot = FrankaRobot("panda_arm", "panda_hand", moveit_commander)
+
+                # Probe — will raise if MoveIt isn't actually serving requests yet
+                deadline = time.time() + 10.0
+                while time.time() < deadline:
+                    try:
+                        self._robot.arm.get_current_joint_values()
+                        break  # success
+                    except Exception:
+                        time.sleep(0.5)
+                else:
+                    return {"success": False, "message": "MoveIt connected but not responding after 10s"}
             finally:
                 os.dup2(saved_stdout_fd, 1)
                 os.close(saved_stdout_fd)
@@ -92,7 +105,14 @@ class FrankaController(BaseRobotController):
 
         self._kill_ros_process()
 
-        self._robot    = None
+        # Wait for /move_group to fully deregister before returning
+        deadline = time.time() + 15.0
+        while self._is_move_group_running() and time.time() < deadline:
+            time.sleep(0.5)
+        if self._is_move_group_running():
+            logger.warning("MoveIt still running after 15s — next connect may be unstable")
+
+        self._robot = None
         self.connected = False
         logger.info("Disconnected successfully")
 
