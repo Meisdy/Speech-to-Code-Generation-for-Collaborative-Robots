@@ -10,6 +10,7 @@ import moveit_commander
 import rospy
 
 from Backend.robot_controllers.base_robot_controller import BaseRobotController
+from geometry_msgs.msg import Pose
 from Backend.robot_controllers.franka_robot import FrankaRobot
 
 logger = logging.getLogger("cobot_backend")
@@ -49,7 +50,7 @@ class FrankaController(BaseRobotController):
                 rospy.init_node("speech_to_code_franka", anonymous=True)
                 moveit_commander.roscpp_initialize([])
                 self._roscpp_initialized = True
-                self._robot = FrankaRobot("panda_arm", "panda_hand", moveit_commander, POSES_FILE)
+                self._robot = FrankaRobot("panda_arm", "panda_hand", moveit_commander)
             finally:
                 os.dup2(saved_stdout_fd, 1)
                 os.close(saved_stdout_fd)
@@ -109,29 +110,17 @@ class FrankaController(BaseRobotController):
         self._ros_process = None
         logger.info("MoveIt stack stopped")
 
-    def save_pose(self, name: str, overwrite: bool = False) -> dict:
-        """Save pose and sync into FrankaRobot._positions so it is immediately usable."""
-        result = super().save_pose(name, overwrite)
-        if result["success"] and self._robot:
-            entry = self.poses[name]
-            from geometry_msgs.msg import Pose
-            pose = Pose()
-            pose.position.x    = entry["pos"][0]
-            pose.position.y    = entry["pos"][1]
-            pose.position.z    = entry["pos"][2]
-            pose.orientation.x = entry["quat"][0]
-            pose.orientation.y = entry["quat"][1]
-            pose.orientation.z = entry["quat"][2]
-            pose.orientation.w = entry["quat"][3]
-            self._robot._positions[name] = {"pose": pose, "joints": entry.get("joints")}
-        return result
-
-    def delete_pose(self, name: str) -> dict:
-        """Delete pose and remove from FrankaRobot._positions immediately."""
-        result = super().delete_pose(name)
-        if result["success"] and self._robot:
-            self._robot._positions.pop(name, None)
-        return result
+    def _to_ros_pose(self, pose_entry: dict) -> Pose:
+        """Convert a BaseRobotController pose dict to a geometry_msgs/Pose."""
+        p = Pose()
+        p.position.x    = pose_entry["pos"][0]
+        p.position.y    = pose_entry["pos"][1]
+        p.position.z    = pose_entry["pos"][2]
+        p.orientation.x = pose_entry["quat"][0]
+        p.orientation.y = pose_entry["quat"][1]
+        p.orientation.z = pose_entry["quat"][2]
+        p.orientation.w = pose_entry["quat"][3]
+        return p
 
     def is_connected(self) -> bool:
         """Return True if the arm is reachable via MoveIt."""
@@ -146,17 +135,18 @@ class FrankaController(BaseRobotController):
     def move_joint(self, pose: dict, speed: Optional[float] = None, offset: Optional[list] = None) -> dict:
         """Execute a joint-space move to the given pose."""
         logger.info("Moving with moveJ to '%s'", pose["name"])
-        
         try:
             if speed:
                 self._robot.arm.set_max_velocity_scaling_factor(speed)
                 self._robot.arm.set_max_acceleration_scaling_factor(speed)
             if offset:
-                logger.info(f"Offset used: {offset}")
-                offset = [x / 1000 for x in offset] # Switch to m for backend module
-                self._robot.MoveJ(pose["name"], offset=offset)
+                logger.info("Offset used: %s", offset)
+                offset = [x / 1000 for x in offset]
+                self._robot.MoveJ(self._to_ros_pose(pose), offset=offset)
+            elif pose.get("joints"):
+                self._robot.MoveJ_J(pose["joints"])
             else:
-                self._robot.MoveJ_J(pose["name"])
+                self._robot.MoveJ(self._to_ros_pose(pose))
             return {"success": True, "message": "moveJ complete"}
         except Exception as e:
             return {"success": False, "message": str(e)}
@@ -165,13 +155,13 @@ class FrankaController(BaseRobotController):
         """Execute a linear Cartesian move to the given pose."""
         logger.info("Moving with moveL to '%s'", pose["name"])
         if offset:
-            logger.info(f"Offset used: {offset}")   
-            offset = [x / 1000 for x in offset] # Switch to m for backend module
+            logger.info("Offset used: %s", offset)
+            offset = [x / 1000 for x in offset]
         try:
             if speed:
                 self._robot.arm.set_max_velocity_scaling_factor(speed)
                 self._robot.arm.set_max_acceleration_scaling_factor(speed)
-            self._robot.MoveL(pose["name"], offset)
+            self._robot.MoveL(self._to_ros_pose(pose), offset)
             return {"success": True, "message": "moveL complete"}
         except Exception as e:
             return {"success": False, "message": str(e)}
