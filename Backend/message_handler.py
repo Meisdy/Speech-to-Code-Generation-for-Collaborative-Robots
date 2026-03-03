@@ -70,6 +70,7 @@ class MessageHandler:
             return self._formatted_response("error", {"error message": str(e)})
 
     def _ensure_robot_ready(self, robot_type: str) -> dict:
+        self._current_robot_type = robot_type
         expected_class = CONTROLLERS[robot_type]
 
         # Already the right robot and fully ready — nothing to do
@@ -206,7 +207,7 @@ class MessageHandler:
                 robot_type = self.robot.__class__.__name__.replace("Controller", "").lower()
                 return self._ensure_robot_ready(robot_type)
             else:
-                robot.disconnect()
+                self.disconnect_robot()
                 return {"success": True, "message": "Robot disconnected"}
 
         else:
