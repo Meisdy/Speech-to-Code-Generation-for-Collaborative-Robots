@@ -69,8 +69,19 @@
         "active": {
         "type": "bool",
         "required": true
+          }
+        }
+    },
+    "connection": {
+      "description": "Connect or disconnect robot",
+      "parameters": {
+        "command": {
+          "type": "string",
+          "required": true
+        }
+      }
     }
-  }
-}
+
+
   }
 }

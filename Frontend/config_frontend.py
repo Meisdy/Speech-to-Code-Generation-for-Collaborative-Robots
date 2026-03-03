@@ -30,7 +30,7 @@ LLM_TIMEOUT = 60                              # seconds
 # =================================================================================
 # Robot Backend Configuration
 # =================================================================================
-BACKEND_IP = "tcp://localhost:5555"
+BACKEND_IP = "tcp://192.168.2.20:5555"
 ROBOT_TYPES= ['Franka Emika', 'Universal Robot', 'Mock Adapter']  # Supported robot types
 ROBOT_IP = None                             # Robot IP address (None for mock)
 ROBOT_TIMEOUT = 5                           # Connection timeout in seconds
