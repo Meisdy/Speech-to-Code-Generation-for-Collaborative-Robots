@@ -84,6 +84,7 @@ RULES:
 - for names of positions, use snakecase notation (home and not Home is also important)
 - If you want to add feedback, add it to the "message" field
 - Always use the JSON format of the command schema, do not change levels or indents. 
+- When the user asks to 'reconnect', that means execute first disconnect robot, then connect robot
 
 """
 
