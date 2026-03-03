@@ -80,10 +80,11 @@ RULES:
 - Commands array can contain multiple sequential commands
 - Use defaults from ruleset when parameters not specified
 - Always include "mode", "robot", and "commands" fields
-- Robot field allows for 'franka' XOR 'ur' XOR 'mock'
-- use numbers whenever possible, not words (e.g. "move 10 cm", not "move ten centimeters)
-- for names of positions, use snakecase notation
+- Always use numbers instead of words for position names and measurements, not words (e.g. "move 10 cm", not "move ten centimeters", "position_1" and not "position_one")
+- for names of positions, use snakecase notation (home and not Home is also important)
 - If you want to add feedback, add it to the "message" field
+- Always use the JSON format of the command schema, do not change levels or indents. 
+
 """
 
     def parse(self, text: str, robot_type: str) -> Dict[str, Any]:
@@ -124,6 +125,7 @@ RULES:
             # Cleanup head of response if LLM ignored formatting instructions
             cleaned = self._clean_response(response)
             parsed = json.loads(cleaned)
+            parsed["commands"] = self._remove_redundant_moves(parsed["commands"]) # Strip redundant moves the LLM habitually inserts before offset moves
             logger.debug("Parser: Parsed JSON after cleanup: %s", json.dumps(parsed)[:500])
 
             # Validate content
@@ -281,6 +283,30 @@ RULES:
                     return False, "Delete pose missing pose name"
 
         return True, ""
+
+    def _remove_redundant_moves(self, commands: list) -> list:
+        """
+        Remove a named_pose move that is immediately followed by an
+        offset_from_pose move to the same pose — the offset move is
+        self-contained and the prior move is never needed.
+        """
+        cleaned = []
+        for i, cmd in enumerate(commands):
+            if (
+                    cmd.get("action") == "move"
+                    and cmd.get("target", {}).get("type") == "named_pose"
+            ):
+                next_cmd = commands[i + 1] if i + 1 < len(commands) else None
+                if (
+                        next_cmd
+                        and next_cmd.get("action") == "move"
+                        and next_cmd.get("target", {}).get("type") == "offset_from_pose"
+                        and next_cmd.get("target", {}).get("name") == cmd["target"]["name"]
+                ):
+                    logger.debug("Parser: Stripped redundant named_pose move before offset_from_pose")
+                    continue  # drop this command
+            cleaned.append(cmd)
+        return cleaned
 
     def _error_response(self, robot_type: str, error_msg: str) -> Dict[str, Any]:
         """Build standardized error response structure."""
