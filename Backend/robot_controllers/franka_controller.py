@@ -33,16 +33,15 @@ class FrankaController(BaseRobotController):
     def connect(self) -> dict:
         try:
             if not self._roscpp_initialized:
-                # Only initialize once per process lifetime
                 saved_stdout_fd = os.dup(1)
                 try:
                     with open(ROS_LOG_FILE, "a") as log_file:
                         os.dup2(log_file.fileno(), 1)
-                    if not self._is_move_group_running():
+                    if self._is_move_group_running():
+                        logger.info("MoveIt already running, skipping launch")
+                    else:
                         logger.info("Starting MoveIt stack")
                         self._launch_ros()
-                    else:
-                        logger.info("MoveIt already running, skipping launch")
                     rospy.init_node("speech_to_code_franka", anonymous=True)
                     moveit_commander.roscpp_initialize([])
                     self._roscpp_initialized = True
@@ -50,7 +49,12 @@ class FrankaController(BaseRobotController):
                     os.dup2(saved_stdout_fd, 1)
                     os.close(saved_stdout_fd)
             else:
-                logger.info("Reusing existing ROS node")
+                # Node already alive — just relaunch MoveIt stack if needed
+                if not self._is_move_group_running():
+                    logger.info("Relaunching MoveIt stack")
+                    self._launch_ros()
+                else:
+                    logger.info("Reusing existing ROS node and MoveIt stack")
 
             self._robot = FrankaRobot("panda_arm", "panda_hand", moveit_commander)
 
@@ -63,6 +67,7 @@ class FrankaController(BaseRobotController):
                 except Exception:
                     time.sleep(0.5)
             else:
+                self._robot = None
                 return {"success": False, "message": "MoveIt not responding after 10s"}
 
             self.connected = True
@@ -74,7 +79,13 @@ class FrankaController(BaseRobotController):
             return {"success": False, "message": str(e)}
 
     def disconnect(self) -> None:
-        # Only release the MoveIt commander — do NOT shut down rospy
+        """Full ROS stack teardown for system reset.
+
+        Kills the MoveIt process but does NOT call rospy.signal_shutdown() or
+        roscpp_shutdown() — rospy cannot be re-initialised in the same process,
+        so the node stays alive and is reused on the next connect().
+        """
+        self._kill_ros_process()
         self._robot = None
         self.connected = False
         logger.info("Disconnected successfully")
