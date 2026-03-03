@@ -200,5 +200,13 @@ class MessageHandler:
                 return robot.enable_freedrive()
             else:
                 return robot.disable_freedrive()
+
+        elif action == "connection":
+            if command["command"] == "connect":
+                return self.robot.connect()
+            else:
+                self.robot.disconnect()
+                return
+
         else:
             return {"success": False, "message": f"Unknown action: {action}"}

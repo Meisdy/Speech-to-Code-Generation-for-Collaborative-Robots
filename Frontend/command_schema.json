@@ -1,6 +1,6 @@
 {
   "mode": "live",
-  "robot": "franka",
+  "robot": "franka | ur | mock ",
   "commands": [
     {
       "action": "move",
@@ -45,6 +45,10 @@
       "action": "pose",
       "command": "delete",
       "pose_name": "position_1"
+    },
+    {
+      "action": "connection",
+      "command": "connect | disconnect"
     }
   ],
   "message": "Optional feedback from LLM here."
