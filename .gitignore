@@ -7,8 +7,8 @@
 /__pycache__/
 /Backend/__pycache__/
 /Backend/robot_controllers/__pycache__/
-Backend/robot_controllers/__pycache__/franka_controller.cpython-38.pyc
-Backend/logs/
-Frontend/logs/
+/Backend/robot_controllers/__pycache__/franka_controller.cpython-38.pyc
 /Testing/testrecording.mp3
 /Testing/api_key_gemini.txt
+/Backend/logs/
+/Frontend/logs/
