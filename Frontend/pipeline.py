@@ -162,6 +162,8 @@ class Controller:
 
             threading.Thread(target=self._send_command, args=(parse_result["command"],), name="backend-send", daemon=True).start()
         else:
+            error = parse_result.get("error", "Unknown parse error")
+            self.gui.set_gui_status_line(f"❌ Parse failed: {error}", "danger")
             self.state = State.IDLE
             self._set_button_state()
 
