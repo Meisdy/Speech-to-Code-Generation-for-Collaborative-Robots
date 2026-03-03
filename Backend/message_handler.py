@@ -203,7 +203,8 @@ class MessageHandler:
 
         elif action == "connection":
             if command["command"] == "connect":
-                return self.robot.connect()
+                robot_type = self.robot.__class__.__name__.replace("Controller", "").lower()
+                return self._ensure_robot_ready(robot_type)
             else:
                 robot.disconnect()
                 return {"success": True, "message": "Robot disconnected"}
