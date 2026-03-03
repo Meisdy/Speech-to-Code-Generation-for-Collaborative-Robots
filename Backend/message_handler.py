@@ -203,12 +203,11 @@ class MessageHandler:
                 return robot.disable_freedrive()
 
         elif action == "connection":
-            if command["command"] == "connect":
-                robot_type = self.robot.__class__.__name__.replace("Controller", "").lower()
-                return self._ensure_robot_ready(robot_type)
-            else:
+            if command["command"] == "disconnect":
                 self.disconnect_robot()
                 return {"success": True, "message": "Robot disconnected"}
+            else:
+                return self._ensure_robot_ready(self._current_robot_type)
 
         else:
             return {"success": False, "message": f"Unknown action: {action}"}
