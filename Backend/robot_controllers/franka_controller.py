@@ -31,45 +31,41 @@ class FrankaController(BaseRobotController):
         self._roscpp_initialized = False
 
     def connect(self) -> dict:
-        """Connect to the Franka, launching MoveIt if not already running."""
         try:
-            if self._is_move_group_running():
-                logger.info("MoveIt already running, skipping launch")
+            if not self._roscpp_initialized:
+                # Only initialize once per process lifetime
+                saved_stdout_fd = os.dup(1)
+                try:
+                    with open(ROS_LOG_FILE, "a") as log_file:
+                        os.dup2(log_file.fileno(), 1)
+                    if not self._is_move_group_running():
+                        logger.info("Starting MoveIt stack")
+                        self._launch_ros()
+                    else:
+                        logger.info("MoveIt already running, skipping launch")
+                    rospy.init_node("speech_to_code_franka", anonymous=True)
+                    moveit_commander.roscpp_initialize([])
+                    self._roscpp_initialized = True
+                finally:
+                    os.dup2(saved_stdout_fd, 1)
+                    os.close(saved_stdout_fd)
             else:
-                logger.info("Starting MoveIt stack")
-                self._launch_ros()
+                logger.info("Reusing existing ROS node")
 
-            # rosconsole opens its stdout handle during rospy.init_node(), so
-            # the fd 1 redirect must wrap it — doing it after is too late.
-            # All three calls are inside the same window so no [INFO] lines
-            # from roscpp or MoveGroupCommander reach the terminal.
-            saved_stdout_fd = os.dup(1)
-            try:
-                with open(ROS_LOG_FILE, "a") as log_file:
-                    os.dup2(log_file.fileno(), 1)
-                rospy.init_node("speech_to_code_franka", anonymous=True)
-                moveit_commander.roscpp_initialize([])
-                self._roscpp_initialized = True
+            self._robot = FrankaRobot("panda_arm", "panda_hand", moveit_commander)
 
-                # After FrankaRobot is created, verify it can actually respond
-                self._robot = FrankaRobot("panda_arm", "panda_hand", moveit_commander)
-
-                # Probe — will raise if MoveIt isn't actually serving requests yet
-                deadline = time.time() + 10.0
-                while time.time() < deadline:
-                    try:
-                        self._robot.arm.get_current_joint_values()
-                        break  # success
-                    except Exception:
-                        time.sleep(0.5)
-                else:
-                    return {"success": False, "message": "MoveIt connected but not responding after 10s"}
-            finally:
-                os.dup2(saved_stdout_fd, 1)
-                os.close(saved_stdout_fd)
+            # Probe until MoveIt is actually serving requests
+            deadline = time.time() + 10.0
+            while time.time() < deadline:
+                try:
+                    self._robot.arm.get_current_joint_values()
+                    break
+                except Exception:
+                    time.sleep(0.5)
+            else:
+                return {"success": False, "message": "MoveIt not responding after 10s"}
 
             self.connected = True
-
             logger.info("Connected successfully")
             return {"success": True, "message": "Franka connected"}
 
@@ -78,40 +74,7 @@ class FrankaController(BaseRobotController):
             return {"success": False, "message": str(e)}
 
     def disconnect(self) -> None:
-        """Shut down MoveIt commander and terminate the ROS stack if we launched it."""
-        # The xmlrpc-c C++ library calls fprintf(stderr) directly — it has no
-        # configurable logger, so the only way to silence it is at the fd level.
-        # We point fd 2 at /dev/null for the shutdown window only, then restore it.
-        old_stderr_fd = os.dup(2)
-        try:
-            with open(os.devnull, "w") as devnull:
-                os.dup2(devnull.fileno(), 2)
-
-            try:
-                rospy.signal_shutdown("FrankaController disconnecting")
-            except Exception as e:
-                logger.warning("rospy.signal_shutdown error - %s", e)
-
-            if self._roscpp_initialized:
-                try:
-                    moveit_commander.roscpp_shutdown()
-                except Exception as e:
-                    logger.warning("roscpp_shutdown error - %s", e)
-                self._roscpp_initialized = False
-
-        finally:
-            os.dup2(old_stderr_fd, 2)
-            os.close(old_stderr_fd)
-
-        self._kill_ros_process()
-
-        # Wait for /move_group to fully deregister before returning
-        deadline = time.time() + 15.0
-        while self._is_move_group_running() and time.time() < deadline:
-            time.sleep(0.5)
-        if self._is_move_group_running():
-            logger.warning("MoveIt still running after 15s — next connect may be unstable")
-
+        # Only release the MoveIt commander — do NOT shut down rospy
         self._robot = None
         self.connected = False
         logger.info("Disconnected successfully")
