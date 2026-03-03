@@ -38,17 +38,22 @@ class FrankaController(BaseRobotController):
                 logger.info("Starting MoveIt stack")
                 self._launch_ros()
 
-            rospy.init_node("speech_to_code_franka", anonymous=True)
-            # Suppress rosconsole "[ERROR] registerSubscriber" spam on shutdown.
-            # These errors are expected and harmless — they fire when rosmaster
-            # dies before roscpp finishes cleanup. Setting FATAL means nothing
-            # below that level will be printed by the ROS C++ logging framework.
-            os.environ["ROSCONSOLE_MIN_SEVERITY"] = "FATAL"
-            moveit_commander.roscpp_initialize([])
-            self._roscpp_initialized = True
-            logger.debug("MoveIt commander initialized")
+            # rosconsole opens its stdout handle during rospy.init_node(), so
+            # the fd 1 redirect must wrap it — doing it after is too late.
+            # All three calls are inside the same window so no [INFO] lines
+            # from roscpp or MoveGroupCommander reach the terminal.
+            saved_stdout_fd = os.dup(1)
+            try:
+                with open(ROS_LOG_FILE, "a") as log_file:
+                    os.dup2(log_file.fileno(), 1)
+                rospy.init_node("speech_to_code_franka", anonymous=True)
+                moveit_commander.roscpp_initialize([])
+                self._roscpp_initialized = True
+                self._robot = FrankaRobot("panda_arm", "panda_hand", moveit_commander, POSES_FILE)
+            finally:
+                os.dup2(saved_stdout_fd, 1)
+                os.close(saved_stdout_fd)
 
-            self._robot    = FrankaRobot("panda_arm", "panda_hand", moveit_commander, POSES_FILE)
             self.connected = True
 
             logger.info("Connected successfully")
