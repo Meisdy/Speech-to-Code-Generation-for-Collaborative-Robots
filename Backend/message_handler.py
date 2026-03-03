@@ -205,8 +205,8 @@ class MessageHandler:
             if command["command"] == "connect":
                 return self.robot.connect()
             else:
-                self.robot.disconnect()
-                return
+                robot.disconnect()
+                return {"success": True, "message": "Robot disconnected"}
 
         else:
             return {"success": False, "message": f"Unknown action: {action}"}
