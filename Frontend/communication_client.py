@@ -1,9 +1,9 @@
 import zmq
 
-MAX_RETRIES = 3
+MAX_RETRIES = 2
 
 class ClientZeroMQ:
-    def __init__(self, connection_string, timeout_ms=30000):
+    def __init__(self, connection_string, timeout_ms=15000):
         """
         connection_string: "tcp://192.168.1.10:5555" or "tcp://localhost:5556"
         timeout_ms: Response timeout in milliseconds
