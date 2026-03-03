@@ -109,6 +109,30 @@ class FrankaController(BaseRobotController):
         self._ros_process = None
         logger.info("MoveIt stack stopped")
 
+    def save_pose(self, name: str, overwrite: bool = False) -> dict:
+        """Save pose and sync into FrankaRobot._positions so it is immediately usable."""
+        result = super().save_pose(name, overwrite)
+        if result["success"] and self._robot:
+            entry = self.poses[name]
+            from geometry_msgs.msg import Pose
+            pose = Pose()
+            pose.position.x    = entry["pos"][0]
+            pose.position.y    = entry["pos"][1]
+            pose.position.z    = entry["pos"][2]
+            pose.orientation.x = entry["quat"][0]
+            pose.orientation.y = entry["quat"][1]
+            pose.orientation.z = entry["quat"][2]
+            pose.orientation.w = entry["quat"][3]
+            self._robot._positions[name] = {"pose": pose, "joints": entry.get("joints")}
+        return result
+
+    def delete_pose(self, name: str) -> dict:
+        """Delete pose and remove from FrankaRobot._positions immediately."""
+        result = super().delete_pose(name)
+        if result["success"] and self._robot:
+            self._robot._positions.pop(name, None)
+        return result
+
     def is_connected(self) -> bool:
         """Return True if the arm is reachable via MoveIt."""
         if not self._robot:
