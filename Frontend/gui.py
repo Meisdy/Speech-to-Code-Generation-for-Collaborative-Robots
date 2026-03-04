@@ -20,9 +20,10 @@ logger = logging.getLogger("cobot")
 class UserGUI:
     """Pure view layer for the Speech-to-Code application."""
 
-    def __init__(self, on_record_start: Callable[[], None], on_record_stop: Callable[[str], None]) -> None:
+    def __init__(self, on_record_start: Callable[[], None], on_record_stop: Callable[[str], None], on_ping: Callable[[], None]) -> None:
         self.on_record_start = on_record_start
         self.on_record_stop = on_record_stop
+        self.on_ping = on_ping
 
         self.root = ttkb.Window(themename="darkly")
         self.root.title("Speech-to-Code Generation for Cobots")
@@ -35,10 +36,17 @@ class UserGUI:
         self.record_btn: ttkb.Button | None = None
         self.status_label: ttkb.Label | None = None
         self.log_text: scrolledtext.ScrolledText | None = None
+        self.robot_combo: ttkb.Combobox | None = None
+        self._led: tk.Canvas | None = None
         self._space_down: bool = False  # Prevents OS key-repeat from firing multiple press events
 
         self._setup_ui()
         self._bind_events()
+
+    def set_connection_status(self, status: str) -> None:
+        """Update the backend LED. status: 'unknown' | 'ok' | 'error'."""
+        colours = {"ok": "#28a745", "error": "#dc3545", "unknown": "#6c757d"}
+        self._led.itemconfig("led", fill=colours.get(status, "#6c757d"))
 
     def set_gui_status_line(self, message: str, style: str = "info") -> None:
         """Update the status label text and style."""
@@ -48,6 +56,7 @@ class UserGUI:
         """Update the record button text, style, and enabled state."""
         state = "normal" if enabled else "disabled"
         self.record_btn.configure(text=text, bootstyle=style, state=state)
+        self.robot_combo.configure(state="readonly" if enabled else "disabled")
 
     def log(self, message: str, level: int = logging.INFO) -> None:
         """Append a log message to the log area with level-based colouring."""
@@ -76,6 +85,11 @@ class UserGUI:
 
         self.root.protocol("WM_DELETE_WINDOW", close_handler)
 
+    def _on_ping_click(self) -> None:
+        """Redirect focus to root before firing ping so the button loses its focus ring."""
+        self.root.focus_set()
+        self.on_ping()
+
     def _setup_ui(self) -> None:
         """Build and layout all GUI widgets."""
         header = ttkb.Frame(self.root)
@@ -85,17 +99,29 @@ class UserGUI:
         ttkb.Label(header, text="Press & hold button or use SPACEBAR to record commands", font=("Segoe UI", 12)).pack(pady=(0, 20))
 
         robot_frame = ttkb.Frame(self.root)
-        robot_frame.pack(pady=10, padx=30)
+        robot_frame.pack(pady=(10, 4), padx=30)
 
         ttkb.Label(robot_frame, text="Robot Type:", font=("Segoe UI", 11)).pack(side=LEFT)
-        ttkb.Combobox(
+        self.robot_combo = ttkb.Combobox(
             robot_frame,
             textvariable=self.robot_type,
             values=list(ROBOT_TYPE_KEYS.keys()),
             state="readonly",
             font=("Segoe UI", 11),
             width=13
-        ).pack(side=LEFT, padx=(10, 0))
+        )
+        self.robot_combo.pack(side=LEFT, padx=(10, 0))
+
+        ttkb.Button(
+            robot_frame, text="Ping Backend", bootstyle="secondary",
+            takefocus=0,
+            command=self._on_ping_click
+        ).pack(side=LEFT, padx=(20, 6), ipady=2)
+
+        self._led = tk.Canvas(robot_frame, width=14, height=14, highlightthickness=0,
+                              bg=self.root.style.colors.bg)
+        self._led.create_oval(2, 2, 12, 12, fill="#6c757d", outline="", tags="led")
+        self._led.pack(side=LEFT)
 
         self.record_btn = ttkb.Button(self.root, text="Press and hold to record", bootstyle=PRIMARY)
         self.record_btn.pack(pady=40, ipadx=80, ipady=25)

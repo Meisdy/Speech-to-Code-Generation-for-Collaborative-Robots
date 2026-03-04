@@ -37,6 +37,18 @@ class Controller:
         self.recording_active = threading.Event()
         self.recording_thread: threading.Thread | None = None
 
+    def ping(self) -> None:
+        """Test backend connectivity and update the GUI connection LED."""
+        if self.state != State.IDLE:
+            return  # Socket may be mid-request — don't interleave
+        threading.Thread(target=self._run_ping, daemon=True, name="thread_ping").start()
+
+    def _run_ping(self) -> None:
+        """Send ping to backend and report result to GUI."""
+        success, _ = self.client.send_command("ping", {})
+        status = "ok" if success else "error"
+        self.gui.root.after(0, lambda: self.gui.set_connection_status(status))
+
     def set_gui(self, gui) -> None:
         """Link GUI to controller after construction."""
         self.gui = gui
@@ -121,7 +133,7 @@ class Controller:
             logger.warning("ASR confidence low: %.2f - parsing may fail", result.get("confidence", 0.0))
 
         self.state = State.PARSING
-        self.gui.set_gui_status_line("Parsing command...", "info")
+        self.gui.set_gui_status_line("Parsing command ...", "info")
 
         threading.Thread(
             target=lambda: self._parse_command(result["text"], robot_key),
