@@ -9,6 +9,7 @@ Usage:
 Covers every method defined in BaseRobotController. If a method is not supported
 by the adapter (e.g. freedrive), it logs INFO rather than failing the test.
 """
+import time
 
 # ── CONFIG — edit before running ──────────────────────────────────────────────
 from Backend.robot_controllers.mock_controller import MockRobotController
@@ -182,6 +183,7 @@ run("gripper_close()", robot.gripper_close)
 # ── 14. Freedrive (optional — not all adapters support it) ────────────────────
 print("\n[ Freedrive ]")
 run_optional("enable_freedrive()",  robot.enable_freedrive)
+time.sleep(5)
 run_optional("disable_freedrive()", robot.disable_freedrive)
 
 # ── 15. Disconnect ─────────────────────────────────────────────────────────────
