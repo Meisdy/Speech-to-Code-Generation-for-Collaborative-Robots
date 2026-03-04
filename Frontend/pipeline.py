@@ -36,6 +36,7 @@ class Controller:
         self.client = ClientZeroMQ(BACKEND_IP)
         self.gui = None
         self.confidence_threshold = ASR_CONFIDENCE_THRESHOLD
+        self._cleaned_up : bool = False
 
         # Recording thread control
         self.recording_active = threading.Event()
@@ -234,17 +235,18 @@ class Controller:
         """Reset button state to default."""
         self.gui.set_button_state("Press and hold to record", visual_state, enabled)
 
-    def cleanup(self):
+    def cleanup(self) -> None:
         """Clean up resources on shutdown."""
-        try:
-            # Stop recording if active
-            if self.recording_active.is_set():
-                self.recording_active.clear()
-            if self.recording_thread and self.recording_thread.is_alive():
-                self.recording_thread.join(timeout=1.0)
+        if self._cleaned_up:
+            return
+        self._cleaned_up = True
 
-            self.asr.close() # Now actually close the stream
-            self.client.close()  # terminates zmq.Context → kills handle thread
+        self.recording_active.clear()
+        if self.recording_thread and self.recording_thread.is_alive():
+            self.recording_thread.join(timeout=2.0)
+            if self.recording_thread.is_alive():
+                logger.warning("Recording thread did not stop within timeout")
+        self.recording_thread = None
 
-        except Exception as e:
-            logger.warning(f"Cleanup error: {e}")
+        self.asr.close()
+        self.client.close()

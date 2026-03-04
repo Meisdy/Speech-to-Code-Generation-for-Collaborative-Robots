@@ -22,15 +22,14 @@ def main() -> None:
     gui_handler = GuiHandler(gui, level=logging.INFO)
     logging.getLogger("cobot").addHandler(gui_handler)
 
-    # Register cleanup on closing the window. Not sure if this is needed, but cant hurt to be safe
+    # Register window-close handler — this is the primary cleanup path
     gui.on_window_close(controller.cleanup)
 
-    # Start the GUI event loop, ensuring cleanup is called on exit
     try:
-        logger.info('Application ready')
+        logger.info("Application ready")
         gui.run()
     finally:
-        controller.cleanup()  # Always runs, even on exception
+        controller.cleanup()  # Fallback: covers crashes and non-window-close exits
         logger.info("Application shutting down")
 
 
