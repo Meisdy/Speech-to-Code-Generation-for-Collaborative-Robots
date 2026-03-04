@@ -1,50 +1,37 @@
-# config_frontend.py
 """
-Configuration for Speech-to-Code Framework
-All values can be edited directly in this file
+config_frontend.py — Configuration for Speech-to-Code Framework.
+All values can be edited directly in this file.
 """
 
-import os
-FRAMEWORK_MODE = "live"              # Add programming / advanced mode later
+# ── General ───────────────────────────────────────────────────────────────────
+FRAMEWORK_MODE = "live"
 
+# ── ASR ───────────────────────────────────────────────────────────────────────
+ASR_MODEL_SIZE           = "base"    # tiny | base | small | medium | large
+ASR_LANGUAGE             = "en"      # ISO language code
+ASR_SAMPLE_RATE          = 16000     # Hz — Whisper expects 16kHz
+ASR_CONFIDENCE_THRESHOLD = 0.7      # Warn on transcripts below this (0.0–1.0)
+ASR_FP16                 = False     # Requires CUDA (not yet implemented)
 
-# =================================================================================
-# ASR (Automatic Speech Recognition) Configuration
-# =================================================================================
-ASR_MODEL_SIZE = "base"              # Options: tiny, base, small, medium, large
-ASR_LANGUAGE = "en"                  # ISO language code, en, de, etc.
-ASR_SAMPLE_RATE = 16000              # Hz (Whisper expects 16kHz)
-ASR_CONFIDENCE_THRESHOLD = 0.7       # Reject transcripts below this (0.0-1.0)
-ASR_FP16 = False                     # Use GPU acceleration (requires CUDA)
+# ── LLM Parser ────────────────────────────────────────────────────────────────
+LLM_API_BASE    = "http://localhost:1234/v1"
+LLM_MODEL_NAME  = "meta-llama-3.1-8b-instruct"
+LLM_TEMPERATURE = 0.1               # Low = more deterministic output
+LLM_MAX_TOKENS  = 2048
+LLM_TIMEOUT     = 60                # Long — LLM may need to load on first call
 
-# =================================================================================
-# Parser Configuration (add as you build parser)
-# =================================================================================
-LLM_API_BASE = "http://localhost:1234/v1"
-LLM_MODEL_NAME = "meta-llama-3.1-8b-instruct"   # Update to your loaded model
-LLM_TEMPERATURE = 0.1                           # Low for deterministic output
-LLM_MAX_TOKENS = 2048
-LLM_TIMEOUT = 60                                # seconds (on first connect, LLM needs to load model)
-
-
-# =================================================================================
-# Robot Backend Configuration
-# =================================================================================
+# ── Backend ───────────────────────────────────────────────────────────────────
 BACKEND_IP = "tcp://localhost:5555"
-ROBOT_TYPE_KEYS =   {                          # Supported robot types and their values for the application
-                    "Franka Emika"      : "franka",
-                    "Universal Robot"   : "ur",
-                    "Mock Adapter"      : "mock"
-                    }
-ROBOT_IP = None                             # Robot IP address (None for mock)
-ROBOT_TIMEOUT = 5                           # Connection timeout in seconds
 
+ROBOT_TYPE_KEYS = {
+    "Franka Emika":    "franka",
+    "Universal Robot": "ur",
+    "Mock Adapter":    "mock",
+}
 
-# =================================================================================
-# Logging Configuration
-# =================================================================================
-LOGGING_LEVEL = "INFO"               # Options: DEBUG, INFO, WARNING, ERROR (for gui and console)
-LOGGING_LEVEL_FILE = "DEBUG"         # Log level for file output (can be more verbose than console/gui)
-LOGGING_SAVE_AUDIO = False           # Save audio files for debugging
-LOGGING_SAVE_PARSE = False           # Save parser outputs for debugging
-DATA_DIR = "data"
+# ── Logging ───────────────────────────────────────────────────────────────────
+LOGGING_LEVEL      = "INFO"     # Console and GUI level: DEBUG | INFO | WARNING | ERROR
+LOGGING_LEVEL_FILE = "DEBUG"    # File level — can be more verbose than console
+LOGGING_SAVE_AUDIO = False      # Save .wav files for ASR debugging
+LOGGING_SAVE_PARSE = False      # Save parsed JSON for parser debugging
+DATA_DIR           = "data"
