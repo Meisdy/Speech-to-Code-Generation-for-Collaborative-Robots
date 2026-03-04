@@ -21,6 +21,18 @@ ROS_LOG_FILE    = "Backend/logs/franka_ros.log"
 LAUNCH_DELAY    = 10.0  # seconds to wait for ROS stack to be ready
 MOVE_GROUP_NODE = "/move_group"
 
+# Python logger namespaces owned by ROS/MoveIt — redirected away from the
+# backend log so they don't pollute cobot_backend output.
+_ROS_LOGGER_PREFIXES = (
+    "rospy",
+    "rosout",
+    "roslaunch",
+    "moveit",
+    "actionlib",
+    "xmlrpc",
+    "dynamic_reconfigure",
+)
+
 
 class FrankaController(BaseRobotController):
 
@@ -44,6 +56,7 @@ class FrankaController(BaseRobotController):
                         self._launch_ros()
                     rospy.init_node("speech_to_code_franka", anonymous=True)
                     moveit_commander.roscpp_initialize([])
+                    self._redirect_ros_loggers()
                     self._roscpp_initialized = True
                 finally:
                     os.dup2(saved_stdout_fd, 1)
@@ -204,6 +217,45 @@ class FrankaController(BaseRobotController):
             }
         except Exception as e:
             return {"success": False, "message": str(e)}
+
+    def _redirect_ros_loggers(self) -> None:
+        """Detach all ROS/MoveIt Python loggers from the root handler chain.
+
+        After rospy.init_node() and roscpp_initialize(), ROS creates a family of
+        Python loggers (rospy.*, rosout, moveit.*, etc.) that propagate to the root
+        logger and therefore appear in the cobot_backend log.  This method:
+
+          1. Attaches a FileHandler pointing at ROS_LOG_FILE to every known ROS
+             logger — both those already registered and the top-level prefix loggers
+             that will absorb any new children created later.
+          2. Sets propagate=False so records never reach the root handler.
+
+        The method is idempotent: calling it more than once is safe.
+        """
+        handler = logging.FileHandler(ROS_LOG_FILE, mode="a")
+        handler.setFormatter(
+            logging.Formatter("%(asctime)s %(name)-35s %(levelname)s: %(message)s")
+        )
+
+        # 1. Redirect any loggers that rospy/moveit have already registered.
+        for name, logger_obj in list(logging.Logger.manager.loggerDict.items()):
+            if not isinstance(logger_obj, logging.Logger):
+                continue  # placeholder — not a real Logger yet
+            if any(name.startswith(p) for p in _ROS_LOGGER_PREFIXES):
+                logger_obj.handlers  = [handler]
+                logger_obj.propagate = False
+
+        # 2. Pre-configure the top-level prefix loggers so that any child loggers
+        #    created *after* this call (e.g. rospy.topics, moveit.planning_scene)
+        #    inherit the FileHandler and do not propagate upward.
+        for prefix in _ROS_LOGGER_PREFIXES:
+            log = logging.getLogger(prefix)
+            if not any(isinstance(h, logging.FileHandler) and h.baseFilename == handler.baseFilename
+                       for h in log.handlers):
+                log.handlers = [handler]
+            log.propagate = False
+
+        logger.info("ROS/MoveIt loggers redirected to %s", ROS_LOG_FILE)
 
     def _is_move_group_running(self) -> bool:
         """Check if /move_group node is active on the ROS master."""
