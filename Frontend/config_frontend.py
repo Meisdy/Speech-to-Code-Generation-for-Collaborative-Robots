@@ -24,14 +24,18 @@ LLM_API_BASE = "http://localhost:1234/v1"
 LLM_MODEL_NAME = "meta-llama-3.1-8b-instruct"   # Update to your loaded model
 LLM_TEMPERATURE = 0.1                           # Low for deterministic output
 LLM_MAX_TOKENS = 2048
-LLM_TIMEOUT = 60                              # seconds
+LLM_TIMEOUT = 60                                # seconds (on first connect, LLM needs to load model)
 
 
 # =================================================================================
 # Robot Backend Configuration
 # =================================================================================
-BACKEND_IP = "tcp://192.168.2.20:5555"
-ROBOT_TYPES= ['Franka Emika', 'Universal Robot', 'Mock Adapter']  # Supported robot types
+BACKEND_IP = "tcp://localhost:5555"
+ROBOT_TYPE_KEYS =   {                          # Supported robot types and their values for the application
+                    "Franka Emika"      : "franka",
+                    "Universal Robot"   : "ur",
+                    "Mock Adapter"      : "mock"
+                    }
 ROBOT_IP = None                             # Robot IP address (None for mock)
 ROBOT_TIMEOUT = 5                           # Connection timeout in seconds
 

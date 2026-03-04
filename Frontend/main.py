@@ -1,3 +1,4 @@
+import sys
 import logging
 from Frontend.logging_setup import setup_logging, GuiHandler
 from Frontend.gui import UserGUI
@@ -11,7 +12,12 @@ def main() -> None:
     logger.info("Application starting")
 
     # Initialize controller and GUI, linking them together
-    controller = Controller()
+    try:
+        controller = Controller()
+    except Exception as e:
+        logger.error("Failed to initialise controller: %s", e)
+        sys.exit(1)
+
     gui = UserGUI(
         on_record_start=controller.start_recording,
         on_record_stop=controller.start_execution

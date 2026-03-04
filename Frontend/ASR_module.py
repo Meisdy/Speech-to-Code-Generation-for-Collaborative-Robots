@@ -38,19 +38,9 @@ class SpeechRecognizer:
         self.stream: pyaudio.Stream | None = None
         self.frames: list[bytes] = []
 
-        # Load Whisper model and PyAudio
-        try:
-            self.model = whisper.load_model(self.model_size)
-        except Exception as e:
-            logger.exception(f"Failed to load Whisper model '{config_frontend.ASR_MODEL_SIZE}': {e}")
-
-        try:
-            self.audio_interpreter: pyaudio.PyAudio | None = pyaudio.PyAudio()
-        except Exception as e:
-            logger.exception(f"Failed to initialize PyAudio: {e}")
-
-
-        # Start listening immediately to reduce latency
+        # Load Models and start listening (Errors in this will be caught in the init
+        self.model = whisper.load_model(self.model_size)
+        self.audio_interpreter: pyaudio.PyAudio = pyaudio.PyAudio()
         self.start_listening()
 
     def start_listening(self) -> None:
@@ -131,7 +121,8 @@ class SpeechRecognizer:
             avg_no_speech = sum(seg.get("no_speech_prob", 0.0) for seg in segments) / len(segments)
             confidence = 1.0 - avg_no_speech
         else:
-            confidence = 0.0
+            # No segment metadata doesn't mean silence — don't penalise valid transcriptions
+            confidence = 1.0 if text else 0.0
 
         logger.info("ASR: transcribed text '%s', confidence = %.2f", text, confidence)
         return {"text": text, "confidence": round(confidence, 2)}
@@ -174,23 +165,6 @@ class SpeechRecognizer:
 
         except Exception as e:
             logger.error(f"Failed to save debug audio: {e}")
-
-    # Lifecycle methods
-    def __del__(self):
-        """Ensure resources are cleaned up on deletion."""
-        try:
-            self.close()
-        except Exception as e:
-            logger.debug(f'ASR __del__ called, but close() raised an exception (likely already cleaned up): {e}')
-
-    def __enter__(self):
-        """Context manager support."""
-        return self
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        """Context manager cleanup."""
-        self.close()
-        return False
 
 
 # Example usage (for testing purposes)

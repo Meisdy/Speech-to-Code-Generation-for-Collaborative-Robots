@@ -44,28 +44,18 @@ class CodeParser:
         self.log_parsing: bool = config_frontend.LOGGING_SAVE_PARSE
         self.log_path: str = config_frontend.DATA_DIR
 
-    def _load_json(self, filename: str) -> Any | None:
-        """
-        Load JSON file from module directory.
-
-        Args:
-            filename: Name of JSON file to load
-
-        Returns:
-            Parsed JSON as dictionary
-
-        Raises:
-            FileNotFoundError: If file doesn't exist
-        """
-        try:
-            file_path = Path(__file__).parent / filename
-            with open(file_path, 'r') as f:
-                return json.load(f)
-        except FileNotFoundError:
-            logger.error(f"Parser: Failed to load {filename} - file not found")
+    def _load_json(self, filename: str) -> dict:
+        """Load JSON file from module directory."""
+        file_path = Path(__file__).parent / filename
+        with open(file_path, "r") as f:
+            return json.load(f)
 
     def _build_system_prompt(self) -> str:
         """Build LLM system prompt with ruleset and schema definitions."""
+        robot_keys = list(config_frontend.ROBOT_TYPE_KEYS.values())
+        schema = self.command_schema.copy()
+        schema["robot"] = " | ".join(robot_keys)
+
         return f"""You are a robot command parser. Convert natural language to structured JSON commands.
 
 AVAILABLE PRIMITIVES:
@@ -275,13 +265,16 @@ RULES:
                 if not isinstance(cmd["duration_s"], (int, float)):
                     return False, "Wait duration must be a number"
 
-            elif action == "teach_pose":
-                if "pose_name" not in cmd:
-                    return False, "Teach pose missing pose name"
+            elif action == "pose":
 
-            elif action == "delete_pose":
+                if "command" not in cmd:
+                    return False, "Pose command missing command field"
+
+                if cmd["command"] not in ["teach", "delete"]:
+                    return False, f'Invalid pose command: "{cmd["command"]}"'
+
                 if "pose_name" not in cmd:
-                    return False, "Delete pose missing pose name"
+                    return False, "Pose command missing pose_name"
 
         return True, ""
 
@@ -326,14 +319,14 @@ RULES:
 
 
 def main():
-    """Test parser with sample commands."""
     parser = CodeParser()
+    robot_types = list(config_frontend.ROBOT_TYPE_KEYS.keys())
 
     test_commands = [
-        ("Open the gripper", "Franka Emika"),
-        ("Teach a new pose called NewHomePos", "Franka Emika"),
-        ("Move to Home position and close gripper", "Universal Robot"),
-        ("Move to Home position, then to Pick position, open gripper, move to Place position, and close gripper", "Universal Robot"),
+        ("Open the gripper", robot_types[0]),
+        ("Teach a new pose called new_home", robot_types[0]),
+        ("Move to home position and close gripper", robot_types[1]),
+        ("Move to home, then pick, open gripper, move to place, close gripper", robot_types[1]),
     ]
 
     for text, robot_type in test_commands:

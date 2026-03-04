@@ -5,7 +5,7 @@ This module provides a pure view layer following MVP pattern.
 The GUI emits events and displays data - contains no business logic.
 """
 
-from Frontend.config_frontend import ROBOT_TYPES
+from Frontend.config_frontend import ROBOT_TYPE_KEYS
 import logging
 import tkinter as tk
 import ttkbootstrap as ttkb
@@ -14,7 +14,7 @@ from tkinter import scrolledtext
 from typing import Callable, Optional
 from ttkbootstrap.constants import LEFT, BOTH, X, PRIMARY
 
-
+logger = logging.getLogger("cobot")
 
 class UserGUI:
     """
@@ -52,7 +52,7 @@ class UserGUI:
 
         # UI state for robot type selection (default value)
         self.robot_type: tk.StringVar = tk.StringVar(value="Franka Emika")
-        self.robot_types = ROBOT_TYPES
+        self.robot_types = list(ROBOT_TYPE_KEYS.keys())
 
         # Widget references with type hints for better readability and IDE support
         self.record_btn: Optional[ttkb.Button] = None
@@ -213,8 +213,9 @@ class UserGUI:
             level: logging level (int) - controls color/tag
         """
         # Determine tag name from level
-        assert threading.current_thread() is threading.main_thread(), \
-            "gui.log() must be called from the main thread"
+        if threading.current_thread() is not threading.main_thread():
+            logger.error("gui.log() called from non-main thread — skipping")
+            return
 
         level_name = logging.getLevelName(level)
         if not isinstance(level_name, str):

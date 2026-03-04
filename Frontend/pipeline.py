@@ -1,4 +1,4 @@
-from Frontend.config_frontend import BACKEND_IP, ASR_CONFIDENCE_THRESHOLD
+from Frontend.config_frontend import BACKEND_IP, ASR_CONFIDENCE_THRESHOLD, ROBOT_TYPE_KEYS
 import threading
 import logging
 import json
@@ -87,13 +87,18 @@ class Controller:
         # Stop recording thread and wait for completion
         self.recording_active.clear()
         if self.recording_thread:
-            self.recording_thread.join()
+            self.recording_thread.join(timeout=2.0)
+            if self.recording_thread.is_alive():
+                logger.warning("Recording thread did not stop within timeout")
             self.recording_thread = None
 
         logger.info("Recording stopped, starting transcription")
 
+        # Translate display name to backend key once, before it flows into the pipeline
+        robot_key = ROBOT_TYPE_KEYS.get(robot_type, robot_type)
+
         # Process audio in background thread
-        threading.Thread(target=lambda: self._process_audio(robot_type), daemon=True, name="thread_asr_processing").start()
+        threading.Thread(target=lambda: self._process_audio(robot_key), daemon=True, name="thread_asr_processing").start()
 
     def _process_audio(self, robot_type: str):
         """Transcribe audio and display result."""
@@ -220,8 +225,16 @@ class Controller:
                 state = cmd.get("state") or cmd.get("command", "?")
                 parts.append(f"{state.capitalize()} gripper")
 
-            elif action == "teach":
-                parts.append(f"Teach position '{cmd.get('name', '?')}'")
+            elif action == "pose":
+                cmd_type = cmd.get("command", "?")
+                parts.append(f"{cmd_type.capitalize()} pose '{cmd.get('pose_name', '?')}'")
+
+            elif action == "freedrive":
+                state = "on" if cmd.get("active") else "off"
+                parts.append(f"Freedrive {state}")
+
+            elif action == "connection":
+                parts.append(f"Connection {cmd.get('command', '?')}")
 
             elif action == "wait":
                 parts.append(f"Wait {cmd.get('duration_s', '?')}s")
