@@ -7,7 +7,7 @@ import whisper
 import pyaudio
 import numpy as np
 import threading
-import config_frontend
+import Frontend.config_frontend as config_frontend
 import logging
 import wave
 import os

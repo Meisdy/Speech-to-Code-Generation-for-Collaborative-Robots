@@ -1,7 +1,7 @@
 import os
 import logging
 from logging.handlers import RotatingFileHandler
-import config_frontend
+from Frontend.config_frontend import LOGGING_LEVEL, LOGGING_LEVEL_FILE
 
 LOG_DIR = os.path.join(os.path.dirname(__file__), "logs")
 
@@ -12,7 +12,7 @@ class GuiHandler(logging.Handler):
     """
     def __init__(self, gui, level: int | None = None):
         # If no explicit level passed, use configured console level
-        level = level if level is not None else getattr(logging, config_frontend.LOGGING_LEVEL.upper(), logging.INFO)
+        level = level if level is not None else getattr(logging, LOGGING_LEVEL.upper(), logging.INFO)
         super().__init__(level)
         self.gui = gui
         self.setFormatter(logging.Formatter("%(asctime)s [%(levelname)s] %(message)s", datefmt="%H:%M:%S"))
@@ -62,8 +62,8 @@ def setup_logging() -> logging.Logger:
 
     logger.propagate = False
 
-    console_level = getattr(logging, config_frontend.LOGGING_LEVEL.upper(), logging.INFO)
-    file_level = getattr(logging, config_frontend.LOGGING_LEVEL_FILE.upper(), logging.DEBUG)
+    console_level = getattr(logging, LOGGING_LEVEL.upper(), logging.INFO)
+    file_level = getattr(logging, LOGGING_LEVEL_FILE.upper(), logging.DEBUG)
 
     # Allow handlers to filter independently: set logger to the most permissive level
     logger.setLevel(min(console_level, file_level))

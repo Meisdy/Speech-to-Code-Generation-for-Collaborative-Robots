@@ -1,7 +1,7 @@
 import logging
-from logging_setup import setup_logging, GuiHandler
-from gui import UserGUI
-from pipeline import Controller
+from Frontend.logging_setup import setup_logging, GuiHandler
+from Frontend.gui import UserGUI
+from Frontend.pipeline import Controller
 
 
 def main() -> None:

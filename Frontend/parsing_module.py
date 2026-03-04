@@ -8,7 +8,7 @@ into structured JSON commands according to defined rulesets and schemas.
 
 import json
 import time
-import config_frontend
+import Frontend.config_frontend as config_frontend
 import requests
 from typing import Dict, Any
 from pathlib import Path
