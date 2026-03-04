@@ -10,10 +10,9 @@ class GuiHandler(logging.Handler):
 
     The GUI is expected to expose `root` (tk root) and `log(message: str, level: int)`.
     """
-    def __init__(self, gui, level: int | None = None):
-        # If no explicit level passed, use configured console level
-        level = level if level is not None else getattr(logging, LOGGING_LEVEL.upper(), logging.INFO)
-        super().__init__(level)
+    def __init__(self, gui, level: int | None = None) -> None:
+        resolved = level if level is not None else getattr(logging, LOGGING_LEVEL.upper(), logging.INFO)
+        super().__init__(resolved)
         self.gui = gui
         self.setFormatter(logging.Formatter("%(asctime)s [%(levelname)s] %(message)s", datefmt="%H:%M:%S"))
 
@@ -22,7 +21,7 @@ class GuiHandler(logging.Handler):
             msg = self.format(record)
             # Schedule GUI insertion on the Tk main thread and pass numeric level for coloring
             self.gui.root.after(0, lambda: self.gui.log(msg, record.levelno))
-        except Exception:
+        except Exception:  # logging must never crash the application
             self.handleError(record)
 
 
