@@ -13,3 +13,5 @@
 /Backend/logs/
 /Frontend/logs/
 /Testing/Backend
+Frontend/__pycache__/
+Testing/__pycache__/
