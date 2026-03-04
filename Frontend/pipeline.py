@@ -1,12 +1,14 @@
-from Frontend.config_frontend import BACKEND_IP, ASR_CONFIDENCE_THRESHOLD, ROBOT_TYPE_KEYS
-import threading
-import logging
+"""Pipeline controller coordinating ASR, parsing, and backend communication."""
+
 import json
+import logging
+import threading
 from enum import Enum, auto
-from Frontend.parsing_module import CodeParser
+
 from Frontend.ASR_module import SpeechRecognizer
 from Frontend.communication_client import ClientZeroMQ
-
+from Frontend.config_frontend import BACKEND_IP, ASR_CONFIDENCE_THRESHOLD, ROBOT_TYPE_KEYS
+from Frontend.parsing_module import CodeParser
 
 logger = logging.getLogger("cobot")
 
@@ -21,70 +23,49 @@ class State(Enum):
 
 
 class Controller:
-    """
-    Main pipeline controller coordinating ASR, parsing, and GUI.
-
-    Manages state transitions and orchestrates the speech-to-code workflow:
-    IDLE → RECORDING → TRANSCRIBING → PARSING → IDLE
-    """
+    """Orchestrates the speech-to-code workflow: IDLE → RECORDING → TRANSCRIBING → PARSING → IDLE."""
 
     def __init__(self):
-        """Initialize controller with ASR and parser modules."""
         self.state = State.IDLE
         self.asr = SpeechRecognizer()
         self.parser = CodeParser()
         self.client = ClientZeroMQ(BACKEND_IP)
-        self.gui = None
-        self.confidence_threshold = ASR_CONFIDENCE_THRESHOLD
-        self._cleaned_up : bool = False
+        self.gui = None  # Set via set_gui() after GUI is constructed
+        self.confidence_threshold: float = ASR_CONFIDENCE_THRESHOLD
+        self._cleaned_up: bool = False
 
-        # Recording thread control
         self.recording_active = threading.Event()
-        self.recording_thread = None
+        self.recording_thread: threading.Thread | None = None
 
-
-    def set_gui(self, gui):
-        """Link GUI to controller during startup."""
+    def set_gui(self, gui) -> None:
+        """Link GUI to controller after construction."""
         self.gui = gui
 
-    def start_recording(self):
-        """Begin audio recording if in IDLE state."""
+    def start_recording(self) -> None:
+        """Begin audio capture if idle."""
         if self.state != State.IDLE:
-            return  # Ignore if busy
+            return
 
-        # Update state and GUI
         self.state = State.RECORDING
         self.gui.set_gui_status_line("🔴 Recording...", "warning")
-        self._set_button_state('warning', True)
+        self._set_button_state("warning", True)
 
-        # Start recording thread
         self.recording_active.set()
-        self.recording_thread = threading.Thread(target=self._recording_loop, daemon=True, name="thread_recording")
+        self.recording_thread = threading.Thread(
+            target=self._recording_loop, daemon=True, name="thread_recording"
+        )
         self.recording_thread.start()
-
         logger.info("Recording started")
 
-    def _recording_loop(self):
-        """Continuously record audio until recording_active is cleared."""
-        while self.recording_active.is_set():
-            self.asr.read_chunk()
-
-    def start_execution(self, robot_type: str):
-        """
-        Stop recording and begin processing pipeline.
-
-        Args:
-            robot_type: Target robot identifier for command parsing
-        """
+    def start_execution(self, robot_type: str) -> None:
+        """Stop recording and hand off to the processing pipeline."""
         if self.state != State.RECORDING:
             return
 
-        # Update GUI to show processing
         self.state = State.TRANSCRIBING
         self.gui.set_gui_status_line("Processing...", "info")
-        self._set_button_state('info', False)
+        self._set_button_state("info", False)
 
-        # Stop recording thread and wait for completion
         self.recording_active.clear()
         if self.recording_thread:
             self.recording_thread.join(timeout=2.0)
@@ -94,99 +75,99 @@ class Controller:
 
         logger.info("Recording stopped, starting transcription")
 
-        # Translate display name to backend key once, before it flows into the pipeline
+        # Translate display name to backend key once — everything downstream uses the key
         robot_key = ROBOT_TYPE_KEYS.get(robot_type, robot_type)
+        threading.Thread(
+            target=lambda: self._process_audio(robot_key), daemon=True, name="thread_asr_processing"
+        ).start()
 
-        # Process audio in background thread
-        threading.Thread(target=lambda: self._process_audio(robot_key), daemon=True, name="thread_asr_processing").start()
+    def cleanup(self) -> None:
+        """Release all resources on shutdown. Safe to call more than once."""
+        if self._cleaned_up:
+            return
+        self._cleaned_up = True
 
-    def _process_audio(self, robot_type: str):
-        """Transcribe audio and display result."""
+        self.recording_active.clear()
+        if self.recording_thread and self.recording_thread.is_alive():
+            self.recording_thread.join(timeout=2.0)
+            if self.recording_thread.is_alive():
+                logger.warning("Recording thread did not stop within timeout")
+        self.recording_thread = None
+
+        self.asr.close()
+        self.client.close()
+
+    def _recording_loop(self) -> None:
+        """Capture audio chunks until recording_active is cleared."""
+        while self.recording_active.is_set():
+            self.asr.read_chunk()
+
+    def _process_audio(self, robot_key: str) -> None:
+        """Transcribe captured audio and schedule result display on main thread."""
         audio = self.asr.get_audio()
         result = self.asr.transcribe(audio)
+        self.gui.root.after(0, lambda: self._display_transcribe_result(result, robot_key))
 
-        # Update GUI on main thread
-        self.gui.root.after(0, lambda: self._display_transcribe_result(result, robot_type))
-
-    def _display_transcribe_result(self, result: dict, robot_type: str):
-        """
-        Display transcription and trigger parsing.
-
-        Args:
-            result: Transcription result with 'text' and 'confidence'
-            robot_type: Target robot for parsing
-        """
-
-        # Check if transcription was successful
+    def _display_transcribe_result(self, result: dict, robot_key: str) -> None:
+        """Validate transcription result and trigger parsing or fail gracefully."""
         if not result.get("text") or result.get("confidence", 0) == 0:
             self.gui.set_gui_status_line("❌ Transcription failed", "danger")
             self._set_button_state()
             self.state = State.IDLE
-            logger.warning("Transcription failed: no text detected or zero confidence")
+            logger.warning("Transcription failed: no text or zero confidence")
             return
 
-        # Check for low confidence and warn user
         if result.get("confidence", 1) < self.confidence_threshold:
             logger.warning("ASR confidence low: %.2f - parsing may fail", result.get("confidence", 0.0))
 
-        # Move to parsing state
         self.state = State.PARSING
         self.gui.set_gui_status_line("Parsing command...", "info")
 
-        # Parse in background thread
-        threading.Thread(target=lambda: self._parse_command(result["text"], robot_type), daemon=True, name="thread_parsing").start()
+        threading.Thread(
+            target=lambda: self._parse_command(result["text"], robot_key),
+            daemon=True, name="thread_parsing"
+        ).start()
 
-    def _parse_command(self, text: str, robot_type: str):
-        """
-        Parse natural language to robot command.
-
-        Args:
-            text: Transcribed text from ASR
-            robot_type: Target robot identifier
-        """
-        parse_result = self.parser.parse(text, robot_type)
-
-        # Update GUI on main thread
+    def _parse_command(self, text: str, robot_key: str) -> None:
+        """Send transcribed text to the parser and schedule result display on main thread."""
+        parse_result = self.parser.parse(text, robot_key)
         self.gui.root.after(0, lambda: self._display_parse_result(parse_result))
 
-    def _display_parse_result(self, parse_result: dict):
-        """
-        Display parsing result and return to idle.
-
-        Args:
-            parse_result: Parser output with 'status', 'command', and optional 'error'
-        """
-
+    def _display_parse_result(self, parse_result: dict) -> None:
+        """Handle parser output — send to backend on success or show error."""
         if parse_result["status"] == "success":
             command_as_string = self._command_to_string(parse_result["command"])
             self.gui.set_gui_status_line("✅ Command parsed — waiting for backend...", "info")
-            logger.info(f'Parser: Command summary "{command_as_string}"')
+            logger.info("Parser: Command summary \"%s\"", command_as_string)
 
-            # Block UI during execution
             self.state = State.EXECUTING
             self._set_button_state("secondary", enabled=False)
-
-            threading.Thread(target=self._send_command, args=(parse_result["command"],), name="backend-send", daemon=True).start()
+            threading.Thread(
+                target=self._send_command, args=(parse_result["command"],),
+                name="backend-send", daemon=True
+            ).start()
         else:
             error = parse_result.get("error", "Unknown parse error")
             self.gui.set_gui_status_line(f"❌ Parse failed: {error}", "danger")
             self.state = State.IDLE
             self._set_button_state()
 
-    def _send_command(self, command: dict):
+    def _send_command(self, command: dict) -> None:
+        """Serialise and dispatch a parsed command to the backend."""
         data = {
             "mode": "live",
             "robot": command["robot"],
             "commands": command.get("commands", []),
             "message": ""
         }
-        logger.info('Client: Sending data to backend')
-        logger.debug('Sending data: %s', json.dumps(data)[:500])
+        logger.info("Client: Sending data to backend")
+        logger.debug("Sending data: %s", json.dumps(data)[:500])
 
         success, response = self.client.send_command("execute_sequence", data)
         self.gui.root.after(0, lambda: self._display_execution_result(success, response))
 
-    def _display_execution_result(self, success: bool, response: dict):
+    def _display_execution_result(self, success: bool, response: dict) -> None:
+        """Update GUI based on backend response."""
         status = response.get("command")
         data = response.get("data", {})
 
@@ -206,7 +187,7 @@ class Controller:
         self._set_button_state()
 
     def _command_to_string(self, command: dict) -> str:
-        """Convert command JSON to human-readable string for logging."""
+        """Convert a parsed command dict to a human-readable summary for logging."""
         commands = command.get("commands", [])
         if not commands:
             return "Empty command"
@@ -215,51 +196,26 @@ class Controller:
         for cmd in commands:
             action = cmd.get("action", "unknown")
 
-            # Action-specific formatting
             if action == "move":
                 target = cmd.get("target", {})
                 name = target.get("name", target) if isinstance(target, dict) else target
                 parts.append(f"Move to {name} pos.")
-
             elif action == "gripper":
                 state = cmd.get("state") or cmd.get("command", "?")
                 parts.append(f"{state.capitalize()} gripper")
-
             elif action == "pose":
-                cmd_type = cmd.get("command", "?")
-                parts.append(f"{cmd_type.capitalize()} pose '{cmd.get('pose_name', '?')}'")
-
+                parts.append(f"{cmd.get('command', '?').capitalize()} pose '{cmd.get('pose_name', '?')}'")
             elif action == "freedrive":
-                state = "on" if cmd.get("active") else "off"
-                parts.append(f"Freedrive {state}")
-
+                parts.append(f"Freedrive {'on' if cmd.get('active') else 'off'}")
             elif action == "connection":
                 parts.append(f"Connection {cmd.get('command', '?')}")
-
             elif action == "wait":
                 parts.append(f"Wait {cmd.get('duration_s', '?')}s")
-
             else:
                 parts.append(action.capitalize())
 
         return " → ".join(parts)
 
-    def _set_button_state(self, visual_state: str = "primary", enabled: bool = True):
-        """Reset button state to default."""
+    def _set_button_state(self, visual_state: str = "primary", enabled: bool = True) -> None:
+        """Update the record button to the given style and enabled state."""
         self.gui.set_button_state("Press and hold to record", visual_state, enabled)
-
-    def cleanup(self) -> None:
-        """Clean up resources on shutdown."""
-        if self._cleaned_up:
-            return
-        self._cleaned_up = True
-
-        self.recording_active.clear()
-        if self.recording_thread and self.recording_thread.is_alive():
-            self.recording_thread.join(timeout=2.0)
-            if self.recording_thread.is_alive():
-                logger.warning("Recording thread did not stop within timeout")
-        self.recording_thread = None
-
-        self.asr.close()
-        self.client.close()
