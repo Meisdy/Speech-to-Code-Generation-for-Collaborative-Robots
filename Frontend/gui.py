@@ -94,7 +94,7 @@ class UserGUI:
             values=list(ROBOT_TYPE_KEYS.keys()),
             state="readonly",
             font=("Segoe UI", 11),
-            width=12
+            width=13
         ).pack(side=LEFT, padx=(10, 0))
 
         self.record_btn = ttkb.Button(self.root, text="Press and hold to record", bootstyle=PRIMARY)
@@ -102,7 +102,7 @@ class UserGUI:
 
         self.status_label = ttkb.Label(
             self.root,
-            text="Ready – Select cobot & start recording!",
+            text="Ready – Select cobot & start commanding!",
             font=("Segoe UI", 13)
         )
         self.status_label.pack(pady=20, padx=30)
