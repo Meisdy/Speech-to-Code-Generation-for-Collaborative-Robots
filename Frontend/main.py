@@ -18,7 +18,11 @@ def main() -> None:
         logger.exception("Failed to initialise controller: %s", e)
         sys.exit(1)
 
-    gui = UserGUI(on_record_start=controller.start_recording, on_record_stop=controller.start_execution)
+    gui = UserGUI(
+        on_record_start=controller.start_recording,
+        on_record_stop=controller.start_execution,
+        on_ping=controller.ping
+    )
     controller.set_gui(gui)
 
     # Attach GUI handler after gui exists
