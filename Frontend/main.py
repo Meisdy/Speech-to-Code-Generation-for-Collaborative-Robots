@@ -1,8 +1,8 @@
 import sys
 import logging
 from Frontend.logging_setup import setup_logging, GuiHandler
-from Frontend.gui import UserGUI
 from Frontend.pipeline import Controller
+from Frontend.gui import UserGUI
 
 
 def main() -> None:
@@ -14,14 +14,11 @@ def main() -> None:
     # Initialize controller and GUI, linking them together
     try:
         controller = Controller()
-    except Exception as e:
-        logger.error("Failed to initialise controller: %s", e)
+    except Exception as e:  # Intentionally broad — wraps Whisper, PyAudio, and ZeroMQ init
+        logger.exception("Failed to initialise controller: %s", e)
         sys.exit(1)
 
-    gui = UserGUI(
-        on_record_start=controller.start_recording,
-        on_record_stop=controller.start_execution
-    )
+    gui = UserGUI(on_record_start=controller.start_recording, on_record_stop=controller.start_execution)
     controller.set_gui(gui)
 
     # Attach GUI handler after gui exists
