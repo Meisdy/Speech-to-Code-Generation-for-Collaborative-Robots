@@ -1,6 +1,6 @@
 import zmq
 
-MAX_RETRIES = 2
+MAX_ATTEMPTS = 2
 
 class ClientZeroMQ:
     def __init__(self, connection_string, timeout_ms=15000):
@@ -23,7 +23,7 @@ class ClientZeroMQ:
 
     def send_command(self, command_str, data_dict):
         message = {"command": command_str, "data": data_dict}
-        for attempt in range(MAX_RETRIES):
+        for attempt in range(MAX_ATTEMPTS):
             try:
                 self.socket.send_json(message)
                 response = self.socket.recv_json()
@@ -33,9 +33,10 @@ class ClientZeroMQ:
             except Exception as e:
                 return False, {"command": "error", "data": {"error": str(e)}}
         return False, {"command": "timeout",
-                       "data": {"error": f"Backend unreachable after {MAX_RETRIES} attempts"}}
+                       "data": {"error": f"Backend unreachable after {MAX_ATTEMPTS} attempts"}}
 
-    def close(self):
+    def close(self) -> None:
+        self.socket.setsockopt(zmq.LINGER, 0) # needed so we can close upon timeout
         self.socket.close()
         self.context.term()
 
