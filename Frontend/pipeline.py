@@ -1,11 +1,11 @@
-import config_frontend
+from Frontend.config_frontend import BACKEND_IP, ASR_CONFIDENCE_THRESHOLD
 import threading
 import logging
 import json
 from enum import Enum, auto
-from parsing_module import CodeParser
-from ASR_module import SpeechRecognizer
-from communication_client import ClientZeroMQ
+from Frontend.parsing_module import CodeParser
+from Frontend.ASR_module import SpeechRecognizer
+from Frontend.communication_client import ClientZeroMQ
 
 
 logger = logging.getLogger("cobot")
@@ -33,9 +33,9 @@ class Controller:
         self.state = State.IDLE
         self.asr = SpeechRecognizer()
         self.parser = CodeParser()
-        self.client = ClientZeroMQ(config_frontend.BACKEND_IP)
+        self.client = ClientZeroMQ(BACKEND_IP)
         self.gui = None
-        self.confidence_threshold = config_frontend.ASR_CONFIDENCE_THRESHOLD
+        self.confidence_threshold = ASR_CONFIDENCE_THRESHOLD
 
         # Recording thread control
         self.recording_active = threading.Event()
