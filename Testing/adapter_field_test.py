@@ -10,6 +10,7 @@ Covers every method defined in BaseRobotController. If a method is not supported
 by the adapter (e.g. freedrive), it logs INFO rather than failing the test.
 """
 import time
+from typing import Dict, List, Optional, Tuple
 
 # ── CONFIG — edit before running ──────────────────────────────────────────────
 from Backend.robot_controllers.mock_controller import MockRobotController
@@ -28,10 +29,10 @@ FAIL  = "  ❌ FAIL"
 INFO  = "  ℹ️  INFO"
 SKIP  = "  ⏭️  SKIP"
 
-results: list[tuple[str, str]] = []
+results: List[Tuple[str, str]] = []
 
 
-def run(label: str, fn) -> dict | None:
+def run(label: str, fn) -> Optional[Dict]:
     """Execute fn(), print result, record pass/fail. Returns response or None on exception."""
     try:
         resp = fn()
