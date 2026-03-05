@@ -20,7 +20,7 @@ CONTROLLER_CLASS = FrankaController
 TEST_POSE_NAME   = "test_position"
 SPEED            = 0.3
 OFFSET_Z_MM      = 150
-OFFSET_X_MM      = 100
+OFFSET_X_MM      = -100
 # ──────────────────────────────────────────────────────────────────────────────
 
 import sys
