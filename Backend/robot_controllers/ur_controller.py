@@ -15,6 +15,9 @@ State packet (port 30003, CB3 / e-Series)
       444  actual TCP pose         [x,y,z,rx,ry,rz]  (6 x double, rotvec, metres)
   Reference: UR Client Interface documentation v3 / v5.
 
+  Important:    Robot needs to be in Remote Mode to accept most commands.
+                Only simple commands like get pos works in local mode.
+
 Gripper
 -------
   Open/close is handled by loading and executing locally saved URP programs
