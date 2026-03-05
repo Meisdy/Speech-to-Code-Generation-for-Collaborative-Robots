@@ -2,9 +2,10 @@
 Adapter Field Test — tests every BaseRobotController action against a live adapter.
 
 Usage:
-    1. Set CONTROLLER and POSES_FILE in the CONFIG section below.
-    2. Ensure the robot is powered on, clear of obstacles, and home pose is defined.
-    3. Run:  python test_adapter_field.py
+    1. Set CONTROLLER in the CONFIG section below.
+    2. Ensure the robot is powered on, clear of obstacles
+    3. Ensure home pose is defined and pose file is hardcoded in the controller.
+    3. Run:  python test_adapter_field.py or as module from root
 
 Covers every method defined in BaseRobotController. If a method is not supported
 by the adapter (e.g. freedrive), it logs INFO rather than failing the test.
@@ -18,7 +19,8 @@ from Backend.robot_controllers.franka_controller import FrankaController
 CONTROLLER_CLASS = FrankaController
 TEST_POSE_NAME   = "test_position"
 SPEED            = 0.3
-OFFSET_Z_MM      = 150.0
+OFFSET_Z_MM      = 150
+OFFSET_X_MM      = 100
 # ──────────────────────────────────────────────────────────────────────────────
 
 import sys
@@ -130,8 +132,8 @@ if state_resp:
 
 # ── 5. MoveJ with offset ───────────────────────────────────────────────────────
 print("\n[ MoveJ with offset ]")
-offset = [0.0, 0.0, OFFSET_Z_MM]
-run(f"move_joint to home + Z {OFFSET_Z_MM}mm",
+offset = [OFFSET_X_MM, 0.0, OFFSET_Z_MM]
+run(f"move_joint to home + offset",
     lambda: robot.move_joint(home, speed=SPEED, offset=offset))
 
 # ── 6. Teach test pose at current position ─────────────────────────────────────
@@ -149,7 +151,7 @@ run("move_linear to home",
     lambda: robot.move_linear(home, speed=SPEED))
 
 # ── 9. MoveL with offset ───────────────────────────────────────────────────────
-run(f"move_linear to home + Z {OFFSET_Z_MM}mm",
+run(f"move_linear to home + offset",
     lambda: robot.move_linear(home, speed=SPEED, offset=offset))
 
 # ── 10. Back to home ───────────────────────────────────────────────────────────
