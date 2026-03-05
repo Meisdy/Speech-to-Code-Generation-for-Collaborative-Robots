@@ -9,7 +9,7 @@ from moveit_commander.exception import MoveItCommanderException
 
 
 class FrankaRobot:
-    """Pure motion executor for the Franka Panda via MoveIt.
+    """Pure motion executor for the Franka Panda via ROS / MoveIt.
 
     This class has no knowledge of named poses or files — it receives ready-to-use
     objects from FrankaController and forwards them to MoveIt.
