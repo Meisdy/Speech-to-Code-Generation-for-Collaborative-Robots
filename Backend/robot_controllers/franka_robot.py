@@ -4,6 +4,8 @@
 # Modified by Sandy Meister, 2026
 
 import numpy as np
+
+LIN_MAX_SPEED = 0.2  # Pilz LIN planner requires low scaling to reliably find plans
 from geometry_msgs.msg import Pose
 from moveit_commander.exception import MoveItCommanderException
 
@@ -30,9 +32,10 @@ class FrankaRobot:
         self._go_to_pose(pose, offset)
 
     def move_l(self, pose: Pose, speed: float, offset: list = None) -> None:
-        """Linear Cartesian move to a pose."""
+        """Linear Cartesian move to a pose. Speed is capped — the Pilz LIN planner
+        requires low velocity/acceleration scaling to find valid plans."""
         self._set_mode_lin()
-        self._apply_speed(speed)
+        self._apply_speed(min(speed, LIN_MAX_SPEED))
         self._go_to_pose(pose, offset)
 
     def move_j_joints(self, joints: list, speed: float) -> None:
