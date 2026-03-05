@@ -1,4 +1,40 @@
 # franka_controller.py
+"""
+FrankaController — MoveIt / ROS interface for the Franka Panda.
+
+Architecture
+------------
+  ROS stack   : Launched via roslaunch (panda_moveit_config franka_control.launch)
+                as a child process on connect(). Runs hidden or in an xterm window
+                depending on availability.
+  MoveIt      : Accessed through moveit_commander. The rospy node is initialized
+                once per process and reused across reconnects — rospy cannot be
+                re-initialized in the same process.
+  FrankaRobot : Thin MoveIt wrapper that handles planner selection, speed scaling,
+                and gripper control. FrankaController owns pose management and
+                translates named poses into geometry_msgs/Pose objects.
+
+Motion
+------
+  moveJ (PTP) : Used for joint-space and Cartesian point-to-point moves.
+                Falls back to joint values when available and no offset is given.
+  moveL (LIN) : Linear Cartesian moves via the Pilz Industrial Motion Planner.
+                Speed is internally capped to ensure reliable plan finding.
+  Offsets     : Provided in mm by the caller, converted to metres before passing
+                to MoveIt.
+
+Gripper
+-------
+  Controlled via a second MoveGroupCommander (panda_hand).
+  Open width defaults to 60 mm; close drives fingers to near-zero.
+
+
+MISC
+-------
+Uses franka_robot.py and needs to be run on a linux pc with real time kernel.
+
+
+"""
 import atexit
 import logging
 import subprocess
@@ -17,7 +53,7 @@ logger = logging.getLogger("cobot_backend")
 ROBOT_IP        = "192.168.1.100"
 POSES_FILE      = "Backend/poses/franka_poses.jsonl"
 ROS_LOG_FILE    = "Backend/logs/franka_ros.log"
-LAUNCH_DELAY    = 10.0   # seconds to wait for ROS stack to be ready
+LAUNCH_DELAY    = 9.0   # seconds to wait for ROS stack to be ready
 DEFAULT_SPEED   = 1.0
 MOVE_GROUP_NODE = "/move_group"
 
