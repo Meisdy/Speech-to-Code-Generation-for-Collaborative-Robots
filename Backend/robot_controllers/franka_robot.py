@@ -11,52 +11,34 @@ from moveit_commander.exception import MoveItCommanderException
 class FrankaRobot:
     """Pure motion executor for the Franka Panda via ROS / MoveIt.
 
-    This class has no knowledge of named poses or files — it receives ready-to-use
-    objects from FrankaController and forwards them to MoveIt.
+    Receives ready-to-use Pose objects and joint lists from FrankaController
+    and forwards them to MoveIt. Has no knowledge of named poses or files.
     """
 
-    def __init__(self, arm_name, hand_name, moveit_commander):
+    def __init__(self, arm_name: str, hand_name: str, moveit_commander):
         self.arm     = moveit_commander.MoveGroupCommander(arm_name)
         self.gripper = moveit_commander.MoveGroupCommander(hand_name)
 
         self.arm.set_goal_orientation_tolerance(0.005)
         self.arm.set_goal_position_tolerance(0.005)
-        self.set_mode_ptp()
+        self._set_mode_ptp()
 
-    # --------------------------
-    #       PLANNERS
-    # --------------------------
-
-    def set_mode_ptp(self):
-        self.arm.set_planner_id("PTP")
-        self.arm.set_planning_pipeline_id("pilz_industrial_motion_planner")
-        self.arm.set_max_velocity_scaling_factor(1.0)
-        self.arm.set_max_acceleration_scaling_factor(1.0)
-
-    def set_mode_lin(self):
-        self.arm.set_planner_id("LIN")
-        self.arm.set_planning_pipeline_id("pilz_industrial_motion_planner")
-        self.arm.set_max_velocity_scaling_factor(0.1)
-        self.arm.set_max_acceleration_scaling_factor(0.1)
-
-    # --------------------------
-    #     MOTION FUNCTIONS
-    # --------------------------
-
-    def MoveL(self, pose: Pose, offset=None):
-        self.set_mode_lin()
+    def move_j(self, pose: Pose, speed: float, offset: list = None) -> None:
+        """PTP move to a Cartesian pose."""
+        self._set_mode_ptp()
+        self._apply_speed(speed)
         self._go_to_pose(pose, offset)
 
-    def MoveJ(self, pose: Pose, offset=None):
-        self.set_mode_ptp()
+    def move_l(self, pose: Pose, speed: float, offset: list = None) -> None:
+        """Linear Cartesian move to a pose."""
+        self._set_mode_lin()
+        self._apply_speed(speed)
         self._go_to_pose(pose, offset)
 
-    def MoveJ_J(self, joints: list):
+    def move_j_joints(self, joints: list, speed: float) -> None:
         """Joint-space PTP move using a list of joint values."""
-        if joints is None:
-            raise MoveItCommanderException("No joint data provided.")
-
-        self.set_mode_ptp()
+        self._set_mode_ptp()
+        self._apply_speed(speed)
         self.arm.set_joint_value_target(joints)
 
         success = self.arm.go(wait=True)
@@ -66,11 +48,27 @@ class FrankaRobot:
         if not success:
             raise MoveItCommanderException("Joint PTP failed.")
 
-    # --------------------------
-    #   INTERNAL POSE MOVE
-    # --------------------------
+    def gripper_open(self, width: float = 0.06) -> None:
+        """Open the gripper to the given width in metres."""
+        self._set_gripper_width(width)
 
-    def _go_to_pose(self, pose: Pose, offset=None):
+    def gripper_close(self) -> None:
+        """Close the gripper."""
+        self._set_gripper_width(0.0005)
+
+    def _set_mode_ptp(self) -> None:
+        self.arm.set_planner_id("PTP")
+        self.arm.set_planning_pipeline_id("pilz_industrial_motion_planner")
+
+    def _set_mode_lin(self) -> None:
+        self.arm.set_planner_id("LIN")
+        self.arm.set_planning_pipeline_id("pilz_industrial_motion_planner")
+
+    def _apply_speed(self, speed: float) -> None:
+        self.arm.set_max_velocity_scaling_factor(speed)
+        self.arm.set_max_acceleration_scaling_factor(speed)
+
+    def _go_to_pose(self, pose: Pose, offset: list = None) -> None:
         pose_goal = Pose()
         pose_goal.position.x  = pose.position.x
         pose_goal.position.y  = pose.position.y
@@ -92,32 +90,18 @@ class FrankaRobot:
         if not success:
             raise MoveItCommanderException("Pose PTP/LIN failed.")
 
-    # --------------------------
-    #      GRIPPER
-    # --------------------------
-
-    def gripper_open(self, width: float = 0.06):
-        self._set_width(width)
-
-    def gripper_close(self):
-        self._set_width(0.0005)
-
-    def _set_width(self, width: float):
+    def _set_gripper_width(self, width: float) -> None:
         target = width / 2.0
         self.gripper.set_joint_value_target("panda_finger_joint1", target)
         self.gripper.set_joint_value_target("panda_finger_joint2", target)
         self.gripper.go(wait=True)
 
-    # --------------------------
-    #      UTILITIES
-    # --------------------------
-
-    def _normalize_quaternion(self, pose: Pose):
+    def _normalize_quaternion(self, pose: Pose) -> None:
         q = np.array([
             pose.orientation.x,
             pose.orientation.y,
             pose.orientation.z,
-            pose.orientation.w
+            pose.orientation.w,
         ])
         norm = np.linalg.norm(q)
         if norm > 0:
