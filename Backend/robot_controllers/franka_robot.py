@@ -96,7 +96,7 @@ class FrankaRobot:
     #      GRIPPER
     # --------------------------
 
-    def gripper_open(self, width: float = 0.04):
+    def gripper_open(self, width: float = 0.06):
         self._set_width(width)
 
     def gripper_close(self):
