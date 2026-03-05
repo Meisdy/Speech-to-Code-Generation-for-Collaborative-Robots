@@ -20,7 +20,7 @@ from Backend.robot_controllers.franka_controller import FrankaController
 CONTROLLER_CLASS = FrankaController
 TEST_POSE_NAME   = "test_position"
 SPEED            = 0.5
-OFFSET           = [150.0, -50, -100.0]   # [x, y, z] in mm
+OFFSET           = [250.0, -50, -150.0]   # [x, y, z] in mm
 # ──────────────────────────────────────────────────────────────────────────────
 
 PASS = "  ✅ PASS"
@@ -61,13 +61,6 @@ def run_optional(label: str, fn) -> None:
     except Exception as e:
         print(f"{FAIL}  {label}  →  Exception: {e}")
         results.append((label, "FAIL"))
-
-
-def home(robot, label="return to home"):
-    """Silent return to home between test steps — not a test case itself."""
-    result = robot.move_joint(robot.get_pose("home"), speed=SPEED)
-    if not result.get("success"):
-        abort(f"Failed to return to home before '{label}': {result.get('message')}")
 
 
 def abort(reason: str) -> None:
@@ -137,7 +130,6 @@ run("move_linear — named pose 'home' + offset",
 
 # ── 5. Pose management ────────────────────────────────────────────────────────
 print("\n[ Pose management ]")
-home(robot, "save_pose")
 run(f"save_pose('{TEST_POSE_NAME}')",
     lambda: robot.save_pose(TEST_POSE_NAME, overwrite=True))
 
@@ -148,13 +140,15 @@ if test_pose is None:
 else:
     print(f"{PASS}  get_pose('{TEST_POSE_NAME}')  →  found")
     results.append((f"get_pose('{TEST_POSE_NAME}')", "PASS"))
-    home(robot, f"move to {TEST_POSE_NAME}")
+    robot.move_joint(home_pose, speed=SPEED) # go to home first
     run(f"move_joint  — taught pose '{TEST_POSE_NAME}'",
         lambda: robot.move_joint(test_pose, speed=SPEED))
 
-home(robot, "delete_pose")
 run(f"delete_pose('{TEST_POSE_NAME}')",
     lambda: robot.delete_pose(TEST_POSE_NAME))
+
+robot.move_joint(home_pose, speed=SPEED) # go to home again
+
 
 # ── 6. Gripper ────────────────────────────────────────────────────────────────
 print("\n[ Gripper ]")
