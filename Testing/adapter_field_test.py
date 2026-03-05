@@ -13,10 +13,9 @@ import time
 from typing import Dict, List, Optional, Tuple
 
 # ── CONFIG — edit before running ──────────────────────────────────────────────
-from Backend.robot_controllers.mock_controller import MockRobotController
+from Backend.robot_controllers.franka_controller import FrankaController
 
-CONTROLLER_CLASS = MockRobotController
-POSES_FILE       = "Backend/data/mock/positions.jsonl"
+CONTROLLER_CLASS = FrankaController
 TEST_POSE_NAME   = "test_position"
 SPEED            = 0.3
 OFFSET_Z_MM      = 150.0
@@ -94,7 +93,7 @@ print(f"\n{'─' * 60}")
 print(f"  Adapter Field Test — {CONTROLLER_CLASS.__name__}")
 print(f"{'─' * 60}\n")
 
-robot = CONTROLLER_CLASS(POSES_FILE)
+robot = CONTROLLER_CLASS()
 
 # ── 1. Connection ──────────────────────────────────────────────────────────────
 print("[ Connection ]")
