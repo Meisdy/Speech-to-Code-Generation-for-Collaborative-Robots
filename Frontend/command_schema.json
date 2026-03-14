@@ -24,6 +24,18 @@
       }
     },
     {
+      "action": "move",
+      "motion_type": "moveL",
+      "target": {
+        "type": "offset_from_current",
+        "offset": {
+          "x_mm": 50.0,
+          "y_mm": 0.0,
+          "z_mm": 0.0
+        }
+      }
+    },
+    {
       "action": "gripper",
       "command": "open"
     },

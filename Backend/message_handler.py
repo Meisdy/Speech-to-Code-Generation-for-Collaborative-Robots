@@ -147,7 +147,10 @@ class MessageHandler:
         that the frontend cannot know — specifically whether named poses exist on the robot.
         """
         if command.get("action") == "move":
-            pose_name = command.get("target", {}).get("name")
+            target = command.get("target", {})
+            if target.get("type") == "offset_from_current":
+                return None  # No pose lookup needed — position resolved at execution time
+            pose_name = target.get("name")
             if robot.get_pose(pose_name) is None:
                 return f"Unknown pose: '{pose_name}'"
         return None
@@ -159,14 +162,31 @@ class MessageHandler:
         if action == "move":
             motion_type = command["motion_type"]
             target = command["target"]
-            pose_name = target["name"]
             speed = command.get("speed")
 
+            if target.get("type") == "offset_from_current":
+                state = robot.get_current_pose()
+                if not state.get("success"):
+                    return {"success": False, "message": f"Could not read current pose: {state.get('message', 'unknown error')}"}
+
+                raw = target["offset"]
+                offset = [raw.get("x_mm", 0.0), raw.get("y_mm", 0.0), raw.get("z_mm", 0.0)]
+
+                current_pose = {
+                    "name": "current",
+                    "pos": state["pose"][:3],
+                    "quat": state["pose"][3:],
+                    "joints": state.get("joint_positions", [])
+                }
+                logger.info("offset_from_current resolved from pos %s", current_pose["pos"])
+                return robot.move_linear(current_pose, speed, offset)
+
+            pose_name = target["name"]
             pose = robot.get_pose(pose_name)
 
             offset = None
             if target.get("type") == "offset_from_pose":
-                raw = target["offset"]
+                raw = target.get("offset", {})
                 offset = [raw["x_mm"], raw["y_mm"], raw["z_mm"]]
 
             if motion_type == "moveJ":

@@ -210,8 +210,13 @@ class Controller:
 
             if action == "move":
                 target = cmd.get("target", {})
-                name = target.get("name", target) if isinstance(target, dict) else target
-                parts.append(f"Move to {name} pos.")
+                if target.get("type") == "offset_from_current":
+                    raw = target.get("offset", {})
+                    parts.append(
+                        f"Move offset_from_current ({raw.get('x_mm', 0)}, {raw.get('y_mm', 0)}, {raw.get('z_mm', 0)}) mm")
+                else:
+                    name = target.get("name", target) if isinstance(target, dict) else target
+                    parts.append(f"Move to {name} pos.")
             elif action == "gripper":
                 state = cmd.get("state") or cmd.get("command", "?")
                 parts.append(f"{state.capitalize()} gripper")

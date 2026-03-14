@@ -32,6 +32,16 @@
               "z_mm": {"type": "float", "default": 0.0}
             }
           }
+        },
+        "offset_from_current": {
+          "description": "Move relative to the robot's current position.",
+          "parameters": {
+            "offset": {
+              "x_mm": {"type": "float", "default": 0.0},
+              "y_mm": {"type": "float", "default": 0.0},
+              "z_mm": {"type": "float", "default": 0.0}
+            }
+          }
         }
       }
     },

@@ -131,6 +131,12 @@ RULES:
 - Add any feedback to the "message" field
 - Always use the JSON format of the command schema exactly
 - When the user asks to 'reconnect', execute disconnect then connect
+- Use offset_from_current when no reference pose is mentioned (e.g. "move 500mm in x")
+- Use offset_from_pose when a reference pose is mentioned (e.g. "place 50mm above home")
+- Pick generally means move to a position in moveL and then close gipper. 
+- Place generally means move to a position in moveL and then open gripper. 
+- For pick-and-place commands like "pick at P1 and place 50mm in x", the place target uses offset_from_pose with the pick pose name as reference, not offset_from_current
+- Always prefer moveL for offset_from_current moves
 """
 
     def _call_llm(self, user_prompt: str) -> dict[str, Any]:
@@ -182,10 +188,14 @@ RULES:
             if action == "move":
                 if "target" not in cmd or not isinstance(cmd["target"], dict):
                     return False, "Move command missing target"
-                if "name" not in cmd["target"]:
+                target = cmd["target"]
+                if "name" not in target and target.get("type") != "offset_from_current":
                     return False, "Move target missing name"
                 if "motion_type" in cmd and cmd["motion_type"] not in ["moveJ", "moveL"]:
                     return False, "Invalid motion type"
+                valid_target_types = ["named_pose", "offset_from_pose", "offset_from_current"]
+                if target.get("type") not in valid_target_types:
+                    return False, f"Invalid target type: \"{target.get('type')}\""
 
             elif action == "gripper":
                 if "command" not in cmd:
