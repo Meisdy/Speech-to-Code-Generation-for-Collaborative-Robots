@@ -121,22 +121,28 @@ REQUIRED OUTPUT FORMAT:
 {json.dumps(self.command_schema, indent=2)}
 
 RULES:
-- Return ONLY valid JSON (no markdown, no explanations)
+  - Return ONLY valid JSON (no markdown, no explanations)
 - Use only actions from AVAILABLE PRIMITIVES
 - Commands array can contain multiple sequential commands
 - Use defaults from ruleset when parameters not specified
 - Always include "mode", "robot", and "commands" fields
-- Always use numbers instead of words for position names and measurements (e.g. "position_1" not "position_one", "10" not "ten")
+- Always convert number words to digits in pose names (e.g. "test_1" not "test_one", "position_2" not "position_two")
 - Use snake_case for position names (e.g. "home" not "Home")
 - Add any feedback to the "message" field
 - Always use the JSON format of the command schema exactly
 - When the user asks to 'reconnect', execute disconnect then connect
+- Map spatial directions to axes: up/down = Z, forward/back = X, left/right = Y
+- Always convert measurements to millimetres (e.g. 5cm → 50.0, 1 inch → 25.4)
+- If no unit is given for a distance, assume millimetres
+- Ignore speed qualifiers unless an explicit numeric value is given; omit the speed field to use defaults
 - Use offset_from_current when no reference pose is mentioned (e.g. "move 500mm in x")
 - Use offset_from_pose when a reference pose is mentioned (e.g. "place 50mm above home")
-- Pick generally means move to a position in moveL and then close gipper. 
-- Place generally means move to a position in moveL and then open gripper. 
+- Pick or Grab generally means move to a position in moveL and then close gripper
+- Place or Release generally means move to a position in moveL and then open gripper
 - For pick-and-place commands like "pick at P1 and place 50mm in x", the place target uses offset_from_pose with the pick pose name as reference, not offset_from_current
 - Always prefer moveL for offset_from_current moves
+- If the input does not contain a clear robot command, return an empty commands array and explain in the "message" field why the input was rejected
+- Do not infer or guess commands from ambiguous or non-robot-related speech
 """
 
     def _call_llm(self, user_prompt: str) -> dict[str, Any]:
@@ -170,6 +176,12 @@ RULES:
         for field in ["mode", "robot", "commands"]:
             if field not in parsed:
                 return False, f'Missing required field: "{field}"'
+
+        if len(parsed["commands"]) == 0:
+            message = parsed.get("message", "Input was not a valid robot command.")
+            logger.info("Parser: Input rejected — %s", message)
+            # surface the message to the user and stop here
+            return False, f'No accepted command found'
 
         if not isinstance(parsed["commands"], list) or not parsed["commands"]:
             return False, "Commands must be a non-empty array"
