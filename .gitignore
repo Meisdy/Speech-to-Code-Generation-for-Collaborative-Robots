@@ -1,15 +1,22 @@
+# Python
 **/__pycache__/
 **/*.pyc
 **/*.pyo
-/.venv
-/.idea/copilot.data.migration.agent.xml
-/.idea/copilot.data.migration.ask.xml
-/.idea/copilot.data.migration.ask2agent.xml
-/.idea/copilot.data.migration.edit.xml
-/.idea/
-/Testing/testrecording.mp3
-/Testing/api_key_gemini.txt
-/Backend/logs/
-/Frontend/logs/
-/Testing/Backend
+
+# IDE
+.idea/
+
+# Virtualenv
+.venv/
+
+# Runtime data
+Frontend/data/
+Backend/data/
+Backend/poses/
+Backend/logs/
+Frontend/logs/
+
+# Misc
+Testing/testrecording.mp3
+Testing/api_key_gemini.txt
 kill_port.txt
