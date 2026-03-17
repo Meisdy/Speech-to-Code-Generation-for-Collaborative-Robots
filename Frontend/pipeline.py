@@ -7,7 +7,7 @@ from enum import Enum, auto
 
 from Frontend.ASR_module import SpeechRecognizer
 from Frontend.communication_client import ClientZeroMQ
-from Frontend.config_frontend import BACKEND_IP, ASR_CONFIDENCE_THRESHOLD, ROBOT_TYPE_KEYS
+from Frontend.config_frontend import BACKEND_IPS, ASR_CONFIDENCE_THRESHOLD, ROBOT_TYPE_KEYS
 from Frontend.parsing_module import CodeParser
 
 logger = logging.getLogger("cobot")
@@ -29,7 +29,6 @@ class Controller:
         self.state = State.IDLE
         self.asr = SpeechRecognizer()
         self.parser = CodeParser()
-        self.client = ClientZeroMQ(BACKEND_IP)
         self.gui = None  # Set via set_gui() after GUI is constructed
         self.confidence_threshold: float = ASR_CONFIDENCE_THRESHOLD
         self._cleaned_up: bool = False
@@ -37,15 +36,16 @@ class Controller:
         self.recording_active = threading.Event()
         self.recording_thread: threading.Thread | None = None
 
-    def ping(self) -> None:
-        """Test backend connectivity and update the GUI connection LED."""
+    def ping(self, robot_type: str) -> None:
         if self.state != State.IDLE:
-            return  # Socket may be mid-request — don't interleave
-        threading.Thread(target=self._run_ping, daemon=True, name="thread_ping").start()
+            return
+        robot_key = ROBOT_TYPE_KEYS.get(robot_type, robot_type)
+        threading.Thread(target=lambda: self._run_ping(robot_key), daemon=True, name="thread_ping").start()
 
-    def _run_ping(self) -> None:
-        """Send ping to backend and report result to GUI."""
-        success, _ = self.client.send_command("ping", {})
+    def _run_ping(self, robot_key: str) -> None:
+        client = ClientZeroMQ(BACKEND_IPS[robot_key])
+        success, _ = client.send_command("ping", {})
+        client.close()
         status = "ok" if success else "error"
         self.gui.root.after(0, lambda: self.gui.set_connection_status(status))
 
@@ -107,7 +107,6 @@ class Controller:
         self.recording_thread = None
 
         self.asr.close()
-        self.client.close()
 
     def _recording_loop(self) -> None:
         """Capture audio chunks until recording_active is cleared."""
@@ -174,8 +173,9 @@ class Controller:
         }
         logger.info("Client: Sending data to backend")
         logger.debug("Sending data: %s", json.dumps(data)[:500])
-
+        self.client = ClientZeroMQ(BACKEND_IPS[command["robot"]])
         success, response = self.client.send_command("execute_sequence", data)
+        self.client.close()
         self.gui.root.after(0, lambda: self._display_execution_result(success, response))
 
     def _display_execution_result(self, success: bool, response: dict) -> None:

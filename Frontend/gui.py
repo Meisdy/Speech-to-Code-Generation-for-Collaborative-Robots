@@ -88,7 +88,7 @@ class UserGUI:
     def _on_ping_click(self) -> None:
         """Redirect focus to root before firing ping so the button loses its focus ring."""
         self.root.focus_set()
-        self.on_ping()
+        self.on_ping(self.robot_type.get())  # was: self.on_ping()
 
     def _setup_ui(self) -> None:
         """Build and layout all GUI widgets."""

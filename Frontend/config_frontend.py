@@ -21,7 +21,11 @@ LLM_MAX_TOKENS  = 2048
 LLM_TIMEOUT     = 60                # Long — LLM may need to load on first call
 
 # ── Backend ───────────────────────────────────────────────────────────────────
-BACKEND_IP = "tcp://localhost:5555"
+BACKEND_IPS = {
+    "franka": "tcp://192.168.1.10:5555",    # Backend runs on Linux PC for Franka
+    "ur":     "tcp://localhost:5555",       # Backend runs on Operator machine for UR
+    "mock":   "tcp://localhost:5555",
+}
 
 ROBOT_TYPE_KEYS = {
     "Franka Emika":    "franka",
