@@ -121,7 +121,7 @@ REQUIRED OUTPUT FORMAT:
 {json.dumps(self.command_schema, indent=2)}
 
 RULES:
-  - Return ONLY valid JSON (no markdown, no explanations)
+- Return ONLY valid JSON (no markdown, no explanations)
 - Use only actions from AVAILABLE PRIMITIVES
 - Commands array can contain multiple sequential commands
 - Use defaults from ruleset when parameters not specified
@@ -137,12 +137,18 @@ RULES:
 - Ignore speed qualifiers unless an explicit numeric value is given; omit the speed field to use defaults
 - Use offset_from_current when no reference pose is mentioned (e.g. "move 500mm in x")
 - Use offset_from_pose when a reference pose is mentioned (e.g. "place 50mm above home")
-- Pick or Grab generally means move to a position in moveL and then close gripper
-- Place or Release generally means move to a position in moveL and then open gripper
+- "Pick"/"Grab" at a position ALWAYS generates exactly two sequential commands:
+  1. moveL to the target pose
+  2. close_gripper — this step is MANDATORY, never omit it
+- "Place"/"Release"/"Put" at a position ALWAYS generates exactly two sequential commands:
+  1. moveL to the target pose
+  2. open_gripper — this step is MANDATORY, never omit it
+- A single-word action like "place at position_2" is NOT just a move — it MUST include the gripper action
 - For pick-and-place commands like "pick at P1 and place 50mm in x", the place target uses offset_from_pose with the pick pose name as reference, not offset_from_current
 - Always prefer moveL for offset_from_current moves
 - If the input does not contain a clear robot command, return an empty commands array and explain in the "message" field why the input was rejected
 - Do not infer or guess commands from ambiguous or non-robot-related speech
+- Never add intermediate approach or retract moves unless explicitly stated. Named poses already encode the final target position.
 """
 
     def _call_llm(self, user_prompt: str) -> dict[str, Any]:
