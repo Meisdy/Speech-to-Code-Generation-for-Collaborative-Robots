@@ -32,6 +32,7 @@ from typing import Optional
 from scipy.spatial.transform import Rotation
 
 from Backend.robot_controllers.base_robot_controller import BaseRobotController
+from  Backend.config_backend import PC_IP
 
 logger = logging.getLogger("cobot_backend")
 
@@ -41,6 +42,8 @@ POSES_FILE       = "Backend/poses/ur_poses.jsonl"
 DASHBOARD_PORT   = 29999
 SCRIPT_PORT      = 30002
 STATE_PORT       = 30003
+CALLBACK_PORT    = 50001
+
 
 SOCKET_TIMEOUT   = 5.0    # seconds
 STATE_RECV_BYTES = 1220   # max packet size; covers both CB3 (1060) and e-Series (1220)
@@ -259,20 +262,30 @@ class URController(BaseRobotController):
 
             if offset:
                 t = self._pose_to_rotvec(pose, offset)
-                script = (
-                    f"movej(p[{t[0]:.6f},{t[1]:.6f},{t[2]:.6f},"
-                    f"{t[3]:.6f},{t[4]:.6f},{t[5]:.6f}],a={acc:.4f},v={spd:.4f})"
+                inner = (
+                    f"  movej(p[{t[0]:.6f},{t[1]:.6f},{t[2]:.6f},"
+                    f"{t[3]:.6f},{t[4]:.6f},{t[5]:.6f}],a={acc:.4f},v={spd:.4f})\n"
                 )
                 logger.info(f"Offset used: {offset}")
             else:
                 j = pose["joints"]
-                script = (
-                    f"movej([{j[0]:.6f},{j[1]:.6f},{j[2]:.6f},"
-                    f"{j[3]:.6f},{j[4]:.6f},{j[5]:.6f}],a={acc:.4f},v={spd:.4f})"
+                inner = (
+                    f"  movej([{j[0]:.6f},{j[1]:.6f},{j[2]:.6f},"
+                    f"{j[3]:.6f},{j[4]:.6f},{j[5]:.6f}],a={acc:.4f},v={spd:.4f})\n"
                 )
 
+            script = (
+                f"def move_cb():\n"
+                f"{inner}"
+                f"  s=socket_open(\"{PC_IP}\",{CALLBACK_PORT})\n"
+                f"  socket_send_string(\"done\",s)\n"
+                f"  socket_close(s)\n"
+                f"end\n"
+                f"move_cb()\n"
+            )
+
             self._send_script(script)
-            return self._wait_motion_complete()
+            return self._wait_motion_callback()
         except Exception as e:
             logger.exception("moveJ failed")
             return {"success": False, "message": str(e)}
@@ -288,11 +301,18 @@ class URController(BaseRobotController):
                 logger.info(f"Offset used: {offset}")
 
             script = (
-                f"movel(p[{t[0]:.6f},{t[1]:.6f},{t[2]:.6f},"
-                f"{t[3]:.6f},{t[4]:.6f},{t[5]:.6f}],a={acc:.4f},v={spd:.4f})"
+                f"def move_cb():\n"
+                f"  movel(p[{t[0]:.6f},{t[1]:.6f},{t[2]:.6f},"
+                f"{t[3]:.6f},{t[4]:.6f},{t[5]:.6f}],a={acc:.4f},v={spd:.4f})\n"
+                f"  s=socket_open(\"{PC_IP}\",{CALLBACK_PORT})\n"
+                f"  socket_send_string(\"done\",s)\n"
+                f"  socket_close(s)\n"
+                f"end\n"
+                f"move_cb()\n"
             )
             self._send_script(script)
-            return self._wait_motion_complete()
+            return self._wait_motion_callback()
+
         except Exception as e:
             logger.exception("moveL failed")
             return {"success": False, "message": str(e)}
@@ -448,29 +468,19 @@ class URController(BaseRobotController):
             pos = [p + o / 1000.0 for p, o in zip(pos, offset)]
         return pos + rotvec
 
-    def _wait_motion_complete(self) -> dict:
-        """
-        Block until the robot stops moving.
-        Polls joint positions and returns once all joints move less than
-        MOTION_THRESHOLD rad between consecutive reads.
-        """
-        time.sleep(self.MOTION_START_DELAY)
-        deadline = time.time() + self.MOTION_TIMEOUT
-        prev_joints = None
-
-        while time.time() < deadline:
-            state = self.get_current_pose()
-            if not state["success"]:
-                return {"success": False, "message": f"Pose read failed during motion: {state['message']}"}
-            curr_joints = state["joint_positions"]
-            if prev_joints is not None:
-                deltas = [abs(c - p) for c, p in zip(curr_joints, prev_joints)]
-                if all(d < self.MOTION_THRESHOLD for d in deltas):
-                    return {"success": True, "message": "Motion complete"}
-            prev_joints = curr_joints
-            time.sleep(self.MOTION_POLL_INTERVAL)
-
-        return {"success": False, "message": f"Motion did not complete within {self.MOTION_TIMEOUT}s"}
+    def _wait_motion_callback(self) -> dict:
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as srv:
+            srv.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            srv.bind(("0.0.0.0", CALLBACK_PORT))
+            srv.listen(1)
+            srv.settimeout(self.MOTION_TIMEOUT)
+            try:
+                conn, _ = srv.accept()
+                conn.recv(16)
+                conn.close()
+                return {"success": True, "message": "Motion complete"}
+            except socket.timeout:
+                return {"success": False, "message": f"Motion callback timeout after {self.MOTION_TIMEOUT}s"}
 
     def _run_gripper_program(self, program: str) -> dict:
         """
