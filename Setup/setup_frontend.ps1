@@ -79,10 +79,12 @@ Write-OK "Python $version"
 # --- ffmpeg -------------------------------------------------------------------
 
 Write-Step "Installing ffmpeg (required by Whisper)"
+Write-Host "  Checking existing install..." -ForegroundColor Gray
 $ffmpegCheck = winget list --id Gyan.FFmpeg 2>$null | Select-String "Gyan.FFmpeg"
 if ($ffmpegCheck) {
     Write-OK "ffmpeg already installed"
 } else {
+    Write-Host "  Downloading and installing ffmpeg via winget — this may take a minute..." -ForegroundColor Gray
     winget install -e --id Gyan.FFmpeg --accept-source-agreements --accept-package-agreements
     if ($LASTEXITCODE -ne 0) {
         Write-Fail "ffmpeg install failed. Install manually from https://ffmpeg.org, add to PATH, then re-run."
