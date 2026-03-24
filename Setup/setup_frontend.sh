@@ -3,9 +3,8 @@
 # setup_frontend.sh
 # Speech-to-Code Framework — Frontend Setup (Linux)
 # =============================================================================
-# Run once from the repository root before first use.
-# One-command install:
-#   curl -sSL https://raw.githubusercontent.com/Meisdy/Speech-to-Code-Generation-for-Collaborative-Robots/main/setup_frontend.sh | bash
+# One-command install (run as root or with sudo):
+#   curl -sSL https://raw.githubusercontent.com/Meisdy/Speech-to-Code-Generation-for-Collaborative-Robots/dev/Setup/setup_frontend.sh | sudo bash
 #
 # MANUAL PREREQUISITES:
 #   1. Install LM Studio from https://lmstudio.ai
@@ -17,8 +16,11 @@ set -euo pipefail
 
 MIN_PYTHON_MAJOR=3
 MIN_PYTHON_MINOR=10
-VENV_DIR="venv_frontend"
-REQUIREMENTS="Frontend/requirements_frontend.txt"
+INSTALL_DIR="/opt/speech-to-cobot"
+REPO_URL="https://github.com/Meisdy/Speech-to-Code-Generation-for-Collaborative-Robots.git"
+REPO_BRANCH="dev"
+VENV_DIR="$INSTALL_DIR/venv_frontend"
+REQUIREMENTS="$INSTALL_DIR/Setup/requirements_frontend.txt"
 LM_STUDIO_URL="http://localhost:1234/v1/models"
 WHISPER_CACHE="$HOME/.cache/whisper"
 
@@ -27,13 +29,13 @@ ok()   { echo -e "  \033[0;32m[OK]   $1\033[0m"; }
 warn() { echo -e "  \033[0;33m[WARN] $1\033[0m"; }
 fail() { echo -e "  \033[0;31m[FAIL] $1\033[0m"; exit 1; }
 
-# --- Repo root check ----------------------------------------------------------
+# --- Root check ---------------------------------------------------------------
 
-step "Checking working directory"
-if [ ! -f "$REQUIREMENTS" ]; then
-    fail "$REQUIREMENTS not found. Run this script from the repository root."
+step "Checking root privileges"
+if [ "$EUID" -ne 0 ]; then
+    fail "This script must be run as root. Use: sudo bash setup_frontend.sh"
 fi
-ok "Repository root confirmed"
+ok "Running as root"
 
 # --- Python -------------------------------------------------------------------
 
@@ -55,28 +57,47 @@ for cmd in python3 python; do
 done
 
 if [ -z "$PYTHON_CMD" ]; then
-    fail "Python $MIN_PYTHON_MAJOR.$MIN_PYTHON_MINOR+ not found. Install via: sudo apt install python3.11 python3.11-venv"
+    fail "Python $MIN_PYTHON_MAJOR.$MIN_PYTHON_MINOR+ not found. Install via: apt install python3.11 python3.11-venv"
 fi
+
+# --- git check ----------------------------------------------------------------
+
+step "Checking git"
+if ! command -v git &>/dev/null; then
+    fail "git not found. Install via: apt install git"
+fi
+ok "git available"
 
 # --- System dependencies ------------------------------------------------------
 
 step "Installing system dependencies (ffmpeg, PortAudio, Python venv)"
 if ! command -v apt &>/dev/null; then
-    fail "apt not found. This script targets Debian/Ubuntu. Install ffmpeg and portaudio19-dev manually for your distribution."
+    fail "apt not found. This script targets Debian/Ubuntu. Install ffmpeg and portaudio19-dev manually."
 fi
 
-sudo apt-get update -qq
-sudo apt-get install -y ffmpeg portaudio19-dev python3-dev python3-venv
+apt-get update -qq
+apt-get install -y ffmpeg portaudio19-dev python3-dev python3-venv git
 ok "System dependencies installed"
+
+# --- Clone repository ---------------------------------------------------------
+
+step "Cloning repository to $INSTALL_DIR"
+if [ -d "$INSTALL_DIR" ]; then
+    warn "$INSTALL_DIR already exists — pulling latest changes instead."
+    git -C "$INSTALL_DIR" pull
+else
+    git clone --branch "$REPO_BRANCH" "$REPO_URL" "$INSTALL_DIR"
+fi
+ok "Repository ready at $INSTALL_DIR"
 
 # --- Virtual environment ------------------------------------------------------
 
-step "Creating virtual environment ($VENV_DIR)"
+step "Creating virtual environment"
 if [ -d "$VENV_DIR" ]; then
-    warn "$VENV_DIR already exists — skipping. Delete it to force a fresh install."
+    warn "Virtual environment already exists — skipping. Delete $VENV_DIR to force a fresh install."
 else
     "$PYTHON_CMD" -m venv "$VENV_DIR"
-    ok "Virtual environment created"
+    ok "Virtual environment created at $VENV_DIR"
 fi
 
 # --- Dependencies -------------------------------------------------------------
@@ -88,11 +109,11 @@ ok "Dependencies installed"
 
 # --- Whisper model ------------------------------------------------------------
 # Pre-downloads the model so the first launch does not stall.
-# Saved to ~/.cache/whisper — outside the venv.
-# Run cleanup_frontend.sh to remove it.
+# Saved to ~/.cache/whisper — outside the install folder.
+# cleanup_frontend.sh removes this.
 
 step "Pre-downloading Whisper base model (~140 MB)"
-warn "Saved to $WHISPER_CACHE — not inside venv. cleanup_frontend.sh removes this."
+warn "Saved to $WHISPER_CACHE — not inside install folder. cleanup_frontend.sh removes this."
 if "$VENV_DIR/bin/python" -c "import whisper; whisper.load_model('base')"; then
     ok "Whisper base model ready"
 else
@@ -114,6 +135,8 @@ fi
 echo ""
 echo "============================================="
 echo " Frontend setup complete."
+echo " Installed to: $INSTALL_DIR"
 echo " Launch with:"
-echo "   ./$VENV_DIR/bin/python -m Frontend.main"
+echo "   cd $INSTALL_DIR"
+echo "   $VENV_DIR/bin/python -m Frontend.main"
 echo "============================================="

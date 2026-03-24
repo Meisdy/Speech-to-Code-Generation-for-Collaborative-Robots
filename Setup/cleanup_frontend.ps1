@@ -3,10 +3,10 @@
 # Speech-to-Code Framework — Frontend Cleanup (Windows 11)
 # =============================================================================
 # Removes everything installed by setup_frontend.ps1.
-# Run from the repository root.
+# Run PowerShell as Administrator.
 #
 # Removes:
-#   - venv_frontend
+#   - C:\Program Files\Speech-to-Cobot\ (repo + venv)
 #   - %USERPROFILE%\.cache\whisper (~140 MB Whisper model)
 #
 # Does NOT remove (uninstall manually if needed):
@@ -15,20 +15,34 @@
 #   - Python
 # =============================================================================
 
-$VENV_DIR      = "venv_frontend"
+$ErrorActionPreference = "Stop"
+
+$INSTALL_DIR   = "C:\Program Files\Speech-to-Cobot"
 $WHISPER_CACHE = "$env:USERPROFILE\.cache\whisper"
 
 function Write-Step { param([string]$msg) Write-Host "`n[CLEANUP] $msg" -ForegroundColor Cyan }
 function Write-OK   { param([string]$msg) Write-Host "  [OK]   $msg"   -ForegroundColor Green }
 function Write-Warn { param([string]$msg) Write-Host "  [WARN] $msg"   -ForegroundColor Yellow }
+function Write-Fail { param([string]$msg) Write-Host "  [FAIL] $msg"   -ForegroundColor Red; exit 1 }
 
-Write-Step "Removing virtual environment ($VENV_DIR)"
-if (Test-Path $VENV_DIR) {
-    Remove-Item -Recurse -Force $VENV_DIR
-    Write-OK "Removed $VENV_DIR"
-} else {
-    Write-Warn "$VENV_DIR not found — already removed or never created"
+# --- Admin check --------------------------------------------------------------
+
+$isAdmin = ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
+if (-not $isAdmin) {
+    Write-Fail "This script must be run as Administrator."
 }
+
+# --- Remove install directory -------------------------------------------------
+
+Write-Step "Removing install directory ($INSTALL_DIR)"
+if (Test-Path $INSTALL_DIR) {
+    Remove-Item -Recurse -Force $INSTALL_DIR
+    Write-OK "Removed $INSTALL_DIR"
+} else {
+    Write-Warn "$INSTALL_DIR not found — already removed or never installed"
+}
+
+# --- Remove Whisper cache -----------------------------------------------------
 
 Write-Step "Removing Whisper model cache ($WHISPER_CACHE)"
 if (Test-Path $WHISPER_CACHE) {
@@ -39,10 +53,10 @@ if (Test-Path $WHISPER_CACHE) {
 }
 
 Write-Host ""
-Write-Host "=============================================" -ForegroundColor Green
-Write-Host " Cleanup complete."                           -ForegroundColor Green
-Write-Host " To also remove ffmpeg:"                     -ForegroundColor White
-Write-Host "   winget uninstall --id Gyan.FFmpeg"        -ForegroundColor White
-Write-Host " To also remove LM Studio:"                  -ForegroundColor White
-Write-Host "   Windows Settings → Apps → LM Studio"      -ForegroundColor White
-Write-Host "=============================================" -ForegroundColor Green
+Write-Host "============================================="  -ForegroundColor Green
+Write-Host " Cleanup complete."                            -ForegroundColor Green
+Write-Host " To also remove ffmpeg:"                      -ForegroundColor White
+Write-Host "   winget uninstall --id Gyan.FFmpeg"         -ForegroundColor White
+Write-Host " To also remove LM Studio:"                   -ForegroundColor White
+Write-Host "   Windows Settings → Apps → LM Studio"       -ForegroundColor White
+Write-Host "============================================="  -ForegroundColor Green

@@ -4,35 +4,45 @@
 # Speech-to-Code Framework — Frontend Cleanup (Linux)
 # =============================================================================
 # Removes everything installed by setup_frontend.sh.
-# Run from the repository root.
+# Run as root: sudo bash cleanup_frontend.sh
 #
 # Removes:
-#   - venv_frontend
+#   - /opt/speech-to-cobot/ (repo + venv)
 #   - ~/.cache/whisper (~140 MB Whisper model)
 #
 # Does NOT remove (uninstall manually if needed):
-#   - ffmpeg:     sudo apt remove ffmpeg
-#   - PortAudio:  sudo apt remove portaudio19-dev
-#   - LM Studio:  run its own uninstaller
+#   - ffmpeg + PortAudio: sudo apt remove ffmpeg portaudio19-dev
+#   - LM Studio: run its own uninstaller
 #   - Python
 # =============================================================================
 
 set -euo pipefail
 
-VENV_DIR      ="venv_frontend"
+INSTALL_DIR="/opt/speech-to-cobot"
 WHISPER_CACHE="$HOME/.cache/whisper"
 
 step() { echo -e "\n\033[0;36m[CLEANUP] $1\033[0m"; }
 ok()   { echo -e "  \033[0;32m[OK]   $1\033[0m"; }
 warn() { echo -e "  \033[0;33m[WARN] $1\033[0m"; }
+fail() { echo -e "  \033[0;31m[FAIL] $1\033[0m"; exit 1; }
 
-step "Removing virtual environment ($VENV_DIR)"
-if [ -d "$VENV_DIR" ]; then
-    rm -rf "$VENV_DIR"
-    ok "Removed $VENV_DIR"
-else
-    warn "$VENV_DIR not found — already removed or never created"
+# --- Root check ---------------------------------------------------------------
+
+if [ "$EUID" -ne 0 ]; then
+    fail "This script must be run as root. Use: sudo bash cleanup_frontend.sh"
 fi
+
+# --- Remove install directory -------------------------------------------------
+
+step "Removing install directory ($INSTALL_DIR)"
+if [ -d "$INSTALL_DIR" ]; then
+    rm -rf "$INSTALL_DIR"
+    ok "Removed $INSTALL_DIR"
+else
+    warn "$INSTALL_DIR not found — already removed or never installed"
+fi
+
+# --- Remove Whisper cache -----------------------------------------------------
 
 step "Removing Whisper model cache ($WHISPER_CACHE)"
 if [ -d "$WHISPER_CACHE" ]; then
