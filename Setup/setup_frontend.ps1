@@ -29,8 +29,7 @@ function Write-Warn { param([string]$msg) Write-Host "  [WARN] $msg" -Foreground
 function Write-Fail { 
     param([string]$msg) 
     Write-Host "  [FAIL] $msg" -ForegroundColor Red
-    Read-Host "`nPress Enter to close"
-    exit 1 
+    throw $msg
 }
 
 # --- Admin check --------------------------------------------------------------
