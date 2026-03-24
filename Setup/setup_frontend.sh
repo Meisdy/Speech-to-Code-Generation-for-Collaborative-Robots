@@ -3,7 +3,7 @@
 # setup_frontend.sh
 # Speech-to-Code Framework — Frontend Setup (Linux)
 # =============================================================================
-# One-command install (run as root or with sudo):
+# One-command install (run as root):
 #   curl -sSL https://raw.githubusercontent.com/Meisdy/Speech-to-Code-Generation-for-Collaborative-Robots/dev/Setup/setup_frontend.sh | sudo bash
 #
 # MANUAL PREREQUISITES:
@@ -17,8 +17,9 @@ set -euo pipefail
 MIN_PYTHON_MAJOR=3
 MIN_PYTHON_MINOR=10
 INSTALL_DIR="/opt/speech-to-cobot"
-REPO_URL="https://github.com/Meisdy/Speech-to-Code-Generation-for-Collaborative-Robots.git"
-REPO_BRANCH="dev"
+ZIP_URL="https://github.com/Meisdy/Speech-to-Code-Generation-for-Collaborative-Robots/archive/refs/heads/dev.zip"
+ZIP_PATH="/tmp/speech-to-cobot.zip"
+EXTRACT_PATH="/tmp/speech-to-cobot-extract"
 VENV_DIR="$INSTALL_DIR/venv_frontend"
 REQUIREMENTS="$INSTALL_DIR/Setup/requirements_frontend.txt"
 LM_STUDIO_URL="http://localhost:1234/v1/models"
@@ -60,35 +61,44 @@ if [ -z "$PYTHON_CMD" ]; then
     fail "Python $MIN_PYTHON_MAJOR.$MIN_PYTHON_MINOR+ not found. Install via: apt install python3.11 python3.11-venv"
 fi
 
-# --- git check ----------------------------------------------------------------
-
-step "Checking git"
-if ! command -v git &>/dev/null; then
-    fail "git not found. Install via: apt install git"
-fi
-ok "git available"
-
 # --- System dependencies ------------------------------------------------------
 
-step "Installing system dependencies (ffmpeg, PortAudio, Python venv)"
+step "Installing system dependencies (ffmpeg, PortAudio, unzip, Python venv)"
 if ! command -v apt &>/dev/null; then
     fail "apt not found. This script targets Debian/Ubuntu. Install ffmpeg and portaudio19-dev manually."
 fi
 
 apt-get update -qq
-apt-get install -y ffmpeg portaudio19-dev python3-dev python3-venv git
+apt-get install -y ffmpeg portaudio19-dev python3-dev python3-venv unzip curl
 ok "System dependencies installed"
 
-# --- Clone repository ---------------------------------------------------------
+# --- Download repository ------------------------------------------------------
+# Downloads as ZIP — no git required on the target machine.
+# GitHub extracts to a folder named <repo>-<branch>, which we rename to INSTALL_DIR.
 
-step "Cloning repository to $INSTALL_DIR"
+step "Downloading repository to $INSTALL_DIR"
 if [ -d "$INSTALL_DIR" ]; then
-    warn "$INSTALL_DIR already exists — pulling latest changes instead."
-    git -C "$INSTALL_DIR" pull
+    warn "$INSTALL_DIR already exists — skipping download. Delete it to force a fresh install."
 else
-    git clone --branch "$REPO_BRANCH" "$REPO_URL" "$INSTALL_DIR"
+    echo "  Downloading..."
+    curl -sSL "$ZIP_URL" -o "$ZIP_PATH"
+
+    rm -rf "$EXTRACT_PATH"
+    mkdir -p "$EXTRACT_PATH"
+    unzip -q "$ZIP_PATH" -d "$EXTRACT_PATH"
+
+    # GitHub ZIP extracts to a single subfolder — find and move it
+    EXTRACTED_FOLDER=$(find "$EXTRACT_PATH" -mindepth 1 -maxdepth 1 -type d | head -n 1)
+    if [ -z "$EXTRACTED_FOLDER" ]; then
+        fail "ZIP extraction produced no folder. The download may be corrupt — re-run."
+    fi
+    mv "$EXTRACTED_FOLDER" "$INSTALL_DIR"
+
+    rm -f "$ZIP_PATH"
+    rm -rf "$EXTRACT_PATH"
+
+    ok "Repository ready at $INSTALL_DIR"
 fi
-ok "Repository ready at $INSTALL_DIR"
 
 # --- Virtual environment ------------------------------------------------------
 
@@ -103,6 +113,9 @@ fi
 # --- Dependencies -------------------------------------------------------------
 
 step "Installing Python dependencies"
+if [ ! -f "$REQUIREMENTS" ]; then
+    fail "$REQUIREMENTS not found. The repository structure may be unexpected — check $INSTALL_DIR."
+fi
 "$VENV_DIR/bin/pip" install --upgrade pip --quiet
 "$VENV_DIR/bin/pip" install -r "$REQUIREMENTS"
 ok "Dependencies installed"

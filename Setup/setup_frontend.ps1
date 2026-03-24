@@ -11,13 +11,12 @@
 #   3. Start the local server in LM Studio (port 1234)
 # =============================================================================
 
-$ErrorActionPreference = "Stop"
-
 $MIN_PYTHON_MAJOR = 3
 $MIN_PYTHON_MINOR = 10
 $INSTALL_DIR      = "C:\Program Files\Speech-to-Cobot"
-$REPO_URL         = "https://github.com/Meisdy/Speech-to-Code-Generation-for-Collaborative-Robots.git"
-$REPO_BRANCH      = "dev"
+$ZIP_URL          = "https://github.com/Meisdy/Speech-to-Code-Generation-for-Collaborative-Robots/archive/refs/heads/dev.zip"
+$ZIP_PATH         = "$env:TEMP\speech-to-cobot.zip"
+$EXTRACT_PATH     = "$env:TEMP\speech-to-cobot-extract"
 $VENV_DIR         = "$INSTALL_DIR\venv_frontend"
 $REQUIREMENTS     = "$INSTALL_DIR\Setup\requirements_frontend.txt"
 $LM_STUDIO_URL    = "http://localhost:1234/v1/models"
@@ -26,8 +25,8 @@ $WHISPER_CACHE    = "$env:USERPROFILE\.cache\whisper"
 function Write-Step { param([string]$msg) Write-Host "`n[SETUP] $msg" -ForegroundColor Cyan }
 function Write-OK   { param([string]$msg) Write-Host "  [OK]   $msg" -ForegroundColor Green }
 function Write-Warn { param([string]$msg) Write-Host "  [WARN] $msg" -ForegroundColor Yellow }
-function Write-Fail { 
-    param([string]$msg) 
+function Write-Fail {
+    param([string]$msg)
     Write-Host "  [FAIL] $msg" -ForegroundColor Red
     throw $msg
 }
@@ -77,14 +76,6 @@ if ($major -lt $MIN_PYTHON_MAJOR -or ($major -eq $MIN_PYTHON_MAJOR -and $minor -
 }
 Write-OK "Python $version"
 
-# --- git ----------------------------------------------------------------------
-
-Write-Step "Checking git"
-if (-not (Get-Command git -ErrorAction SilentlyContinue)) {
-    Write-Fail "git not found. Install from https://git-scm.com and re-run."
-}
-Write-OK "git available"
-
 # --- ffmpeg -------------------------------------------------------------------
 
 Write-Step "Installing ffmpeg (required by Whisper)"
@@ -99,19 +90,35 @@ if ($ffmpegCheck) {
     Write-OK "ffmpeg installed"
 }
 
-# --- Clone repository ---------------------------------------------------------
+# --- Download repository ------------------------------------------------------
+# Downloads as ZIP — no git required on the target machine.
+# GitHub extracts to a folder named <repo>-<branch>, which we rename to INSTALL_DIR.
 
-Write-Step "Cloning repository to $INSTALL_DIR"
+Write-Step "Downloading repository to $INSTALL_DIR"
 if (Test-Path $INSTALL_DIR) {
-    Write-Warn "$INSTALL_DIR already exists — pulling latest changes instead."
-    git -C $INSTALL_DIR pull
+    Write-Warn "$INSTALL_DIR already exists — skipping download. Delete it to force a fresh install."
 } else {
-    git clone --branch $REPO_BRANCH $REPO_URL $INSTALL_DIR
-    if ($LASTEXITCODE -ne 0) {
-        Write-Fail "git clone failed. Check your internet connection and re-run."
+    Write-Host "  Downloading..." -ForegroundColor Gray
+    Invoke-WebRequest -Uri $ZIP_URL -OutFile $ZIP_PATH -UseBasicParsing
+    if (-not (Test-Path $ZIP_PATH)) {
+        Write-Fail "Download failed. Check your internet connection and re-run."
     }
+
+    if (Test-Path $EXTRACT_PATH) { Remove-Item -Recurse -Force $EXTRACT_PATH }
+    Expand-Archive -Path $ZIP_PATH -DestinationPath $EXTRACT_PATH -Force
+
+    # GitHub ZIP extracts to a single subfolder — find and move it
+    $extractedFolder = Get-ChildItem -Path $EXTRACT_PATH -Directory | Select-Object -First 1
+    if (-not $extractedFolder) {
+        Write-Fail "ZIP extraction produced no folder. The download may be corrupt — re-run."
+    }
+    Move-Item -Path $extractedFolder.FullName -Destination $INSTALL_DIR
+
+    Remove-Item -Force $ZIP_PATH
+    Remove-Item -Recurse -Force $EXTRACT_PATH
+
+    Write-OK "Repository ready at $INSTALL_DIR"
 }
-Write-OK "Repository ready at $INSTALL_DIR"
 
 # --- Virtual environment ------------------------------------------------------
 
@@ -126,6 +133,9 @@ if (Test-Path $VENV_DIR) {
 # --- Dependencies -------------------------------------------------------------
 
 Write-Step "Installing Python dependencies"
+if (-not (Test-Path $REQUIREMENTS)) {
+    Write-Fail "$REQUIREMENTS not found. The repository structure may be unexpected — check $INSTALL_DIR."
+}
 $pip = "$VENV_DIR\Scripts\pip.exe"
 & $pip install --upgrade pip --quiet
 & $pip install -r $REQUIREMENTS
@@ -136,7 +146,7 @@ Write-OK "Dependencies installed"
 
 # --- Whisper model ------------------------------------------------------------
 # Pre-downloads the model so the first launch does not stall.
-# Saved to %USERPROFILE%\.cache\whisper — outside the venv.
+# Saved to %USERPROFILE%\.cache\whisper — outside the install folder.
 # cleanup_frontend.ps1 removes this.
 
 Write-Step "Pre-downloading Whisper base model (~140 MB)"
@@ -167,6 +177,6 @@ Write-Host "============================================="  -ForegroundColor Gre
 Write-Host " Frontend setup complete."                     -ForegroundColor Green
 Write-Host " Installed to: $INSTALL_DIR"                  -ForegroundColor Green
 Write-Host " Launch with:"                                 -ForegroundColor Green
-Write-Host "   $VENV_DIR\Scripts\python.exe -m Frontend.main" -ForegroundColor White
-Write-Host " Run from: $INSTALL_DIR"                      -ForegroundColor White
+Write-Host "   cd '$INSTALL_DIR'"                         -ForegroundColor White
+Write-Host "   '$VENV_DIR\Scripts\python.exe' -m Frontend.main" -ForegroundColor White
 Write-Host "============================================="  -ForegroundColor Green
