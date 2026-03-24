@@ -26,7 +26,12 @@ $WHISPER_CACHE    = "$env:USERPROFILE\.cache\whisper"
 function Write-Step { param([string]$msg) Write-Host "`n[SETUP] $msg" -ForegroundColor Cyan }
 function Write-OK   { param([string]$msg) Write-Host "  [OK]   $msg" -ForegroundColor Green }
 function Write-Warn { param([string]$msg) Write-Host "  [WARN] $msg" -ForegroundColor Yellow }
-function Write-Fail { param([string]$msg) Write-Host "  [FAIL] $msg" -ForegroundColor Red; exit 1 }
+function Write-Fail { 
+    param([string]$msg) 
+    Write-Host "  [FAIL] $msg" -ForegroundColor Red
+    Read-Host "`nPress Enter to close"
+    exit 1 
+}
 
 # --- Admin check --------------------------------------------------------------
 
