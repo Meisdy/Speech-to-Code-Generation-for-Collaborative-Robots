@@ -1,0 +1,16 @@
+[project]
+name = "speech-to-cobot"
+version = "0.1.0"
+description = "Speech-to-Code Generation for Collaborative Robots"
+requires-python = "==3.12.*"
+dependencies = []
+
+[dependency-groups]
+frontend = [
+    "numpy==2.4.3",
+    "PyAudio==0.2.14",
+    "requests==2.32.5",
+    "ttkbootstrap==1.20.2",
+    "openai-whisper==20250625",
+    "pyzmq==27.1.0",
+]
