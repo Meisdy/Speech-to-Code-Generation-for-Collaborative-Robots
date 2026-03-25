@@ -126,8 +126,14 @@ if (Test-Path $INSTALL_DIR) {
         if (Test-Path $ZIP_PATH)     { Remove-Item -Force $ZIP_PATH }
         if (Test-Path $EXTRACT_PATH) { Remove-Item -Recurse -Force $EXTRACT_PATH }
     }
+
     # Grant read and execute to all users so the app runs without Administrator
     icacls "$INSTALL_DIR" /grant "Users:(OI)(CI)RX" /T | Out-Null
+
+    # Grant write access to the logs directory — the app writes log files at runtime
+    $logsDir = "$INSTALL_DIR\Frontend\logs"
+    New-Item -ItemType Directory -Path $logsDir -Force | Out-Null
+    icacls "$logsDir" /grant "Users:(OI)(CI)F" /T | Out-Null
 
     $elapsed = [math]::Round(((Get-Date) - $stepStart).TotalSeconds, 1)
     Write-OK "Repository ready at $INSTALL_DIR ($elapsed s)"
@@ -148,19 +154,24 @@ if ($LASTEXITCODE -ne 0) {
 $elapsed = [math]::Round(((Get-Date) - $stepStart).TotalSeconds, 1)
 Write-OK "Python 3.12 and all dependencies installed ($elapsed s)"
 
-
 # --- Desktop shortcut ---------------------------------------------------------
 # Uses wscript.exe + a VBS launcher — the only reliable way on Windows to launch
 # a process from a shortcut with absolutely no console or PowerShell window.
+# uv full path is resolved at install time — regular users may not have it on PATH.
 
 Write-Step "Creating Desktop shortcut"
 $vbsPath      = "$INSTALL_DIR\launch_frontend.vbs"
 $shortcutPath = "$env:USERPROFILE\Desktop\Speech-to-Cobot.lnk"
 
+$uvFullPath = (Get-Command uv).Source
+if (-not $uvFullPath) {
+    Write-Fail "Cannot resolve uv path — re-run setup to fix."
+}
+
 @"
 Set shell = CreateObject("WScript.Shell")
 shell.CurrentDirectory = "$INSTALL_DIR"
-shell.Run "uv run pythonw -m Frontend.main", 0, False
+shell.Run "$uvFullPath run pythonw -m Frontend.main", 0, False
 "@ | Set-Content -Path $vbsPath -Encoding ASCII
 
 $shell     = New-Object -ComObject WScript.Shell
@@ -175,11 +186,11 @@ Write-OK "Shortcut created at $shortcutPath"
 # --- Whisper model ------------------------------------------------------------
 # Pre-downloads the model so the first launch does not stall.
 # Saved to %USERPROFILE%\.cache\whisper — outside the project directory.
-# cleanup_frontend.ps1 removes this.
+# uninstall_frontend.ps1 removes this.
 
 Write-Step "Pre-downloading Whisper base model (~140 MB)"
 Write-Host "  Model will be saved to $WHISPER_CACHE" -ForegroundColor Gray
-Write-Warn "This is outside the project directory. Run cleanup_frontend.ps1 to remove it."
+Write-Warn "This is outside the project directory. Run uninstall_frontend.ps1 to remove it."
 $stepStart = Get-Date
 uv run python -c "import whisper; whisper.load_model('base')"
 if ($LASTEXITCODE -ne 0) {
@@ -210,6 +221,7 @@ Write-Host " Setup complete. Installed to:"                        -ForegroundCo
 Write-Host "   $INSTALL_DIR"                                       -ForegroundColor White
 Write-Host ""
 Write-Host " To launch the application:"                           -ForegroundColor Green
-Write-Host "   cd '$INSTALL_DIR'"                                  -ForegroundColor White
-Write-Host "   uv run pythonw -m Frontend.main"                     -ForegroundColor White
+Write-Host "   Double-click Speech-to-Cobot on the Desktop"       -ForegroundColor White
+Write-Host "   or: cd '$INSTALL_DIR'"                             -ForegroundColor White
+Write-Host "   and: uv run pythonw -m Frontend.main"              -ForegroundColor White
 Write-Host "=====================================================" -ForegroundColor Green
