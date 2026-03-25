@@ -149,8 +149,16 @@ Write-OK "Python 3.12 and all dependencies installed ($elapsed s)"
 # Creates a shortcut on the current user's Desktop pointing to launch_frontend.bat
 # in the install directory. The bat file handles cd and uv run in one click.
 
-Write-Step "Creating Desktop shortcut"
+Write-Step "Creating launcher and Desktop shortcut"
 $batPath      = "$INSTALL_DIR\launch_frontend.bat"
+@"
+@echo off
+cd /d "C:\Program Files\Speech-to-Cobot"
+uv run python -m Frontend.main
+pause
+"@ | Set-Content -Path $batPath -Encoding ASCII
+Write-OK "Launcher created at $batPath"
+
 $shortcutPath = "$env:USERPROFILE\Desktop\Speech-to-Cobot.lnk"
 $shell        = New-Object -ComObject WScript.Shell
 $shortcut     = $shell.CreateShortcut($shortcutPath)
