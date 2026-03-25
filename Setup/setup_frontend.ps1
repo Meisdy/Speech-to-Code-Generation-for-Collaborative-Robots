@@ -100,7 +100,7 @@ if (Get-Command uv -ErrorAction SilentlyContinue) {
 
 # --- Download repository ------------------------------------------------------
 # Uses curl.exe (built into Windows 11) for native progress output.
-# GitHub ZIPs extract to a single subfolder named <repo>-<branch> — we rename it.
+# Release ZIPs are flat — contents are moved directly into INSTALL_DIR.
 # try/finally guarantees temp files are cleaned up even if extraction fails.
 
 Write-Step "Downloading repository to $INSTALL_DIR"
@@ -127,7 +127,7 @@ if (Test-Path $INSTALL_DIR) {
         if (Test-Path $EXTRACT_PATH) { Remove-Item -Recurse -Force $EXTRACT_PATH }
     }
     # Grant read and execute to all users so the app runs without Administrator
-    icacls $INSTALL_DIR /grant "Users:(OI)(CI)RX" /T | Out-Null
+    icacls "$INSTALL_DIR" /grant "Users:(OI)(CI)RX" /T | Out-Null
 
     $elapsed = [math]::Round(((Get-Date) - $stepStart).TotalSeconds, 1)
     Write-OK "Repository ready at $INSTALL_DIR ($elapsed s)"
@@ -147,7 +147,6 @@ if ($LASTEXITCODE -ne 0) {
 }
 $elapsed = [math]::Round(((Get-Date) - $stepStart).TotalSeconds, 1)
 Write-OK "Python 3.12 and all dependencies installed ($elapsed s)"
-
 
 
 # --- Desktop shortcut ---------------------------------------------------------
