@@ -1,7 +1,7 @@
 # Setup Frontend 
 
 > **Requires Administrator PowerShell.**  
-> Right-click PowerShell → *Run as Administrator*, then paste the command below.
+> Right-click PowerShell → *Run as Administrator*, then paste the commands below.
 
 ---
 
