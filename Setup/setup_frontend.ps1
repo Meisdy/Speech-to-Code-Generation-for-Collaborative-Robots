@@ -119,11 +119,9 @@ if (Test-Path $INSTALL_DIR) {
         if (Test-Path $EXTRACT_PATH) { Remove-Item -Recurse -Force $EXTRACT_PATH }
         Expand-Archive -Path $ZIP_PATH -DestinationPath $EXTRACT_PATH -Force
 
-        $extractedFolder = Get-ChildItem -Path $EXTRACT_PATH -Directory | Select-Object -First 1
-        if (-not $extractedFolder) {
-            Write-Fail "ZIP extraction produced no folder. The download may be corrupt — re-run."
-        }
-        Move-Item -Path $extractedFolder.FullName -Destination $INSTALL_DIR
+        # Release ZIPs are flat (no wrapping subfolder) — move contents directly
+        New-Item -ItemType Directory -Path $INSTALL_DIR -Force | Out-Null
+        Get-ChildItem -Path $EXTRACT_PATH | Move-Item -Destination $INSTALL_DIR
     } finally {
         if (Test-Path $ZIP_PATH)     { Remove-Item -Force $ZIP_PATH }
         if (Test-Path $EXTRACT_PATH) { Remove-Item -Recurse -Force $EXTRACT_PATH }
