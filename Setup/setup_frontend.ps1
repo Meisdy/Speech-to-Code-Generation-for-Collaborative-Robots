@@ -101,31 +101,37 @@ if ($ffmpegPath) {
 # --- Download repository ------------------------------------------------------
 # Uses curl.exe (built into Windows 11) for native progress output.
 # GitHub ZIPs extract to a single subfolder named <repo>-<branch> — we rename it.
+# try/finally guarantees temp files are cleaned up even if extraction fails.
 
 Write-Step "Downloading repository to $INSTALL_DIR"
 if (Test-Path $INSTALL_DIR) {
     Write-Warn "$INSTALL_DIR already exists — skipping download. Delete it to force a fresh install."
 } else {
-    Write-Host "  Downloading from GitHub..." -ForegroundColor Gray
-    curl.exe -L --progress-bar $ZIP_URL -o $ZIP_PATH
-    if ($LASTEXITCODE -ne 0 -or -not (Test-Path $ZIP_PATH)) {
-        Write-Fail "Download failed. Check your internet connection and re-run."
+    $stepStart = Get-Date
+    try {
+        Write-Host "  Downloading from GitHub..." -ForegroundColor Gray
+        curl.exe -L --progress-bar $ZIP_URL -o $ZIP_PATH
+        if ($LASTEXITCODE -ne 0 -or -not (Test-Path $ZIP_PATH)) {
+            Write-Fail "Download failed. Check your internet connection and re-run."
+        }
+
+        Write-Host "  Extracting..." -ForegroundColor Gray
+        if (Test-Path $EXTRACT_PATH) { Remove-Item -Recurse -Force $EXTRACT_PATH }
+        Expand-Archive -Path $ZIP_PATH -DestinationPath $EXTRACT_PATH -Force
+
+        $extractedFolder = Get-ChildItem -Path $EXTRACT_PATH -Directory | Select-Object -First 1
+        if (-not $extractedFolder) {
+            Write-Fail "ZIP extraction produced no folder. The download may be corrupt — re-run."
+        }
+        Move-Item -Path $extractedFolder.FullName -Destination $INSTALL_DIR
+    } finally {
+        # Always clean up temp files regardless of success or failure
+        if (Test-Path $ZIP_PATH)     { Remove-Item -Force $ZIP_PATH }
+        if (Test-Path $EXTRACT_PATH) { Remove-Item -Recurse -Force $EXTRACT_PATH }
     }
 
-    Write-Host "  Extracting..." -ForegroundColor Gray
-    if (Test-Path $EXTRACT_PATH) { Remove-Item -Recurse -Force $EXTRACT_PATH }
-    Expand-Archive -Path $ZIP_PATH -DestinationPath $EXTRACT_PATH -Force
-
-    $extractedFolder = Get-ChildItem -Path $EXTRACT_PATH -Directory | Select-Object -First 1
-    if (-not $extractedFolder) {
-        Write-Fail "ZIP extraction produced no folder. The download may be corrupt — re-run."
-    }
-    Move-Item -Path $extractedFolder.FullName -Destination $INSTALL_DIR
-
-    Remove-Item -Force $ZIP_PATH
-    Remove-Item -Recurse -Force $EXTRACT_PATH
-
-    Write-OK "Repository ready at $INSTALL_DIR"
+    $elapsed = [math]::Round(((Get-Date) - $stepStart).TotalSeconds, 1)
+    Write-OK "Repository ready at $INSTALL_DIR ($elapsed s)"
 }
 
 # --- Virtual environment ------------------------------------------------------
@@ -134,28 +140,33 @@ Write-Step "Creating virtual environment"
 if (Test-Path $VENV_DIR) {
     Write-Warn "Virtual environment already exists — skipping. Delete $VENV_DIR to force a fresh install."
 } else {
+    $stepStart = Get-Date
     python -m venv $VENV_DIR
-    Write-OK "Virtual environment created"
+    $elapsed = [math]::Round(((Get-Date) - $stepStart).TotalSeconds, 1)
+    Write-OK "Virtual environment created ($elapsed s)"
 }
 
 # --- Python dependencies ------------------------------------------------------
-# pip output is shown directly — each package install is visible.
+# pip upgrade is suppressed — it is an internal detail, not relevant to the user.
+# Package install output is shown directly so each download is visible.
 
 Write-Step "Installing Python dependencies"
 if (-not (Test-Path $REQUIREMENTS)) {
     Write-Fail "$REQUIREMENTS not found. Repository structure may be unexpected — check $INSTALL_DIR."
 }
 
-$pip = "$VENV_DIR\Scripts\pip.exe"
-Write-Host "  Upgrading pip..." -ForegroundColor Gray
-& $pip install --upgrade pip
-Write-Host ""
+$pip      = "$VENV_DIR\Scripts\pip.exe"
+$stepStart = Get-Date
+
+& $pip install --upgrade pip --quiet
 Write-Host "  Installing packages from requirements_frontend.txt..." -ForegroundColor Gray
 & $pip install -r $REQUIREMENTS
 if ($LASTEXITCODE -ne 0) {
     Write-Fail "pip install failed — see output above."
 }
-Write-OK "Python dependencies installed"
+
+$elapsed = [math]::Round(((Get-Date) - $stepStart).TotalSeconds, 1)
+Write-OK "Python dependencies installed ($elapsed s)"
 
 # --- Whisper model ------------------------------------------------------------
 # Downloads ~140 MB to %USERPROFILE%\.cache\whisper — outside the install folder.
@@ -164,12 +175,14 @@ Write-OK "Python dependencies installed"
 Write-Step "Pre-downloading Whisper base model (~140 MB)"
 Write-Host "  Model will be saved to $WHISPER_CACHE" -ForegroundColor Gray
 Write-Warn "This location is outside the install folder. Run cleanup_frontend.ps1 to remove it."
-$python = "$VENV_DIR\Scripts\python.exe"
+$python    = "$VENV_DIR\Scripts\python.exe"
+$stepStart = Get-Date
 & $python -c "import whisper; whisper.load_model('base')"
 if ($LASTEXITCODE -ne 0) {
     Write-Warn "Whisper model pre-download failed — it will download on first application launch instead."
 } else {
-    Write-OK "Whisper base model ready"
+    $elapsed = [math]::Round(((Get-Date) - $stepStart).TotalSeconds, 1)
+    Write-OK "Whisper base model ready ($elapsed s)"
 }
 
 # --- LM Studio check ----------------------------------------------------------
