@@ -130,11 +130,16 @@ if (Get-Command ffmpeg -ErrorAction SilentlyContinue) {
 Write-Step "uv"
 if (Get-Command uv -ErrorAction SilentlyContinue) {
     if (Prompt-YesNo "  Remove uv?") {
-        # Remove uv's Python and package cache before uninstalling the tool itself
-        $uvCache = "$env:LOCALAPPDATA\uv"
-        if (Test-Path $uvCache) {
-            Remove-Item -Recurse -Force $uvCache
-            Write-OK "Removed uv cache at $uvCache"
+        # Remove uv's package cache and Python versions before uninstalling the tool
+        $uvPackageCache = "$env:LOCALAPPDATA\uv"
+        $uvPythonCache  = "$env:APPDATA\uv"
+        if (Test-Path $uvPackageCache) {
+            Remove-Item -Recurse -Force $uvPackageCache
+            Write-OK "Removed uv package cache at $uvPackageCache"
+        }
+        if (Test-Path $uvPythonCache) {
+            Remove-Item -Recurse -Force $uvPythonCache
+            Write-OK "Removed uv Python cache at $uvPythonCache"
         }
         winget uninstall --id astral-sh.uv
         if ($LASTEXITCODE -ne 0) {
