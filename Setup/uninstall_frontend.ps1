@@ -112,7 +112,7 @@ if (Test-Path $CACHE_DIR) {
 Write-Step "ffmpeg"
 if (Get-Command ffmpeg -ErrorAction SilentlyContinue) {
     if (Prompt-YesNo "  Remove ffmpeg?") {
-        winget uninstall --id Gyan.FFmpeg
+        winget uninstall --name "FFmpeg"
         if ($LASTEXITCODE -ne 0) {
             Write-Warn "ffmpeg uninstall may have failed — remove manually via winget or Settings -> Apps"
         } else {
