@@ -15,9 +15,10 @@
 # =============================================================================
 
 $INSTALL_DIR   = "C:\Program Files\Speech-to-Cobot"
-$ZIP_URL       = "https://github.com/Meisdy/Speech-to-Code-Generation-for-Collaborative-Robots/archive/refs/heads/dev.zip"
-$ZIP_PATH      = "$env:TEMP\speech-to-cobot.zip"
-$EXTRACT_PATH  = "$env:TEMP\speech-to-cobot-extract"
+$RELEASE_TAG   = "v0.1.0"
+$ZIP_URL       = "https://github.com/Meisdy/Speech-to-Code-Generation-for-Collaborative-Robots/releases/download/$RELEASE_TAG/stcgcr-frontend.zip"
+$ZIP_PATH      = "$env:TEMP\stcgcr-frontend.zip"
+$EXTRACT_PATH  = "$env:TEMP\stcgcr-frontend-extract"
 $LM_STUDIO_URL = "http://localhost:1234/v1/models"
 $WHISPER_CACHE = "$env:USERPROFILE\.cache\whisper"
 
@@ -145,6 +146,21 @@ if ($LASTEXITCODE -ne 0) {
 }
 $elapsed = [math]::Round(((Get-Date) - $stepStart).TotalSeconds, 1)
 Write-OK "Python 3.12 and all dependencies installed ($elapsed s)"
+
+# --- Desktop shortcut ---------------------------------------------------------
+# Creates a shortcut on the current user's Desktop pointing to launch_frontend.bat
+# in the install directory. The bat file handles cd and uv run in one click.
+
+Write-Step "Creating Desktop shortcut"
+$batPath      = "$INSTALL_DIR\launch_frontend.bat"
+$shortcutPath = "$env:USERPROFILE\Desktop\Speech-to-Cobot.lnk"
+$shell        = New-Object -ComObject WScript.Shell
+$shortcut     = $shell.CreateShortcut($shortcutPath)
+$shortcut.TargetPath       = $batPath
+$shortcut.WorkingDirectory = $INSTALL_DIR
+$shortcut.Description      = "Launch Speech-to-Cobot Frontend"
+$shortcut.Save()
+Write-OK "Shortcut created at $shortcutPath"
 
 # --- Whisper model ------------------------------------------------------------
 # Pre-downloads the model so the first launch does not stall.
