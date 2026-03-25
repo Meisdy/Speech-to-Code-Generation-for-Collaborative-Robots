@@ -112,7 +112,7 @@ if (Test-Path $CACHE_DIR) {
 Write-Step "ffmpeg"
 if (Get-Command ffmpeg -ErrorAction SilentlyContinue) {
     if (Prompt-YesNo "  Remove ffmpeg?") {
-        winget uninstall --name "FFmpeg"
+        winget uninstall --id Gyan.FFmpeg --scope machine
         if ($LASTEXITCODE -ne 0) {
             Write-Warn "ffmpeg uninstall may have failed — remove manually via winget or Settings -> Apps"
         } else {
@@ -130,6 +130,12 @@ if (Get-Command ffmpeg -ErrorAction SilentlyContinue) {
 Write-Step "uv"
 if (Get-Command uv -ErrorAction SilentlyContinue) {
     if (Prompt-YesNo "  Remove uv?") {
+        # Remove uv's Python and package cache before uninstalling the tool itself
+        $uvCache = "$env:LOCALAPPDATA\uv"
+        if (Test-Path $uvCache) {
+            Remove-Item -Recurse -Force $uvCache
+            Write-OK "Removed uv cache at $uvCache"
+        }
         winget uninstall --id astral-sh.uv
         if ($LASTEXITCODE -ne 0) {
             Write-Warn "uv uninstall may have failed — remove manually via winget or Settings -> Apps"
