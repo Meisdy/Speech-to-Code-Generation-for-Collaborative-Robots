@@ -9,18 +9,17 @@
 #   1. Install LM Studio from https://lmstudio.ai
 #   2. Download model: meta-llama-3.1-8b-instruct
 #   3. Start the local server in LM Studio (port 1234)
+#
+# This script installs uv, which manages Python 3.12 and all dependencies
+# automatically. No manual Python installation required.
 # =============================================================================
 
-$MIN_PYTHON_MAJOR = 3
-$MIN_PYTHON_MINOR = 10
-$INSTALL_DIR      = "C:\Program Files\Speech-to-Cobot"
-$ZIP_URL          = "https://github.com/Meisdy/Speech-to-Code-Generation-for-Collaborative-Robots/archive/refs/heads/dev.zip"
-$ZIP_PATH         = "$env:TEMP\speech-to-cobot.zip"
-$EXTRACT_PATH     = "$env:TEMP\speech-to-cobot-extract"
-$VENV_DIR         = "$INSTALL_DIR\venv_frontend"
-$REQUIREMENTS     = "$INSTALL_DIR\Setup\requirements_frontend.txt"
-$LM_STUDIO_URL    = "http://localhost:1234/v1/models"
-$WHISPER_CACHE    = "$env:USERPROFILE\.cache\whisper"
+$INSTALL_DIR   = "C:\Program Files\Speech-to-Cobot"
+$ZIP_URL       = "https://github.com/Meisdy/Speech-to-Code-Generation-for-Collaborative-Robots/archive/refs/heads/dev.zip"
+$ZIP_PATH      = "$env:TEMP\speech-to-cobot.zip"
+$EXTRACT_PATH  = "$env:TEMP\speech-to-cobot-extract"
+$LM_STUDIO_URL = "http://localhost:1234/v1/models"
+$WHISPER_CACHE = "$env:USERPROFILE\.cache\whisper"
 
 function Write-Step { param([string]$msg) Write-Host "`n[SETUP] $msg" -ForegroundColor Cyan }
 function Write-OK   { param([string]$msg) Write-Host "  [OK]   $msg" -ForegroundColor Green }
@@ -61,41 +60,41 @@ if (-not (Get-Command winget -ErrorAction SilentlyContinue)) {
 }
 Write-OK "winget available"
 
-# --- Python -------------------------------------------------------------------
-
-Write-Step "Checking Python (minimum $MIN_PYTHON_MAJOR.$MIN_PYTHON_MINOR)"
-if (-not (Get-Command python -ErrorAction SilentlyContinue)) {
-    Write-Fail "Python not found. Install Python $MIN_PYTHON_MAJOR.$MIN_PYTHON_MINOR+ from https://python.org and add to PATH."
-}
-
-$version = & python -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}')"
-$parts   = $version.Split(".")
-$major   = [int]$parts[0]
-$minor   = [int]$parts[1]
-
-if ($major -lt $MIN_PYTHON_MAJOR -or ($major -eq $MIN_PYTHON_MAJOR -and $minor -lt $MIN_PYTHON_MINOR)) {
-    Write-Fail "Python $version found but $MIN_PYTHON_MAJOR.$MIN_PYTHON_MINOR+ required. Install from https://python.org"
-}
-Write-OK "Python $version"
-
 # --- ffmpeg -------------------------------------------------------------------
 # Check PATH first — instant. Only call winget if ffmpeg is genuinely missing.
-# winget output is shown directly so the user sees exactly what is happening.
 
 Write-Step "Checking ffmpeg (required by Whisper)"
-$ffmpegPath = Get-Command ffmpeg -ErrorAction SilentlyContinue
-if ($ffmpegPath) {
-    Write-OK "ffmpeg found at $($ffmpegPath.Source)"
+if (Get-Command ffmpeg -ErrorAction SilentlyContinue) {
+    Write-OK "ffmpeg found at $((Get-Command ffmpeg).Source)"
 } else {
-    Write-Host "  ffmpeg not found on PATH — installing via winget..." -ForegroundColor Gray
+    Write-Host "  ffmpeg not on PATH — installing via winget..." -ForegroundColor Gray
     winget install -e --id Gyan.FFmpeg --accept-source-agreements --accept-package-agreements
     if ($LASTEXITCODE -ne 0) {
         Write-Fail "ffmpeg install failed. Install manually from https://ffmpeg.org, add to PATH, then re-run."
     }
-    # Refresh PATH so ffmpeg is immediately available in this session
+    # Refresh PATH so ffmpeg is available in this session without a restart
     $env:PATH = [System.Environment]::GetEnvironmentVariable("PATH", "Machine") + ";" +
                 [System.Environment]::GetEnvironmentVariable("PATH", "User")
     Write-OK "ffmpeg installed"
+}
+
+# --- uv -----------------------------------------------------------------------
+# uv manages Python version and dependencies — no manual Python install needed.
+# It installs Python 3.12 if missing and creates an isolated .venv in the
+# project directory.
+
+Write-Step "Checking uv"
+if (Get-Command uv -ErrorAction SilentlyContinue) {
+    Write-OK "uv found at $((Get-Command uv).Source)"
+} else {
+    Write-Host "  uv not found — installing via winget..." -ForegroundColor Gray
+    winget install --id astral-sh.uv -e --accept-source-agreements --accept-package-agreements
+    if ($LASTEXITCODE -ne 0) {
+        Write-Fail "uv install failed."
+    }
+    $env:PATH = [System.Environment]::GetEnvironmentVariable("PATH", "Machine") + ";" +
+                [System.Environment]::GetEnvironmentVariable("PATH", "User")
+    Write-OK "uv installed"
 }
 
 # --- Download repository ------------------------------------------------------
@@ -125,59 +124,38 @@ if (Test-Path $INSTALL_DIR) {
         }
         Move-Item -Path $extractedFolder.FullName -Destination $INSTALL_DIR
     } finally {
-        # Always clean up temp files regardless of success or failure
         if (Test-Path $ZIP_PATH)     { Remove-Item -Force $ZIP_PATH }
         if (Test-Path $EXTRACT_PATH) { Remove-Item -Recurse -Force $EXTRACT_PATH }
     }
-
     $elapsed = [math]::Round(((Get-Date) - $stepStart).TotalSeconds, 1)
     Write-OK "Repository ready at $INSTALL_DIR ($elapsed s)"
 }
 
-# --- Virtual environment ------------------------------------------------------
+# --- Install Python and dependencies via uv -----------------------------------
+# uv reads pyproject.toml at the repo root, installs Python 3.12 if needed,
+# creates .venv inside the project directory, and installs all dependencies.
+# Nothing outside the project directory or uv's own cache is modified.
 
-Write-Step "Creating virtual environment"
-if (Test-Path $VENV_DIR) {
-    Write-Warn "Virtual environment already exists — skipping. Delete $VENV_DIR to force a fresh install."
-} else {
-    $stepStart = Get-Date
-    python -m venv $VENV_DIR
-    $elapsed = [math]::Round(((Get-Date) - $stepStart).TotalSeconds, 1)
-    Write-OK "Virtual environment created ($elapsed s)"
-}
-
-# --- Python dependencies ------------------------------------------------------
-# pip upgrade is suppressed — it is an internal detail, not relevant to the user.
-# Package install output is shown directly so each download is visible.
-
-Write-Step "Installing Python dependencies"
-if (-not (Test-Path $REQUIREMENTS)) {
-    Write-Fail "$REQUIREMENTS not found. Repository structure may be unexpected — check $INSTALL_DIR."
-}
-
-$pip      = "$VENV_DIR\Scripts\pip.exe"
+Write-Step "Installing Python 3.12 and frontend dependencies via uv"
 $stepStart = Get-Date
-
-& $pip install --upgrade pip --quiet
-Write-Host "  Installing packages from requirements_frontend.txt..." -ForegroundColor Gray
-& $pip install -r $REQUIREMENTS
+Set-Location $INSTALL_DIR
+uv sync --only-group frontend
 if ($LASTEXITCODE -ne 0) {
-    Write-Fail "pip install failed — see output above."
+    Write-Fail "uv sync failed — see output above."
 }
-
 $elapsed = [math]::Round(((Get-Date) - $stepStart).TotalSeconds, 1)
-Write-OK "Python dependencies installed ($elapsed s)"
+Write-OK "Python 3.12 and all dependencies installed ($elapsed s)"
 
 # --- Whisper model ------------------------------------------------------------
-# Downloads ~140 MB to %USERPROFILE%\.cache\whisper — outside the install folder.
-# This is Whisper's standard cache location. cleanup_frontend.ps1 removes it.
+# Pre-downloads the model so the first launch does not stall.
+# Saved to %USERPROFILE%\.cache\whisper — outside the project directory.
+# cleanup_frontend.ps1 removes this.
 
 Write-Step "Pre-downloading Whisper base model (~140 MB)"
 Write-Host "  Model will be saved to $WHISPER_CACHE" -ForegroundColor Gray
-Write-Warn "This location is outside the install folder. Run cleanup_frontend.ps1 to remove it."
-$python    = "$VENV_DIR\Scripts\python.exe"
+Write-Warn "This is outside the project directory. Run cleanup_frontend.ps1 to remove it."
 $stepStart = Get-Date
-& $python -c "import whisper; whisper.load_model('base')"
+uv run python -c "import whisper; whisper.load_model('base')"
 if ($LASTEXITCODE -ne 0) {
     Write-Warn "Whisper model pre-download failed — it will download on first application launch instead."
 } else {
@@ -186,7 +164,7 @@ if ($LASTEXITCODE -ne 0) {
 }
 
 # --- LM Studio check ----------------------------------------------------------
-# Does not install LM Studio — that must be done manually.
+# Does not install LM Studio — that must be done manually (see prerequisites).
 # Only checks whether the API server is already running.
 
 Write-Step "Checking LM Studio server ($LM_STUDIO_URL)"
@@ -194,8 +172,8 @@ try {
     Invoke-WebRequest -Uri $LM_STUDIO_URL -UseBasicParsing -TimeoutSec 5 | Out-Null
     Write-OK "LM Studio server reachable"
 } catch {
-    Write-Warn "LM Studio server not reachable — this is expected if you have not started it yet."
-    Write-Warn "Before running the app: open LM Studio, load meta-llama-3.1-8b-instruct, and start the server."
+    Write-Warn "LM Studio server not reachable — expected if not started yet."
+    Write-Warn "Before running: open LM Studio, load meta-llama-3.1-8b-instruct, start the server."
 }
 
 # --- Done ---------------------------------------------------------------------
@@ -204,8 +182,8 @@ Write-Host ""
 Write-Host "=====================================================" -ForegroundColor Green
 Write-Host " Setup complete. Installed to:"                        -ForegroundColor Green
 Write-Host "   $INSTALL_DIR"                                       -ForegroundColor White
-Write-Host ""                                                       -ForegroundColor Green
+Write-Host ""
 Write-Host " To launch the application:"                           -ForegroundColor Green
 Write-Host "   cd '$INSTALL_DIR'"                                  -ForegroundColor White
-Write-Host "   '$VENV_DIR\Scripts\python.exe' -m Frontend.main"   -ForegroundColor White
+Write-Host "   uv run python -m Frontend.main"                     -ForegroundColor White
 Write-Host "=====================================================" -ForegroundColor Green
