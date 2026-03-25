@@ -15,7 +15,7 @@
 # =============================================================================
 
 $INSTALL_DIR   = "C:\Program Files\Speech-to-Cobot"
-$RELEASE_TAG   = "v0.1.0"
+$RELEASE_TAG   = "v0.3.0"
 $ZIP_URL       = "https://github.com/Meisdy/Speech-to-Code-Generation-for-Collaborative-Robots/releases/download/$RELEASE_TAG/stcgcr-frontend.zip"
 $ZIP_PATH      = "C:\Windows\Temp\stcgcr-frontend.zip"
 $EXTRACT_PATH  = "C:\Windows\Temp\stcgcr-frontend-extract"
