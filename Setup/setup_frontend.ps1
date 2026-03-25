@@ -126,6 +126,9 @@ if (Test-Path $INSTALL_DIR) {
         if (Test-Path $ZIP_PATH)     { Remove-Item -Force $ZIP_PATH }
         if (Test-Path $EXTRACT_PATH) { Remove-Item -Recurse -Force $EXTRACT_PATH }
     }
+    # Grant read and execute to all users so the app runs without Administrator
+    icacls $INSTALL_DIR /grant "Users:(OI)(CI)RX" /T | Out-Null
+
     $elapsed = [math]::Round(((Get-Date) - $stepStart).TotalSeconds, 1)
     Write-OK "Repository ready at $INSTALL_DIR ($elapsed s)"
 }
@@ -145,24 +148,26 @@ if ($LASTEXITCODE -ne 0) {
 $elapsed = [math]::Round(((Get-Date) - $stepStart).TotalSeconds, 1)
 Write-OK "Python 3.12 and all dependencies installed ($elapsed s)"
 
+
+
 # --- Desktop shortcut ---------------------------------------------------------
-# Creates a shortcut on the current user's Desktop pointing to launch_frontend.bat
-# in the install directory. The bat file handles cd and uv run in one click.
+# Uses wscript.exe + a VBS launcher — the only reliable way on Windows to launch
+# a process from a shortcut with absolutely no console or PowerShell window.
 
-Write-Step "Creating launcher and Desktop shortcut"
-$batPath      = "$INSTALL_DIR\launch_frontend.bat"
-@"
-@echo off
-cd /d "C:\Program Files\Speech-to-Cobot"
-uv run python -m Frontend.main
-pause
-"@ | Set-Content -Path $batPath -Encoding ASCII
-Write-OK "Launcher created at $batPath"
-
+Write-Step "Creating Desktop shortcut"
+$vbsPath      = "$INSTALL_DIR\launch_frontend.vbs"
 $shortcutPath = "$env:USERPROFILE\Desktop\Speech-to-Cobot.lnk"
-$shell        = New-Object -ComObject WScript.Shell
-$shortcut     = $shell.CreateShortcut($shortcutPath)
-$shortcut.TargetPath       = $batPath
+
+@"
+Set shell = CreateObject("WScript.Shell")
+shell.CurrentDirectory = "$INSTALL_DIR"
+shell.Run "uv run pythonw -m Frontend.main", 0, False
+"@ | Set-Content -Path $vbsPath -Encoding ASCII
+
+$shell     = New-Object -ComObject WScript.Shell
+$shortcut  = $shell.CreateShortcut($shortcutPath)
+$shortcut.TargetPath       = "wscript.exe"
+$shortcut.Arguments        = "`"$vbsPath`""
 $shortcut.WorkingDirectory = $INSTALL_DIR
 $shortcut.Description      = "Launch Speech-to-Cobot Frontend"
 $shortcut.Save()
@@ -207,5 +212,5 @@ Write-Host "   $INSTALL_DIR"                                       -ForegroundCo
 Write-Host ""
 Write-Host " To launch the application:"                           -ForegroundColor Green
 Write-Host "   cd '$INSTALL_DIR'"                                  -ForegroundColor White
-Write-Host "   uv run python -m Frontend.main"                     -ForegroundColor White
+Write-Host "   uv run pythonw -m Frontend.main"                     -ForegroundColor White
 Write-Host "=====================================================" -ForegroundColor Green
