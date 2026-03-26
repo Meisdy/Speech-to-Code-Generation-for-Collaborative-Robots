@@ -10,6 +10,7 @@
 #
 # What this removes:
 #   - C:\Program Files\Speech-to-Cobot-Backend\  (install directory)
+#   - Desktop shortcut
 #   - uv package and Python cache (optional — prompted)
 #
 # What this does NOT remove:
@@ -65,6 +66,17 @@ if (Test-Path $INSTALL_DIR) {
     Write-OK "Removed $INSTALL_DIR"
 } else {
     Write-Warn "$INSTALL_DIR not found — already removed or never installed"
+}
+
+# --- Desktop shortcut ---------------------------------------------------------
+
+Write-Step "Removing Desktop shortcut"
+$shortcut = "$env:USERPROFILE\Desktop\Speech-to-Cobot Backend.lnk"
+if (Test-Path $shortcut) {
+    Remove-Item -Force $shortcut
+    Write-OK "Removed $shortcut"
+} else {
+    Write-Warn "Shortcut not found — already removed or never created"
 }
 
 # --- uv (optional) ------------------------------------------------------------
