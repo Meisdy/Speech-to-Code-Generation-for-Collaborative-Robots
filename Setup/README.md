@@ -34,7 +34,7 @@ LM Studio must be installed and configured manually before the application will 
 Open PowerShell as Administrator (right-click → *Run as Administrator*) and run:
 
 ```powershell
-irm https://raw.githubusercontent.com/Meisdy/Speech-to-Code-Generation-for-Collaborative-Robots/dev/Setup/setup_frontend.ps1 | iex
+irm https://raw.githubusercontent.com/Meisdy/Speech-to-Code-Generation-for-Collaborative-Robots/main/Setup/setup_frontend.ps1 | iex
 ```
 
 The script installs `ffmpeg` and `uv` via winget if not present, downloads the frontend to `C:\Program Files\Speech-to-Cobot`, creates a Desktop shortcut, and pre-downloads the Whisper base model (~140 MB).
@@ -48,7 +48,7 @@ Double-click **Speech-to-Cobot** on the Desktop.
 Run the following in Administrator PowerShell, or run `uninstall_frontend.ps1` directly from the install directory if internet is not available:
 
 ```powershell
-irm https://raw.githubusercontent.com/Meisdy/Speech-to-Code-Generation-for-Collaborative-Robots/dev/Setup/uninstall_frontend.ps1 | iex
+irm https://raw.githubusercontent.com/Meisdy/Speech-to-Code-Generation-for-Collaborative-Robots/main/Setup/uninstall_frontend.ps1 | iex
 ```
 
 Removes the install directory, Desktop shortcut, and Whisper model cache. Optionally removes `ffmpeg` and `uv` — you will be prompted for each. LM Studio must be removed manually via **Settings → Apps**.
@@ -64,7 +64,7 @@ This installer supports all robot adapters that run on Windows — currently **M
 Open PowerShell as Administrator and run:
 
 ```powershell
-irm https://raw.githubusercontent.com/Meisdy/Speech-to-Code-Generation-for-Collaborative-Robots/dev/Setup/setup_backend.ps1 | iex
+irm https://raw.githubusercontent.com/Meisdy/Speech-to-Code-Generation-for-Collaborative-Robots/main/Setup/setup_backend.ps1 | iex
 ```
 
 The script installs `uv` via winget if not present, downloads the backend to `C:\Program Files\Speech-to-Cobot-Backend`, and creates a Desktop shortcut.
@@ -87,7 +87,7 @@ The robot IP is configured in the UR controller at `Backend\robot_controllers\ur
 Run the following in Administrator PowerShell, or run `uninstall_backend.ps1` directly from the install directory if internet is not available:
 
 ```powershell
-irm https://raw.githubusercontent.com/Meisdy/Speech-to-Code-Generation-for-Collaborative-Robots/dev/Setup/uninstall_backend.ps1 | iex
+irm https://raw.githubusercontent.com/Meisdy/Speech-to-Code-Generation-for-Collaborative-Robots/main/Setup/uninstall_backend.ps1 | iex
 ```
 
 ---
