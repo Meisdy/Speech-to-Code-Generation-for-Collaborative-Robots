@@ -109,7 +109,7 @@ The following must be installed and configured on the Linux PC before proceeding
 Refer to the official documentation for each:
 - [ROS Noetic installation](https://wiki.ros.org/noetic/Installation/Ubuntu)
 - [MoveIt setup for Franka](https://moveit.ros.org/install)
-- [libfranka installation](https://frankaemika.github.io/docs/installation_linux.html)
+- [libfranka installation](https://github.com/frankarobotics/libfranka)
 
 ### Backend installation
 
