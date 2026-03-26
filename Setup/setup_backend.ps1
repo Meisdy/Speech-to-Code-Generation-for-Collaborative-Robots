@@ -3,7 +3,7 @@
 # Speech-to-Code Framework — Backend Setup (Windows 11)
 # =============================================================================
 # One-command install (run PowerShell as Administrator):
-#   irm https://raw.githubusercontent.com/Meisdy/Speech-to-Code-Generation-for-Collaborative-Robots/dev/Setup/setup_backend.ps1 | iex
+#   irm https://raw.githubusercontent.com/Meisdy/Speech-to-Code-Generation-for-Collaborative-Robots/main/Setup/setup_backend.ps1 | iex
 #
 # Installs the backend server supporting Mock and UR adapters.
 # Franka requires a pre-configured ROS Noetic workstation — see documentation.
@@ -13,7 +13,7 @@
 # =============================================================================
 
 $INSTALL_DIR   = "C:\Program Files\Speech-to-Cobot-Backend"
-$RELEASE_TAG   = "v0.3.0"
+$RELEASE_TAG   = "v1.0.0"
 $ZIP_URL       = "https://github.com/Meisdy/Speech-to-Code-Generation-for-Collaborative-Robots/releases/download/$RELEASE_TAG/stcgcr-backend.zip"
 $ZIP_PATH      = "C:\Windows\Temp\stcgcr-backend.zip"
 $EXTRACT_PATH  = "C:\Windows\Temp\stcgcr-backend-extract"

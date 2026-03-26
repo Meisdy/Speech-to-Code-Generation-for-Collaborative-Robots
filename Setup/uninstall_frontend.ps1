@@ -3,7 +3,7 @@
 # Speech-to-Code Framework — Frontend Uninstaller (Windows 11)
 # =============================================================================
 # One-command uninstall (run PowerShell as Administrator):
-#   irm https://raw.githubusercontent.com/Meisdy/Speech-to-Code-Generation-for-Collaborative-Robots/dev/Setup/uninstall_frontend.ps1 | iex
+#   irm https://raw.githubusercontent.com/Meisdy/Speech-to-Code-Generation-for-Collaborative-Robots/main/Setup/uninstall_frontend.ps1 | iex
 #
 # Or run directly from the install directory:
 #   & "C:\Program Files\Speech-to-Cobot\uninstall_frontend.ps1"
