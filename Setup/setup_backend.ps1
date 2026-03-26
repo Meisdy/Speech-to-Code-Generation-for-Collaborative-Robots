@@ -131,8 +131,10 @@ Write-OK "Python 3.12 and all dependencies installed ($elapsed s)"
 # Creates launch_backend.bat in the install directory.
 # Terminal window stays open so backend logs are visible while the server runs.
 
-Write-Step "Creating launcher"
-$batPath = "$INSTALL_DIR\launch_backend.bat"
+Write-Step "Creating launcher and Desktop shortcut"
+$batPath      = "$INSTALL_DIR\launch_backend.bat"
+$shortcutPath = "$env:USERPROFILE\Desktop\Speech-to-Cobot Backend.lnk"
+
 @"
 @echo off
 cd /d "C:\Program Files\Speech-to-Cobot-Backend"
@@ -143,6 +145,15 @@ uv run python -m Backend.main
 pause
 "@ | Set-Content -Path $batPath -Encoding ASCII
 Write-OK "Launcher created at $batPath"
+
+# Shortcut points directly to the bat file — terminal window is intentional for the backend
+$shell     = New-Object -ComObject WScript.Shell
+$shortcut  = $shell.CreateShortcut($shortcutPath)
+$shortcut.TargetPath       = $batPath
+$shortcut.WorkingDirectory = $INSTALL_DIR
+$shortcut.Description      = "Start Speech-to-Cobot Backend Server"
+$shortcut.Save()
+Write-OK "Shortcut created at $shortcutPath"
 
 # --- Done ---------------------------------------------------------------------
 
