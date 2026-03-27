@@ -20,25 +20,39 @@ logger = logging.getLogger("cobot")
 class UserGUI:
     """Pure view layer for the Speech-to-Code application."""
 
-    def __init__(self, on_record_start: Callable[[], None], on_record_stop: Callable[[str], None], on_ping: Callable[[], None]) -> None:
+    def __init__(
+        self,
+        on_record_start: Callable[[], None],
+        on_record_stop: Callable[[str], None],
+        on_ping: Callable[[str], None],
+        on_confirm: Callable[[str], None],
+        on_discard: Callable[[], None],
+        on_stop: Callable[[str], None],
+    ) -> None:
         self.on_record_start = on_record_start
         self.on_record_stop = on_record_stop
         self.on_ping = on_ping
+        self.on_confirm = on_confirm
+        self.on_discard = on_discard
+        self.on_stop = on_stop
 
         self.root = ttkb.Window(themename="darkly")
         self.root.title("Speech-to-Code Generation for Cobots")
         self.root.geometry("1000x700")
         self.root.minsize(600, 500)
 
-        # Default to first configured robot type
         self.robot_type: tk.StringVar = tk.StringVar(value=next(iter(ROBOT_TYPE_KEYS)))
 
         self.record_btn: ttkb.Button | None = None
+        self.stop_btn: ttkb.Button | None = None
         self.status_label: ttkb.Label | None = None
         self.log_text: scrolledtext.ScrolledText | None = None
         self.robot_combo: ttkb.Combobox | None = None
         self._led: tk.Canvas | None = None
-        self._space_down: bool = False  # Prevents OS key-repeat from firing multiple press events
+        self._confirmation_panel: ttkb.LabelFrame | None = None
+        self._confirmation_text: scrolledtext.ScrolledText | None = None
+        self._log_frame: ttkb.LabelFrame | None = None
+        self._space_down: bool = False
 
         self._setup_ui()
         self._bind_events()
@@ -57,6 +71,28 @@ class UserGUI:
         state = "normal" if enabled else "disabled"
         self.record_btn.configure(text=text, bootstyle=style, state=state)
         self.robot_combo.configure(state="readonly" if enabled else "disabled")
+
+    def show_confirmation_panel(self, script_name: str, steps: list[str]) -> None:
+        """Display the script confirmation panel with pre-formatted step strings."""
+        self._confirmation_panel.configure(text=f"📋 Confirm Script: '{script_name}'")
+        self._confirmation_text.config(state="normal")
+        self._confirmation_text.delete("1.0", tk.END)
+        for i, step in enumerate(steps, start=1):
+            self._confirmation_text.insert(tk.END, f"{i}.  {step}\n")
+        self._confirmation_text.config(state="disabled")
+        self._confirmation_panel.pack(fill=X, padx=30, pady=(0, 10), before=self._log_frame)
+
+    def hide_confirmation_panel(self) -> None:
+        """Remove the script confirmation panel from the layout."""
+        self._confirmation_panel.pack_forget()
+
+    def show_stop_button(self) -> None:
+        """Show the stop button below the record button."""
+        self.stop_btn.pack(after=self.record_btn, pady=(0, 10), ipadx=40, ipady=12)
+
+    def hide_stop_button(self) -> None:
+        """Remove the stop button from the layout."""
+        self.stop_btn.pack_forget()
 
     def log(self, message: str, level: int = logging.INFO) -> None:
         """Append a log message to the log area with level-based colouring."""
@@ -82,13 +118,12 @@ class UserGUI:
         def close_handler():
             cleanup_callback()
             self.root.destroy()
-
         self.root.protocol("WM_DELETE_WINDOW", close_handler)
 
     def _on_ping_click(self) -> None:
         """Redirect focus to root before firing ping so the button loses its focus ring."""
         self.root.focus_set()
-        self.on_ping(self.robot_type.get())  # was: self.on_ping()
+        self.on_ping(self.robot_type.get())
 
     def _setup_ui(self) -> None:
         """Build and layout all GUI widgets."""
@@ -126,6 +161,12 @@ class UserGUI:
         self.record_btn = ttkb.Button(self.root, text="Press and hold to record", bootstyle=PRIMARY)
         self.record_btn.pack(pady=40, ipadx=80, ipady=25)
 
+        # Created here but not packed — shown only during SCRIPT_RUNNING
+        self.stop_btn = ttkb.Button(
+            self.root, text="⏹ Stop Script", bootstyle="danger",
+            command=lambda: self.on_stop(self.robot_type.get())
+        )
+
         self.status_label = ttkb.Label(
             self.root,
             text="Ready – Select cobot & start commanding!",
@@ -133,10 +174,13 @@ class UserGUI:
         )
         self.status_label.pack(pady=20, padx=30)
 
-        log_outer = ttkb.LabelFrame(self.root, text="📋 Log")
-        log_outer.pack(fill=BOTH, padx=30, pady=20, expand=True)
+        # Created here but not packed — shown only during SCRIPT_CONFIRMING
+        self._setup_confirmation_panel()
 
-        log_inner = ttkb.Frame(log_outer)
+        self._log_frame = ttkb.LabelFrame(self.root, text="📋 Log")
+        self._log_frame.pack(fill=BOTH, padx=30, pady=20, expand=True)
+
+        log_inner = ttkb.Frame(self._log_frame)
         log_inner.pack(fill=BOTH, expand=True, padx=15, pady=15)
 
         self.log_text = scrolledtext.ScrolledText(
@@ -150,11 +194,38 @@ class UserGUI:
         )
         self.log_text.pack(fill=BOTH, expand=True)
 
-        self.log_text.tag_config("DEBUG",    foreground="#9AA5B1")  # dim gray
-        self.log_text.tag_config("INFO",     foreground="#F8F9FA")  # white
-        self.log_text.tag_config("WARNING",  foreground="#FFC107")  # amber
-        self.log_text.tag_config("ERROR",    foreground="#FF6B6B")  # soft red
+        self.log_text.tag_config("DEBUG",    foreground="#9AA5B1")
+        self.log_text.tag_config("INFO",     foreground="#F8F9FA")
+        self.log_text.tag_config("WARNING",  foreground="#FFC107")
+        self.log_text.tag_config("ERROR",    foreground="#FF6B6B")
         self.log_text.tag_config("CRITICAL", foreground="#FF3B30", underline=True)
+
+    def _setup_confirmation_panel(self) -> None:
+        """Build the confirmation panel widgets. Not packed until show_confirmation_panel is called."""
+        self._confirmation_panel = ttkb.LabelFrame(self.root, text="📋 Confirm Script", font=("Segoe UI", 11))
+
+        self._confirmation_text = scrolledtext.ScrolledText(
+            self._confirmation_panel,
+            height=6,
+            font=("Consolas", 10),
+            state="disabled",
+            bg="#212529",
+            fg="#f8f9fa",
+        )
+        self._confirmation_text.pack(fill=X, padx=15, pady=(10, 6))
+
+        btn_frame = ttkb.Frame(self._confirmation_panel)
+        btn_frame.pack(pady=(0, 12))
+
+        ttkb.Button(
+            btn_frame, text="✅ Confirm & Save", bootstyle="success",
+            command=lambda: self.on_confirm(self.robot_type.get())
+        ).pack(side=LEFT, padx=(0, 10), ipadx=20, ipady=6)
+
+        ttkb.Button(
+            btn_frame, text="❌ Discard", bootstyle="danger",
+            command=self.on_discard
+        ).pack(side=LEFT, ipadx=20, ipady=6)
 
     def _bind_events(self) -> None:
         """Bind mouse and keyboard events to their handlers."""
@@ -162,7 +233,7 @@ class UserGUI:
         self.record_btn.bind("<ButtonRelease-1>", self._handle_release)
         self.root.bind("<KeyPress-space>", self._handle_press)
         self.root.bind("<KeyRelease-space>", self._handle_release)
-        self.root.focus_set()  # Root must have focus to receive keyboard events
+        self.root.focus_set()
 
     def _handle_press(self, event: tk.Event) -> str:
         """Handle button press or spacebar down."""
@@ -170,7 +241,6 @@ class UserGUI:
             if self._space_down:
                 return "break"
             self._space_down = True
-
         self.on_record_start()
         return "break"
 
@@ -178,26 +248,5 @@ class UserGUI:
         """Handle button release or spacebar up."""
         if event.type == tk.EventType.KeyRelease and event.keysym == "space":
             self._space_down = False
-
         self.on_record_stop(self.robot_type.get())
         return "break"
-
-
-def main() -> None:
-    """Test GUI with dummy callbacks."""
-    def on_start():
-        gui.set_button_state("Press and hold to record", "warning", True)
-        gui.set_gui_status_line("🔴 Recording...", "warning")
-        gui.log("Recording started")
-
-    def on_stop(robot_type: str):
-        gui.set_button_state("Press and hold to record", "info", True)
-        gui.set_gui_status_line("Processing...", "info")
-        gui.log(f"Processing for {robot_type}...")
-        gui.root.after(2000, lambda: gui.log(f"Result: move {robot_type} forward (confidence 0.92)"))
-
-    gui = UserGUI(on_record_start=on_start, on_record_stop=on_stop)
-    gui.run()
-
-if __name__ == "__main__":
-    main()

@@ -149,6 +149,23 @@ RULES:
 - If the input does not contain a clear robot command, return an empty commands array and explain in the "message" field why the input was rejected
 - Do not infer or guess commands from ambiguous or non-robot-related speech
 - Never add intermediate approach or retract moves unless explicitly stated. Named poses already encode the final target position.
+
+SCRIPT RULES:
+- A script action always produces exactly one command in the commands array
+- "start", "begin", "record", "new script" and similar phrases map to command "start"
+- "end script", "finish script", "save", "save as", "call it" and similar phrases map to command "save"
+- "play", "run", "execute", "start script" and similar phrases map to command "run"
+- "stop", "halt", "cancel script" and similar phrases map to command "stop"
+- Always extract the script name from the utterance and apply snake_case (e.g. "call it pick routine" → "pick_routine")
+- If no script name is given for "start", use "unnamed_script" as the default script_name
+- If no script name is given for "stop", use "unnamed_script" as the default script_name
+- loop values for "run": 1 = run once (default), -1 = run forever, n = run exactly n times
+- "once", "one time", "single" → loop: 1
+- "infinite", "forever", "loop", "continuously", "non-stop" → loop: -1
+- Any explicit count like "three times", "5 times" → loop: that integer
+- If no loop instruction is given, default to loop: 1
+- "loop" field is required only for command "run" — omit it for "start", "save", and "stop"
+- Do not generate any move, gripper, wait, or pose commands alongside a script command
 """
 
     def _call_llm(self, user_prompt: str) -> dict[str, Any]:
@@ -234,6 +251,19 @@ RULES:
                     return False, f'Invalid pose command: "{cmd["command"]}"'
                 if "pose_name" not in cmd:
                     return False, "Pose command missing pose_name"
+
+            elif action == "script":
+                if "command" not in cmd:
+                    return False, "Script command missing command field"
+                if cmd["command"] not in ["start", "stop", "run", "save"]:
+                    return False, f"Invalid script command: {cmd['command']}"
+                if "script_name" not in cmd:
+                    return False, "Script command missing script_name"
+                if cmd["command"] == "run":
+                    if "loop" not in cmd:
+                        return False, "Script run command missing loop"
+                    if not isinstance(cmd["loop"], int):
+                        return False, "Script loop must be an integer"
 
         return True, ""
 
