@@ -50,7 +50,7 @@ class UserGUI:
         self.robot_combo: ttkb.Combobox | None = None
         self._led: tk.Canvas | None = None
         self._confirmation_panel: ttkb.LabelFrame | None = None
-        self._confirmation_text: scrolledtext.ScrolledText | None = None
+        self._confirmation_steps_frame: ttkb.Frame | None = None
         self._log_frame: ttkb.LabelFrame | None = None
         self._space_down: bool = False
 
@@ -72,14 +72,22 @@ class UserGUI:
         self.record_btn.configure(text=text, bootstyle=style, state=state)
         self.robot_combo.configure(state="readonly" if enabled else "disabled")
 
-    def show_confirmation_panel(self, script_name: str, steps: list[str]) -> None:
-        """Display the script confirmation panel with pre-formatted step strings."""
+    def show_confirmation_panel(self, script_name: str, steps: list[str], on_edit: Callable[[int], None]) -> None:
+        """Display the script confirmation panel with pre-formatted step strings and per-step edit buttons."""
         self._confirmation_panel.configure(text=f"📋 Confirm Script: '{script_name}'")
-        self._confirmation_text.config(state="normal")
-        self._confirmation_text.delete("1.0", tk.END)
+
+        # Destroy old step rows before rebuilding
+        for widget in self._confirmation_steps_frame.winfo_children():
+            widget.destroy()
+
         for i, step in enumerate(steps, start=1):
-            self._confirmation_text.insert(tk.END, f"{i}.  {step}\n")
-        self._confirmation_text.config(state="disabled")
+            row = ttkb.Frame(self._confirmation_steps_frame)
+            row.pack(fill=X, pady=1)
+            ttkb.Label(row, text=f"{i}.  {step}", font=("Consolas", 10), anchor="w").pack(
+                side=LEFT, fill=X, expand=True)
+            ttkb.Button(row, text="🔄", bootstyle="secondary", width=3,
+                        command=lambda idx=i - 1: on_edit(idx)).pack(side=LEFT)
+
         self._confirmation_panel.pack(fill=X, padx=30, pady=(0, 10), before=self._log_frame)
 
     def hide_confirmation_panel(self) -> None:
@@ -130,8 +138,10 @@ class UserGUI:
         header = ttkb.Frame(self.root)
         header.pack(fill=X, pady=(20, 10), padx=30)
 
-        ttkb.Label(header, text="🎤 Speech-to-Code for Cobots", font=("Segoe UI", 24, "bold")).pack(pady=(0, 10))
-        ttkb.Label(header, text="Press & hold button or use SPACEBAR to record commands", font=("Segoe UI", 12)).pack(pady=(0, 20))
+        ttkb.Label(header, text="🎤 Speech-to-Code for Cobots",
+                   font=("Segoe UI", 24, "bold")).pack(pady=(0, 10))
+        ttkb.Label(header, text="Press & hold button or use SPACEBAR to record commands",
+                   font=("Segoe UI", 12)).pack(pady=(0, 20))
 
         robot_frame = ttkb.Frame(self.root)
         robot_frame.pack(pady=(10, 4), padx=30)
@@ -149,8 +159,7 @@ class UserGUI:
 
         ttkb.Button(
             robot_frame, text="Ping Backend", bootstyle="secondary",
-            takefocus=0,
-            command=self._on_ping_click
+            takefocus=0, command=self._on_ping_click
         ).pack(side=LEFT, padx=(20, 6), ipady=2)
 
         self._led = tk.Canvas(robot_frame, width=14, height=14, highlightthickness=0,
@@ -201,18 +210,13 @@ class UserGUI:
         self.log_text.tag_config("CRITICAL", foreground="#FF3B30", underline=True)
 
     def _setup_confirmation_panel(self) -> None:
-        """Build the confirmation panel widgets. Not packed until show_confirmation_panel is called."""
-        self._confirmation_panel = ttkb.LabelFrame(self.root, text="📋 Confirm Script", font=("Segoe UI", 11))
+        """Build the confirmation panel. Not packed until show_confirmation_panel is called."""
+        self._confirmation_panel = ttkb.LabelFrame(self.root, text="📋 Confirm Script",
+                                                   font=("Segoe UI", 11))
 
-        self._confirmation_text = scrolledtext.ScrolledText(
-            self._confirmation_panel,
-            height=6,
-            font=("Consolas", 10),
-            state="disabled",
-            bg="#212529",
-            fg="#f8f9fa",
-        )
-        self._confirmation_text.pack(fill=X, padx=15, pady=(10, 6))
+        # Container for dynamically built step rows
+        self._confirmation_steps_frame = ttkb.Frame(self._confirmation_panel)
+        self._confirmation_steps_frame.pack(fill=X, padx=15, pady=(10, 6))
 
         btn_frame = ttkb.Frame(self._confirmation_panel)
         btn_frame.pack(pady=(0, 12))

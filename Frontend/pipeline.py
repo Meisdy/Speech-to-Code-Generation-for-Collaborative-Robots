@@ -38,6 +38,7 @@ class Controller:
         self._script_name: str | None = None
         self._script_buffer: list | None = None
         self._active_robot_key: str | None = None
+        self._edit_index: int | None = None
 
         self.recording_active = threading.Event()
         self.recording_thread: threading.Thread | None = None
@@ -60,8 +61,8 @@ class Controller:
         self.gui = gui
 
     def start_recording(self) -> None:
-        """Begin audio capture if idle or in script recording mode."""
-        if self.state not in (State.IDLE, State.SCRIPT_RECORDING):
+        """Begin audio capture if idle, in script recording, or in script confirming (for step edit)."""
+        if self.state not in (State.IDLE, State.SCRIPT_RECORDING, State.SCRIPT_CONFIRMING):
             return
 
         self.state = State.RECORDING
@@ -125,6 +126,7 @@ class Controller:
         logger.info("Script '%s' discarded", self._script_name)
         self._script_name = None
         self._script_buffer = None
+        self._edit_index = None
         self.gui.hide_confirmation_panel()
         self.gui.set_gui_status_line("Script discarded", "secondary")
         self.state = State.IDLE
@@ -140,6 +142,13 @@ class Controller:
             target=lambda: self._send_stop_script(robot_key),
             daemon=True, name="thread_stop_script"
         ).start()
+
+    def select_step_for_edit(self, index: int) -> None:
+        """Mark a script step for replacement. Called by GUI edit button."""
+        if self.state != State.SCRIPT_CONFIRMING:
+            return
+        self._edit_index = index
+        self.gui.set_gui_status_line(f"🔄 Hold button to re-record step {index + 1}", "warning")
 
     def cleanup(self) -> None:
         """Release all resources on shutdown. Safe to call more than once."""
@@ -203,7 +212,10 @@ class Controller:
         logger.info("Parser: Command summary \"%s\"", self._command_to_string(command))
 
         first_cmd = command.get("commands", [{}])[0]
-        if first_cmd.get("action") == "script":
+
+        if self._edit_index is not None:
+            self._handle_step_replacement(command.get("commands", []))
+        elif first_cmd.get("action") == "script":
             self._handle_script_command(first_cmd, command.get("robot"))
         elif self._script_buffer is not None:
             self._handle_script_buffer(command.get("commands", []))
@@ -233,7 +245,7 @@ class Controller:
                 return
             steps = [self._format_cmd(c) for c in self._script_buffer]
             self.state = State.SCRIPT_CONFIRMING
-            self.gui.show_confirmation_panel(self._script_name, steps)
+            self.gui.show_confirmation_panel(self._script_name, steps, on_edit=self.select_step_for_edit)
             self._set_button_state("primary", False)
             logger.info("Script '%s' ready for confirmation, %d command(s)", self._script_name,
                         len(self._script_buffer))
@@ -241,7 +253,7 @@ class Controller:
         elif script_cmd == "run":
             script_name = cmd.get("script_name")
             loop = cmd.get("loop", 1)
-            self._active_robot_key = robot_key  # needed for polling
+            self._active_robot_key = robot_key
             self.state = State.SCRIPT_RUNNING
             self.gui.set_gui_status_line(f"▶ Running script '{script_name}'...", "info")
             self.gui.show_stop_button()
@@ -257,12 +269,11 @@ class Controller:
                     target=lambda: self._send_stop_script(robot_key),
                     daemon=True, name="thread_stop_script"
                 ).start()
-
             else:
-                # "stop" during recording means discard the buffer
                 logger.info("Script '%s' cancelled by voice", self._script_name)
                 self._script_name = None
                 self._script_buffer = None
+                self._edit_index = None
                 self.gui.set_gui_status_line("Script cancelled", "secondary")
                 self.state = State.IDLE
                 self._set_button_state()
@@ -275,6 +286,16 @@ class Controller:
         self.gui.set_gui_status_line(f"📝 Script '{self._script_name}' — {count} command(s) recorded", "warning")
         self.state = State.SCRIPT_RECORDING
         self._set_button_state("warning", True)
+
+    def _handle_step_replacement(self, commands: list) -> None:
+        """Replace the selected step in the buffer and refresh the confirmation panel."""
+        self._script_buffer[self._edit_index:self._edit_index + 1] = commands
+        self._edit_index = None
+        steps = [self._format_cmd(c) for c in self._script_buffer]
+        self.gui.show_confirmation_panel(self._script_name, steps, on_edit=self.select_step_for_edit)
+        self.gui.set_gui_status_line("✅ Step replaced — review and confirm", "info")
+        self.state = State.SCRIPT_CONFIRMING
+        self._set_button_state("primary", False)
 
     def _handle_live_command(self, command: dict) -> None:
         """Dispatch a parsed command to the backend for immediate execution."""
@@ -302,13 +323,15 @@ class Controller:
         self.gui.root.after(0, lambda: self._display_execution_result(success, response))
 
     def _send_save_script(self, robot_key: str, data: dict) -> None:
-        data["robot"] = robot_key  # backend needs this to ensure correct robot is ready
+        """Send save_script command to backend."""
+        data["robot"] = robot_key
         client = ClientZeroMQ(BACKEND_IPS[robot_key])
         success, response = client.send_command("save_script", data)
         client.close()
         self.gui.root.after(0, lambda: self._display_save_result(success, response))
 
     def _send_run_script(self, robot_key: str, script_name: str, loop: int) -> None:
+        """Send run_script command to backend."""
         data = {"script_name": script_name, "loop": loop, "robot": robot_key}
         client = ClientZeroMQ(BACKEND_IPS[robot_key])
         success, response = client.send_command("run_script", data)
@@ -358,6 +381,7 @@ class Controller:
         self._set_button_state()
 
     def _display_run_result(self, success: bool, response: dict) -> None:
+        """Update GUI after run_script dispatch. Backend responds immediately."""
         if success and response.get("command") == "success":
             self.gui.set_gui_status_line("▶ Script running", "success")
             logger.info("Script dispatched successfully")
@@ -377,59 +401,11 @@ class Controller:
             logger.info("Stop signal sent to backend")
         else:
             self.gui.set_gui_status_line("❌ Stop failed", "danger")
-            logger.error(f"Stop script failed: {response}")
+            logger.error("Stop script failed: %s", response)
 
         self.gui.hide_stop_button()
         self.state = State.IDLE
         self._set_button_state()
-
-    def _restore_state_after_failure(self) -> None:
-        """Return to the correct idle state after a transcription or parse failure."""
-        if self._script_buffer is not None:
-            self.state = State.SCRIPT_RECORDING
-            self._set_button_state("warning", True)
-        else:
-            self.state = State.IDLE
-            self._set_button_state()
-
-    def _command_to_string(self, command: dict) -> str:
-        """Convert a parsed command dict to a human-readable summary for logging."""
-        commands = command.get("commands", [])
-        if not commands:
-            return "Empty command"
-        return " → ".join(self._format_cmd(cmd) for cmd in commands)
-
-    def _format_cmd(self, cmd: dict) -> str:
-        """Format a single command dict into a human-readable string."""
-        action = cmd.get("action", "unknown")
-        if action == "move":
-            target = cmd.get("target", {})
-            if target.get("type") == "offset_from_current":
-                raw = target.get("offset", {})
-                return f"Move offset_from_current ({raw.get('x_mm', 0)}, {raw.get('y_mm', 0)}, {raw.get('z_mm', 0)}) mm"
-            name = target.get("name", target) if isinstance(target, dict) else target
-            return f"Move to {name} pos."
-        elif action == "gripper":
-            state = cmd.get("state") or cmd.get("command", "?")
-            return f"{state.capitalize()} gripper"
-        elif action == "pose":
-            return f"{cmd.get('command', '?').capitalize()} pose '{cmd.get('pose_name', '?')}'"
-        elif action == "freedrive":
-            return f"Freedrive {'on' if cmd.get('active') else 'off'}"
-        elif action == "connection":
-            return f"Connection {cmd.get('command', '?')}"
-        elif action == "wait":
-            return f"Wait {cmd.get('duration_s', '?')}s"
-        elif action == "script":
-            sc = cmd.get("command", "?")
-            name = cmd.get("script_name", "?")
-            loop = cmd.get("loop", 1)
-            return f"Script {sc} '{name}'" + (f" x{loop}" if sc == "run" else "")
-        return action.capitalize()
-
-    def _set_button_state(self, visual_state: str = "primary", enabled: bool = True) -> None:
-        """Update the record button to the given style and enabled state."""
-        self.gui.set_button_state("Press and hold to record", visual_state, enabled)
 
     def _poll_script_status(self) -> None:
         """Schedule a background status check if script is still marked as running."""
@@ -467,3 +443,56 @@ class Controller:
             self._active_robot_key = None
             self.state = State.IDLE
             self._set_button_state()
+
+    def _restore_state_after_failure(self) -> None:
+        """Return to the correct state after a transcription or parse failure."""
+        if self._edit_index is not None:
+            self._edit_index = None
+            self.state = State.SCRIPT_CONFIRMING
+            self._set_button_state("primary", False)
+        elif self._script_buffer is not None:
+            self.state = State.SCRIPT_RECORDING
+            self._set_button_state("warning", True)
+        else:
+            self.state = State.IDLE
+            self._set_button_state()
+
+    def _command_to_string(self, command: dict) -> str:
+        """Convert a parsed command dict to a human-readable summary for logging."""
+        commands = command.get("commands", [])
+        if not commands:
+            return "Empty command"
+        return " → ".join(self._format_cmd(cmd) for cmd in commands)
+
+    def _format_cmd(self, cmd: dict) -> str:
+        """Format a single command dict into a human-readable string."""
+        action = cmd.get("action", "unknown")
+        if action == "move":
+            target = cmd.get("target", {})
+            motion_type = cmd.get("motion_type", "moveJ")
+            if target.get("type") == "offset_from_current":
+                raw = target.get("offset", {})
+                return f"{motion_type} offset_from_current ({raw.get('x_mm', 0)}, {raw.get('y_mm', 0)}, {raw.get('z_mm', 0)}) mm"
+            name = target.get("name", target) if isinstance(target, dict) else target
+            return f"{motion_type} to {name}"
+        elif action == "gripper":
+            state = cmd.get("state") or cmd.get("command", "?")
+            return f"{state.capitalize()} gripper"
+        elif action == "pose":
+            return f"{cmd.get('command', '?').capitalize()} pose '{cmd.get('pose_name', '?')}'"
+        elif action == "freedrive":
+            return f"Freedrive {'on' if cmd.get('active') else 'off'}"
+        elif action == "connection":
+            return f"Connection {cmd.get('command', '?')}"
+        elif action == "wait":
+            return f"Wait {cmd.get('duration_s', '?')}s"
+        elif action == "script":
+            sc = cmd.get("command", "?")
+            name = cmd.get("script_name", "?")
+            loop = cmd.get("loop", 1)
+            return f"Script {sc} '{name}'" + (f" x{loop}" if sc == "run" else "")
+        return action.capitalize()
+
+    def _set_button_state(self, visual_state: str = "primary", enabled: bool = True) -> None:
+        """Update the record button to the given style and enabled state."""
+        self.gui.set_button_state("Press and hold to record", visual_state, enabled)
