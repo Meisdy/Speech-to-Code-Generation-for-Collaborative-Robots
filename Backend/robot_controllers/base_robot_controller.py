@@ -61,6 +61,14 @@ class BaseRobotController(ABC):
         """Return the command list for a named script, or None if not found."""
         return self.scripts.get(name)
 
+    def delete_script(self, name: str) -> dict:
+        if name not in self.scripts:
+            return {"success": False, "message": f"Script '{name}' not found"}
+        del self.scripts[name]
+        self._write_scripts()
+        logger.info("Deleted script '%s'", name)
+        return {"success": True, "message": f"Script '{name}' deleted"}
+
     def is_ready(self) -> bool:
         """Returns connected status if not overridden by robot controller."""
         return self.connected

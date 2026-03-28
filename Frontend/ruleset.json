@@ -93,7 +93,7 @@
     },
     "script": {
       "description": "Manipulates scripts for replay functionality",
-      "commands": ["start", "save", "run", "stop"],
+      "commands": ["start", "save", "run", "stop", "delete"],
       "parameters": {
         "script_name": {
           "type": "string",

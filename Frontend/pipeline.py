@@ -278,6 +278,13 @@ class Controller:
                 self.state = State.IDLE
                 self._set_button_state()
 
+        elif script_cmd == "delete":
+            script_name = cmd.get("script_name")
+            threading.Thread(
+                target=lambda: self._send_delete_script(robot_key, script_name),
+                daemon=True, name="thread_delete_script"
+            ).start()
+
     def _handle_script_buffer(self, commands: list) -> None:
         """Append parsed commands to the active script buffer."""
         self._script_buffer.extend(commands)
@@ -496,3 +503,21 @@ class Controller:
     def _set_button_state(self, visual_state: str = "primary", enabled: bool = True) -> None:
         """Update the record button to the given style and enabled state."""
         self.gui.set_button_state("Press and hold to record", visual_state, enabled)
+
+    def _send_delete_script(self, robot_key: str, script_name: str) -> None:
+        data = {"script_name": script_name, "robot": robot_key}
+        client = ClientZeroMQ(BACKEND_IPS[robot_key])
+        success, response = client.send_command("delete_script", data)
+        client.close()
+        self.gui.root.after(0, lambda: self._display_delete_result(success, response, script_name))
+
+    def _display_delete_result(self, success: bool, response: dict, script_name: str) -> None:
+        if success and response.get("command") == "success":
+            self.gui.set_gui_status_line(f"🗑 Script '{script_name}' deleted", "secondary")
+            logger.info("Script '%s' deleted", script_name)
+        else:
+            error = response.get("data", {}).get("message", "Unknown error")
+            self.gui.set_gui_status_line(f"❌ Delete failed: {error}", "danger")
+            logger.error("Script delete failed: %s", error)
+        self.state = State.IDLE
+        self._set_button_state()

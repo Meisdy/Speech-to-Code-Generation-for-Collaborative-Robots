@@ -85,6 +85,11 @@
       "command": "stop",
       "script_name": "dance",
       "loop": 1
+    },
+    {
+      "action": "script",
+      "command": "delete",
+      "script_name": "dance"
     }
   ],
   "message": "Optional feedback from LLM here."

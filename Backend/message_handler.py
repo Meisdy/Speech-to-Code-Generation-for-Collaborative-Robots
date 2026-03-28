@@ -66,7 +66,8 @@ class MessageHandler:
                 "save_script": lambda: self._save_script(data),
                 "run_script": lambda: self._run_script(data),
                 "stop_script": self._stop_script,
-                "get_script_status": self._get_script_status
+                "get_script_status": self._get_script_status,
+                "delete_script": lambda: self._delete_script(data),
             }
 
             return commands[command]()
@@ -330,3 +331,22 @@ class MessageHandler:
     def _get_script_status(self) -> dict:
         is_running = self._script_thread is not None and self._script_thread.is_alive()
         return self._formatted_response("success", {"is_running": is_running})
+
+    def _delete_script(self, data: dict) -> dict:
+        robot_type = data.get("robot")
+        script_name = data.get("script_name")
+
+        if not robot_type or robot_type not in CONTROLLERS:
+            return self._formatted_response("rejected", {"message": f"Unsupported robot type: {robot_type}"})
+
+        result = self._ensure_robot_ready(robot_type)
+        if not result["success"]:
+            return self._formatted_response("rejected",
+                                            {"message": f"Could not connect to {robot_type}: {result['message']}"})
+
+        result = self.robot.delete_script(script_name)
+        if not result["success"]:
+            return self._formatted_response("error", {"message": result["message"]})
+
+        logger.info("Script '%s' deleted", script_name)
+        return self._formatted_response("success", {"message": f"Script '{script_name}' deleted"})

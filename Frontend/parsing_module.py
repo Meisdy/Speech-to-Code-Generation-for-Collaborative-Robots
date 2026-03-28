@@ -191,8 +191,10 @@ SCRIPT RULES:
 - "once" / "one time" / "single" → loop: 1
 - "infinite" / "forever" / "loop" / "continuously" / "non-stop" → loop: -1
 - Any explicit count like "three times" / "5 times" → loop: that integer
-- "loop" field is required only for command "run" — omit it for "start", "save", and "stop"
+- "loop" field is always required
 - Do not generate any move, gripper, wait, or pose commands alongside a script command
+- "delete" / "remove" / "erase" script → command: "delete"
+- script_name is required for delete — if not provided, ask in the message field
 """
 
     def _call_llm(self, user_prompt: str) -> dict[str, Any]:
@@ -282,7 +284,7 @@ SCRIPT RULES:
             elif action == "script":
                 if "command" not in cmd:
                     return False, "Script command missing command field"
-                if cmd["command"] not in ["start", "stop", "run", "save"]:
+                if cmd["command"] not in ["start", "stop", "run", "save", "delete"]:
                     return False, f"Invalid script command: {cmd['command']}"
                 if "script_name" not in cmd:
                     return False, "Script command missing script_name"
