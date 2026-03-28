@@ -51,11 +51,11 @@ STATE_RECV_BYTES = 1220   # max packet size; covers both CB3 (1060) and e-Series
 RT_JOINT_OFFSET  = 252    # byte offset of joint positions in state packet
 RT_TCP_OFFSET    = 444    # byte offset of TCP pose in state packet
 
-MAX_JOINT_SPEED  = 3.14   # rad/s
-MAX_JOINT_ACCEL  = 3.14   # rad/s²
-MAX_LINEAR_SPEED = 0.5    # m/s
-MAX_LINEAR_ACCEL = 0.5    # m/s²
-DEFAULT_SPEED    = 0.5    # fraction 0.0-1.0
+MAX_JOINT_SPEED  = 2*3.14   # rad/s
+MAX_JOINT_ACCEL  = 2*3.14   # rad/s²
+MAX_LINEAR_SPEED = 1.0    # m/s
+MAX_LINEAR_ACCEL = 1.0    # m/s²
+DEFAULT_SPEED    = 1.0    # fraction 0.0-1.0
 
 
 def _recv_exactly(sock: socket.socket, n: int) -> bytes:
