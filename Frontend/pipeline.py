@@ -149,6 +149,7 @@ class Controller:
             return
         self._edit_index = index
         self.gui.set_gui_status_line(f"🔄 Hold button to re-record step {index + 1}", "warning")
+        self._set_button_state("warning", True)
 
     def cleanup(self) -> None:
         """Release all resources on shutdown. Safe to call more than once."""
