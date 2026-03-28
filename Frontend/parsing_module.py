@@ -120,50 +120,77 @@ AVAILABLE PRIMITIVES:
 REQUIRED OUTPUT FORMAT:
 {json.dumps(self.command_schema, indent=2)}
 
-RULES:
+GENERAL RULES:
 - Return ONLY valid JSON (no markdown, no explanations)
 - Use only actions from AVAILABLE PRIMITIVES
 - Commands array can contain multiple sequential commands
 - Use defaults from ruleset when parameters not specified
 - Always include "mode", "robot", and "commands" fields
-- Always convert number words to digits in pose names (e.g. "test_1" not "test_one", "position_2" not "position_two")
-- Use snake_case for position names (e.g. "home" not "Home")
 - Add any feedback to the "message" field
 - Always use the JSON format of the command schema exactly
-- When the user asks to 'reconnect', execute disconnect then connect
+- If the input does not contain a clear robot command, return an empty commands array and explain in the "message" field why the input was rejected
+- Do not infer or guess commands from ambiguous or non-robot-related speech
+
+NAMING RULES:
+- Use snake_case for ALL pose names — always lowercase (e.g. "d1" not "D1", "p1" not "P1", "home" not "Home")
+- Always convert number words to digits in pose names (e.g. "test_1" not "test_one", "position_2" not "position_two")
+
+UNIT AND DIRECTION RULES:
 - Map spatial directions to axes: up/down = Z, forward/back = X, left/right = Y
 - Always convert measurements to millimetres (e.g. 5cm → 50.0, 1 inch → 25.4)
 - If no unit is given for a distance, assume millimetres
 - Ignore speed qualifiers unless an explicit numeric value is given; omit the speed field to use defaults
+
+TARGET RULES:
 - Use offset_from_current when no reference pose is mentioned (e.g. "move 500mm in x")
-- Use offset_from_pose when a reference pose is mentioned (e.g. "place 50mm above home")
-- "Pick"/"Grab" at a position ALWAYS generates exactly two sequential commands:
-  1. moveL to the target pose
-  2. close_gripper — this step is MANDATORY, never omit it
-- "Place"/"Release"/"Put" at a position ALWAYS generates exactly two sequential commands:
-  1. moveL to the target pose
-  2. open_gripper — this step is MANDATORY, never omit it
-- A single-word action like "place at position_2" is NOT just a move — it MUST include the gripper action
-- For pick-and-place commands like "pick at P1 and place 50mm in x", the place target uses offset_from_pose with the pick pose name as reference, not offset_from_current
-- Always prefer moveL for offset_from_current moves
-- If the input does not contain a clear robot command, return an empty commands array and explain in the "message" field why the input was rejected
-- Do not infer or guess commands from ambiguous or non-robot-related speech
+- Use offset_from_pose when a reference pose is mentioned (e.g. "move 50mm above home")
+- When the user asks to 'reconnect', execute disconnect then connect
 - Never add intermediate approach or retract moves unless explicitly stated. Named poses already encode the final target position.
+
+MOTION TYPE AND GRIPPER RULES:
+Each utterance maps to exactly one of these patterns. Apply the first matching pattern and produce no other motion type or gripper action:
+
+- "move to" / "go to" / "drive to" / "reach" / "send to":
+    motion: moveJ, gripper: none
+
+- "linear" / "straight" / "cartesian" (without pick/place vocabulary):
+    motion: moveL, gripper: none
+
+- "pick" / "grab":
+    motion: moveL to target, then close_gripper
+    close_gripper is MANDATORY — NEVER substitute open_gripper
+    NEVER use moveJ for pick — always moveL
+    Example: "pick at p4" → moveL to p4, close_gripper
+
+- "place" / "put" / "release":
+    motion: moveL to target, then open_gripper
+    open_gripper is MANDATORY — NEVER substitute close_gripper
+
+- If none of the above pick/place words appear in the utterance:
+    NO gripper command is generated under any circumstance
+    Every move in the output uses moveJ unless "linear"/"straight"/"cartesian" is present
+
+- The motion type and gripper state of one command NEVER influence the next command in a sequence
+- For pick-and-place like "pick at p1 and place 50mm in x": the place target uses offset_from_pose with the pick pose as reference, not offset_from_current
+- Each comma-separated or "then"-separated sub-command is parsed INDEPENDENTLY
+- The pattern matched for sub-command N has zero effect on sub-command N+1
+- "Move to P2, then pick at P1" produces exactly:
+    1. moveJ to p2    (no gripper)
+    2. moveL to p1
+    3. close_gripper
 
 SCRIPT RULES:
 - A script action always produces exactly one command in the commands array
-- "start", "begin", "record", "new script" and similar phrases map to command "start"
-- "end script", "finish script", "save", "save as", "call it" and similar phrases map to command "save"
-- "play", "run", "execute", "start script" and similar phrases map to command "run"
-- "stop", "halt", "cancel script" and similar phrases map to command "stop"
+- "start" / "begin" / "record" / "new script" → command: "start"
+- "end script" / "finish script" / "save" / "save as" / "call it" → command: "save"
+- "play" / "run" / "execute" / "start script" → command: "run"
+- "stop" / "halt" / "cancel script" → command: "stop"
 - Always extract the script name from the utterance and apply snake_case (e.g. "call it pick routine" → "pick_routine")
-- If no script name is given for "start", use "unnamed_script" as the default script_name
-- If no script name is given for "stop", use "unnamed_script" as the default script_name
-- loop values for "run": 1 = run once (default), -1 = run forever, n = run exactly n times
-- "once", "one time", "single" → loop: 1
-- "infinite", "forever", "loop", "continuously", "non-stop" → loop: -1
-- Any explicit count like "three times", "5 times" → loop: that integer
-- If no loop instruction is given, default to loop: 1
+- If no script name is given for "start" or "stop", use "unnamed_script"
+- loop values for "run": 1 = once (default), -1 = infinite, n = exactly n times
+- "once" / "one time" / "single" → loop: 1
+- "infinite" / "forever" / "loop" / "continuously" / "non-stop" → loop: -1
+- Any explicit count like "three times" / "5 times" → loop: that integer
 - "loop" field is required only for command "run" — omit it for "start", "save", and "stop"
 - Do not generate any move, gripper, wait, or pose commands alongside a script command
 """
