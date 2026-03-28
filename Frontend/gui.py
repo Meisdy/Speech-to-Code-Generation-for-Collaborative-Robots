@@ -214,10 +214,30 @@ class UserGUI:
         self._confirmation_panel = ttkb.LabelFrame(self.root, text="📋 Confirm Script",
                                                    font=("Segoe UI", 11))
 
-        # Container for dynamically built step rows
-        self._confirmation_steps_frame = ttkb.Frame(self._confirmation_panel)
-        self._confirmation_steps_frame.pack(fill=X, padx=15, pady=(10, 6))
+        # Scrollable step area
+        scroll_frame = ttkb.Frame(self._confirmation_panel)
+        scroll_frame.pack(fill=X, padx=15, pady=(10, 6))
 
+        canvas = tk.Canvas(scroll_frame, bg="#2b3e50", highlightthickness=0, height=150)
+        scrollbar = ttkb.Scrollbar(scroll_frame, orient="vertical", command=canvas.yview)
+        canvas.configure(yscrollcommand=scrollbar.set)
+
+        scrollbar.pack(side="right", fill="y")
+        canvas.pack(side="left", fill=X, expand=True)
+
+        self._confirmation_steps_frame = ttkb.Frame(canvas)
+        self._canvas_window = canvas.create_window((0, 0), window=self._confirmation_steps_frame, anchor="nw")
+
+        self._confirmation_steps_frame.bind(
+            "<Configure>",
+            lambda e: canvas.configure(scrollregion=canvas.bbox("all"))
+        )
+        canvas.bind(
+            "<Configure>",
+            lambda e: canvas.itemconfig(self._canvas_window, width=e.width)
+        )
+
+        # Confirm / Discard buttons — separate row below the scroll area
         btn_frame = ttkb.Frame(self._confirmation_panel)
         btn_frame.pack(pady=(0, 12))
 

@@ -148,7 +148,7 @@ class Controller:
         if self.state != State.SCRIPT_CONFIRMING:
             return
         self._edit_index = index
-        self.gui.set_gui_status_line(f"🔄 Hold button to re-record step {index + 1}", "warning")
+        self.gui.set_gui_status_line(f"🔄 Step {index + 1} selected — hold button to re-record it", "warning")
         self._set_button_state("warning", True)
 
     def cleanup(self) -> None:
@@ -248,6 +248,7 @@ class Controller:
             self.state = State.SCRIPT_CONFIRMING
             self.gui.show_confirmation_panel(self._script_name, steps, on_edit=self.select_step_for_edit)
             self._set_button_state("primary", False)
+            self.gui.set_gui_status_line("Review script — confirm, discard, or click 🔄 to re-record a step", "info")
             logger.info("Script '%s' ready for confirmation, %d command(s)", self._script_name,
                         len(self._script_buffer))
 
