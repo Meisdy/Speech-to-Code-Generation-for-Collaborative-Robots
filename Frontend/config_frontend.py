@@ -7,7 +7,7 @@ All values can be edited directly in this file.
 FRAMEWORK_MODE = "live"
 
 # ── ASR ───────────────────────────────────────────────────────────────────────
-ASR_MODEL_SIZE           = "base"    # tiny | base | small | medium | large
+ASR_MODEL_SIZE           = "small"    # tiny | base | small | medium | large
 ASR_LANGUAGE             = "en"      # ISO language code
 ASR_SAMPLE_RATE          = 16000     # Hz — Whisper expects 16kHz
 ASR_CONFIDENCE_THRESHOLD = 0.7      # Warn on transcripts below this (0.0–1.0)
@@ -24,7 +24,7 @@ LLM_TIMEOUT     = 60                # Long — LLM may need to load on first cal
 BACKEND_IPS = {
     "franka": "tcp://192.168.1.10:5555",    # Backend runs on Linux PC for Franka
     "ur":     "tcp://localhost:5555",       # Backend runs on Operator machine for UR
-    "mock":   "tcp://localhost:5555",
+    "mock":   "tcp://localhost:5555",       # Backend runs on Operator machinie for Mock
 }
 
 ROBOT_TYPE_KEYS = {
