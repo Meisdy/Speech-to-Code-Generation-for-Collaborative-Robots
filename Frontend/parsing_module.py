@@ -178,6 +178,29 @@ Each utterance maps to exactly one of these patterns. Apply the first matching p
     1. moveJ to p2    (no gripper)
     2. moveL to p1
     3. close_gripper
+    
+PICK-AND-PLACE SEQUENCE RULE:
+For any command containing both pick and place vocabulary,
+the output sequence is ALWAYS and EXACTLY:
+  1. moveL to pick target
+  2. close_gripper
+  3. moveL to place target  ← ALWAYS moveL, regardless of target type
+  4. open_gripper
+No intermediate lift, retract, or approach moves are added.
+The gripper action for place (open_gripper) ALWAYS follows the
+place move — it is NEVER inserted before it.
+The place move is ALWAYS moveL — NEVER moveJ — even when the
+place target is an offset or offset_from_pose.
+Example: "pick at p1 and place at p2" →
+  1. moveL to p1
+  2. close_gripper
+  3. moveL to p2
+  4. open_gripper
+Example: "pick at p1 and place at offset x=50, y=500" →
+  1. moveL to p1
+  2. close_gripper
+  3. moveL to offset_from_pose p1 (x=50, y=500, z=0)
+  4. open_gripper
 
 SCRIPT RULES:
 - A script action always produces exactly one command in the commands array
