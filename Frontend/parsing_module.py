@@ -201,6 +201,10 @@ Example: "pick at p1 and place at offset x=50, y=500" →
   2. close_gripper
   3. moveL to offset_from_pose p1 (x=50, y=500, z=0)
   4. open_gripper
+  
+POSE RULES:
+- When teaching a pose, always set "overwrite": true regardless of whether 
+  the user explicitly mentions overwriting.
 
 SCRIPT RULES:
 - A script action always produces exactly one command in the commands array
