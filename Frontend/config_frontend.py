@@ -2,6 +2,7 @@
 config_frontend.py — Configuration for Speech-to-Code Framework.
 All values can be edited directly in this file.
 """
+import os
 
 # ── General ───────────────────────────────────────────────────────────────────
 FRAMEWORK_MODE = "live"
@@ -22,7 +23,7 @@ LLM_TIMEOUT     = 60                # Long — LLM may need to load on first cal
 
 # ── Backend ───────────────────────────────────────────────────────────────────
 BACKEND_IPS = {
-    "franka": "tcp://192.168.1.10:5555",    # Backend runs on Linux PC for Franka
+    "franka": "tcp://192.168.2.20:5555",    # Backend runs on Linux PC for Franka
     "ur":     "tcp://localhost:5555",       # Backend runs on Operator machine for UR
     "mock":   "tcp://localhost:5555",       # Backend runs on Operator machinie for Mock
 }
@@ -38,4 +39,4 @@ LOGGING_LEVEL      = "INFO"     # Console and GUI level: DEBUG | INFO | WARNING 
 LOGGING_LEVEL_FILE = "DEBUG"    # File level — can be more verbose than console
 LOGGING_SAVE_AUDIO = False      # Save .wav files for ASR debugging
 LOGGING_SAVE_PARSE = False      # Save parsed JSON for parser debugging
-DATA_DIR           = "data"
+DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
