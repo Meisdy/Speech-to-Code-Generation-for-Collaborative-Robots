@@ -35,7 +35,7 @@ Before starting each new test, return the robot to `HOME` to ensure a defined st
 
 **Objective:** Measure end-to-end task success rate across the full benchmark task set on the Franka Panda.
 
-**Procedure:** Execute each benchmark task five times before moving to the next. Complete all five trials of task 1, then all five trials of task 2, and so on through task 6, for a total of 30 trials. Issue each command by voice via the push-to-talk interface. Do not intervene between trials. Return the robot to `HOME` between tasks. Also reset the gripper to closed before task 3. Note that task 4 will overwrite any previously stored `P3` automatically. Record the outcome of every execution.
+**Procedure:** Execute each benchmark task five times before moving to the next. Complete all five trials of task 1, then all five trials of task 2, and so on through task 6, for a total of 30 trials. Issue each command by voice via the push-to-talk interface. Do not intervene between trials. For tasks 1 and 2, return the robot to HOME before each trial to ensure movement is observable. For task 3, close the gripper before each trial to ensure the open command produces a visible state change. For tasks 4, 5, and 6, no reset is required between trials. Note that task 4 will overwrite any previously stored `P3` automatically. Record the outcome of every execution.
 
 1. `"Go to P1"`
 2. `"Go linear to P2"`
