@@ -74,6 +74,7 @@ class Controller:
             target=self._recording_loop, daemon=True, name="thread_recording"
         )
         self.recording_thread.start()
+        logger.info("--- New trial start ---")
         logger.info("Recording started")
 
     def start_execution(self, robot_type: str) -> None:
