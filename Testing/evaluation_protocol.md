@@ -35,14 +35,14 @@ Before starting each new test, return the robot to `HOME` to ensure a defined st
 
 **Objective:** Measure end-to-end task success rate across the full benchmark task set on the Franka Panda.
 
-**Procedure:** Execute each of the six benchmark tasks listed below five times in sequence. Issue each command by voice via the push-to-talk interface. Do not intervene between trials. Return the robot to `HOME` between tasks. Record the outcome of every execution.
+**Procedure:** Execute each benchmark task five times before moving to the next. Complete all five trials of task 1, then all five trials of task 2, and so on through task 6, for a total of 30 trials. Issue each command by voice via the push-to-talk interface. Do not intervene between trials. Return the robot to `HOME` between tasks. Also reset the gripper to closed before task 3. Note that task 4 will overwrite any previously stored `P3` automatically. Record the outcome of every execution.
 
 1. `"Go to P1"`
 2. `"Go linear to P2"`
 3. `"Open gripper"`
 4. `"Teach current position as P3"`
 5. `"Pick at P1 and place at P2"`
-6. `"Pick at P1 and place at offset x=500, y=200"`
+6. `"Pick at P1 and place at offset x=300, y=200"`
 
 **Pass criterion:** At least 24 of 30 trials classified as `Success` (≥80%). A framework that succeeds 4 out of 5 times on average demonstrates sufficient reliability for a controlled laboratory setting.
 
@@ -83,7 +83,12 @@ Before starting each new test, return the robot to `HOME` to ensure a defined st
 - `"Drive linearly to P2"`
 - `"Reach P2 via a straight path"`
 
-**Task B** — Benchmark task 4, teaching the current pose. Note that issuing this command during the test will overwrite any previously stored `P3` — this is expected and does not constitute a failure.
+**Task B** — Benchmark task 4, teaching the current pose. Note that issuing this command during the test will overwrite any previously stored `P3` — this is expected and does not constitute a failure. Example rephrasings:
+- `"Save this position as P3"`
+- `"Store current pose as P3"`
+- `"Remember this position as P3"`
+- `"Set P3 to current position"`
+- `"Name this position P3"`
 
 **Pass criterion:** At least 8 of 10 trials produce the correct IR (≥80%). A framework that interprets natural rephrasings correctly 8 out of 10 times demonstrates sufficient robustness for practical use.
 
@@ -109,7 +114,7 @@ Before starting each new test, return the robot to `HOME` to ensure a defined st
 
 **Objective:** Verify that the framework maintains correct state across a full uninterrupted session.
 
-**Procedure:** Execute all six benchmark tasks from Test 1.1 back-to-back in a single run without manual intervention or system restart between tasks. Do not return to `HOME` manually between tasks — the framework is expected to manage state transitions itself.
+**Procedure:** Note: the standard between-test HOME reset defined in the Setup section is suspended for this test only. Execute all six benchmark tasks from Test 1.1 back-to-back in a single run without manual intervention or system restart between tasks. Do not return to `HOME` manually between tasks — the framework is expected to manage state transitions itself.
 
 **Pass criterion:** No crashes, no state errors, and correct robot state maintained throughout the entire session.
 
@@ -131,7 +136,7 @@ Before starting each new test, return the robot to `HOME` to ensure a defined st
 
 **Objective:** Confirm that identical IR executes correctly on both backends without any upstream modification.
 
-**Procedure:** Dispatch the following three IR commands to the Franka backend and then to the UR backend in sequence. Record the execution outcome for each.
+**Procedure:** Issue the following three commands by voice via the push-to-talk interface on each backend in sequence. The same voice input is used on both backends — no upstream module is modified between backend swaps. Record the execution outcome for each.
 
 1. `"Go to HOME"` — single joint move to a named pose
 2. `"Open gripper"` — gripper primitive
@@ -151,4 +156,4 @@ Before starting each new test, return the robot to `HOME` to ensure a defined st
 - Lines of code changed
 - Configuration steps required
 
-**Pass criterion:** All four metrics recorded. Upstream modules confirmed unchanged.
+**Pass criterion:** All four metrics recorded and reported. Upstream modules confirmed unchanged. This test produces descriptive data only — no threshold is defined for acceptable switch cost, as the research question asks to quantify rather than evaluate against a target.
