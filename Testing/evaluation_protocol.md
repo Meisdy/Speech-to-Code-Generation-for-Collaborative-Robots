@@ -42,7 +42,7 @@ Before starting each new test, return the robot to `HOME` to ensure a defined st
 3. `"Open gripper"`
 4. `"Teach current position as P3"`
 5. `"Pick at P1 and place at P2"`
-6. `"Pick at P1 and place at offset x=300, y=200"`
+6. `"Pick at P1 and place at offset x=80, y=50"`
 
 **Pass criterion:** At least 24 of 30 trials classified as `Success` (≥80%). A framework that succeeds 4 out of 5 times on average demonstrates sufficient reliability for a controlled laboratory setting.
 
