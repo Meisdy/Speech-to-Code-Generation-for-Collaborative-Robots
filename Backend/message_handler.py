@@ -196,7 +196,7 @@ class MessageHandler:
             offset = None
             if target.get("type") == "offset_from_pose":
                 raw = target.get("offset", {})
-                offset = [raw["x_mm"], raw["y_mm"], raw["z_mm"]]
+                offset = [raw.get("x_mm", 0.0), raw.get("y_mm", 0.0), raw.get("z_mm", 0.0)]
 
             if motion_type == "moveJ":
                 return robot.move_joint(pose, speed, offset)
