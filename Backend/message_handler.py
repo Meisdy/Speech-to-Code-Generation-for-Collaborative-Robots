@@ -33,7 +33,7 @@ CONTROLLERS: Dict[str, Type[BaseRobotController]] = _load_controllers()
 class MessageHandler:
     """Processes incoming commands and dispatches them to the robot controller."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.robot: Optional[BaseRobotController] = None
         self._script_stop_event: threading.Event = threading.Event()
         self._script_thread: Optional[threading.Thread] = None

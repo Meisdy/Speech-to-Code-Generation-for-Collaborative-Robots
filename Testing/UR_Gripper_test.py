@@ -4,12 +4,12 @@ import time
 ROBOT_IP = "169.254.70.80"
 
 
-def send_command(sock, cmd):
+def send_command(sock, cmd: str) -> str:
     sock.send(cmd.encode())
     return sock.recv(1024).decode().strip()
 
 
-def wait_for_program_start(sock):
+def wait_for_program_start(sock) -> None:
     """Wait until program actually starts playing"""
     while True:
         response = send_command(sock, "programState\n")
@@ -18,7 +18,7 @@ def wait_for_program_start(sock):
         time.sleep(0.05)
 
 
-def wait_for_program_finish(sock):
+def wait_for_program_finish(sock) -> None:
     """Wait until program stops"""
     while True:
         response = send_command(sock, "programState\n")

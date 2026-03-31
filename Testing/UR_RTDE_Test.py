@@ -3,8 +3,9 @@ from rtde_control import RTDEControlInterface
 from rtde_receive import RTDEReceiveInterface
 from math import pi
 from scipy.spatial.transform import Rotation
+from typing import Optional
+
 import json
-from pathlib import Path
 
 """
 RTDE Test Script for UR - Move + Read State + Teach
@@ -27,7 +28,7 @@ rtde_r = RTDEReceiveInterface(ROBOT_IP)
 
 
 # ========== TEACH POSITION FUNCTION ==========
-def teach_position(pose_name, overwrite=False):
+def teach_position(pose_name: str, overwrite: bool = False) -> str:
     """
     Capture current robot pose and save to positions.jsonl
 
@@ -92,7 +93,7 @@ def teach_position(pose_name, overwrite=False):
 
 
 # ========== LOAD POSITION FUNCTION ==========
-def load_position(pose_name):
+def load_position(pose_name: str) -> Optional[dict]:
     """
     Load a position from positions.jsonl
 

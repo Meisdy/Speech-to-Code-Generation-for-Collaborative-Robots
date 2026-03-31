@@ -10,7 +10,7 @@ logger = logging.getLogger("cobot_backend")
 class BaseRobotController(ABC):
     """Abstract base class defining common robot controller interface."""
 
-    def __init__(self, poses_file: str):
+    def __init__(self, poses_file: str) -> None:
         self.poses_file: str = poses_file
         self.poses: dict = self._load_poses()
         self._scripts_file: str = poses_file.replace("_poses.jsonl", "_scripts.jsonl")
@@ -37,17 +37,17 @@ class BaseRobotController(ABC):
         }
         self.poses[name] = entry
         self._write_poses()
-        logger.info(f"Saved position '{name}'")
+        logger.info("Saved position '%s'", name)
         return {"success": True, "message": f"Pose '{name}' saved"}
 
     def delete_pose(self, name: str) -> dict:
         """Delete a named pose."""
         if name not in self.poses:
-            logger.info(f"Pose '{name}' unknown")
+            logger.info("Pose '%s' unknown", name)
             return {"success": False, "message": f"Pose '{name}' not found"}
         del self.poses[name]
         self._write_poses()
-        logger.info(f"Deleted position '{name}'")
+        logger.info("Deleted position '%s'", name)
         return {"success": True, "message": f"Pose '{name}' deleted"}
 
     def save_script(self, name: str, commands: list) -> dict:

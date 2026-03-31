@@ -21,7 +21,7 @@ logger = logging.getLogger("cobot")
 class CodeParser:
     """Converts natural language commands to structured robot control JSON via LLM."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.api_base: str = config_frontend.LLM_API_BASE
         self.model_name: str = config_frontend.LLM_MODEL_NAME
         self.temperature: float = config_frontend.LLM_TEMPERATURE

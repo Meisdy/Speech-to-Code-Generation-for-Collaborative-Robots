@@ -10,7 +10,7 @@ logger = logging.getLogger("cobot_backend")
 class MockRobotController(BaseRobotController):
     """Mock robot controller for testing without hardware."""
 
-    def __init__(self, poses_file: str = "Backend/poses/mock_poses.jsonl"):
+    def __init__(self, poses_file: str = "Backend/poses/mock_poses.jsonl") -> None:
         super().__init__(poses_file)
         self._joint_angles: list = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
         self._tcp_pose: list = [0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0]  # pos + identity quat

@@ -28,7 +28,7 @@ class State(Enum):
 class Controller:
     """Orchestrates the speech-to-code workflow: IDLE → RECORDING → TRANSCRIBING → PARSING → IDLE."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.state = State.IDLE
         self.asr = SpeechRecognizer()
         self.parser = CodeParser()
