@@ -42,7 +42,7 @@ class CodeParser:
         Returns {"command": {...}, "status": "success"} or
                 {"command": {...}, "status": "error", "error": "..."}
         """
-        if not text or len(text.strip()) < 8:
+        if not text or len(text.strip()) < 7:  # Arbitrary minimum length to filter out non-commands
             return self._error_response(robot_key, "Command empty or too short")
 
         user_prompt = f"Robot type: {robot_key}\nCommand: {text}\n\nGenerate JSON output:"
@@ -66,7 +66,7 @@ class CodeParser:
 
             is_valid, error_msg = self._validate_answer(parsed)
             if not is_valid:
-                logger.error("Validation failed - %s", error_msg)
+                logger.warning("Validation failed - %s", error_msg)
                 return self._error_response(robot_key, f"Invalid command structure: {error_msg}")
 
             logger.info("Parsing successful")
@@ -121,6 +121,9 @@ REQUIRED OUTPUT FORMAT:
 {json.dumps(self.command_schema, indent=2)}
 
 GENERAL RULES:
+- Vague or non-resolvable words such as "somewhere", "anywhere", "there",
+  "over there", or any phrase that does not name a specific pose are NOT valid
+  targets. Reject with an empty commands array.
 - Return ONLY valid JSON (no markdown, no explanations)
 - Use only actions from AVAILABLE PRIMITIVES
 - Commands array can contain multiple sequential commands
@@ -130,7 +133,14 @@ GENERAL RULES:
 - Always use the JSON format of the command schema exactly
 - If the input does not contain a clear robot command, return an empty commands array and explain in the "message" field why the input was rejected
 - Do not infer or guess commands from ambiguous or non-robot-related speech
-
+- An incomplete command, e.g. "move to", without a goal, or "gripper" without open/close, should be rejected with an empty commands array and an explanatory message
+- Impossible commands, e.g. "move to p1 and p2 at the same time", should be rejected with an empty commands array and an explanatory message
+- A motion command is only valid if its target resolves to EITHER:
+    (a) a valid named pose identifier (snake_case, e.g. "home", "p1"), OR
+    (b) an explicit numeric offset with at least one non-zero axis value.
+  If neither condition is met, reject the command with an empty commands array
+  and explain in the "message" field that no valid target was provided.
+  
 NAMING RULES:
 - Use snake_case for ALL pose names — always lowercase (e.g. "d1" not "D1", "p1" not "P1", "home" not "Home")
 - Always convert number words to digits in pose names (e.g. "test_1" not "test_one", "position_2" not "position_two")
@@ -146,6 +156,7 @@ TARGET RULES:
 - Use offset_from_pose when a reference pose is mentioned (e.g. "move 50mm above home")
 - When the user asks to 'reconnect', execute disconnect then connect
 - Never add intermediate approach or retract moves unless explicitly stated. Named poses already encode the final target position.
+- offset_from_current requires at least one explicit non-zero numeric axis value. If no numeric offset is provided, do NOT generate an offset_from_current command — reject instead.
 
 MOTION TYPE AND GRIPPER RULES:
 Each utterance maps to exactly one of these patterns. Apply the first matching pattern and produce no other motion type or gripper action:
