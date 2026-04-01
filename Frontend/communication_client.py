@@ -4,7 +4,7 @@ import logging
 
 import zmq
 
-MAX_ATTEMPTS = 2
+from Frontend.config_frontend import MAX_ATTEMPTS
 
 logger = logging.getLogger("cobot")
 

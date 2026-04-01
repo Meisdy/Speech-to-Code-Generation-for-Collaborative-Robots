@@ -31,6 +31,9 @@ ROBOT_TYPE_KEYS = {                         # Are used in GUI and for backend ro
     "Mock Adapter":    "mock",
 }
 
+MAX_ATTEMPTS = 2                            # Maximum attempts to reach backend when timing out
+
+
 # ── Logging ───────────────────────────────────────────────────────────────────
 LOGGING_LEVEL      = "INFO"     # Console and GUI level: DEBUG | INFO | WARNING | ERROR
 LOGGING_LEVEL_FILE = "DEBUG"    # File level — can be more verbose than console
