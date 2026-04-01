@@ -9,6 +9,7 @@ from Frontend.ASR_module import SpeechRecognizer
 from Frontend.communication_client import ClientZeroMQ
 from Frontend.config_frontend import BACKEND_IPS, ASR_CONFIDENCE_THRESHOLD, ROBOT_TYPE_KEYS
 from Frontend.parsing_module import CodeParser
+from Frontend.gui import UserGUI
 
 logger = logging.getLogger("cobot")
 
@@ -32,7 +33,7 @@ class Controller:
         self.state = State.IDLE
         self.asr = SpeechRecognizer()
         self.parser = CodeParser()
-        self.gui = None  # Set via set_gui() after GUI is constructed
+        self.gui: UserGUI | None = None  # Set via set_gui() after GUI is constructed
         self.confidence_threshold: float = ASR_CONFIDENCE_THRESHOLD
         self._cleaned_up: bool = False
         self._script_name: str | None = None
