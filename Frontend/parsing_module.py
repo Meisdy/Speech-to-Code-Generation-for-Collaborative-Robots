@@ -64,7 +64,9 @@ class CodeParser:
 
             cleaned = self._clean_response(response)
             parsed = json.loads(cleaned)
+            logger.debug(f'Before calling remove redundant {parsed}')
             parsed["commands"] = self._remove_redundant_moves(parsed["commands"]) # This is the bug fix for double move commands when using offset keyword
+            logger.debug(f'Before calling remove redundant {parsed}')
             parsed = self._normalize_name_fields(parsed)  # Force lowercase on all name/identifier fields to fix occasional LLM name hallucination
             logger.debug("Parsed JSON after cleanup: %s", json.dumps(parsed)[:500])
 
