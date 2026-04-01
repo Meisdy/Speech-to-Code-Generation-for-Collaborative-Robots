@@ -38,7 +38,9 @@ class UserGUI:
 
         self.root = ttkb.Window(themename="darkly")
         self.root.title("Speech-to-Code Generation for Cobots")
-        self.root.geometry("1200x900")
+        screen_x = (self.root.winfo_screenwidth() // 2) - (1200 // 2)
+        screen_y = (self.root.winfo_screenheight() // 2) - (900 // 2)
+        self.root.geometry(f"1200x900+{screen_x}+{screen_y}")
         self.root.minsize(600, 500)
 
         self.robot_type: tk.StringVar = tk.StringVar(value=next(iter(ROBOT_TYPE_KEYS)))
