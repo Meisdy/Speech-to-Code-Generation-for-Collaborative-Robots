@@ -21,6 +21,10 @@ logger = logging.getLogger("cobot")
 class CodeParser:
     """Converts natural language commands to structured robot control JSON via LLM."""
 
+    # Keys whose string values must always be lowercase identifiers.
+    # "motion_type" is intentionally excluded — moveJ/moveL are camelCase by spec.
+    _NAME_KEYS: frozenset[str] = frozenset({"name", "robot", "pose_name", "script_name"})
+
     def __init__(self) -> None:
         self.api_base: str = config_frontend.LLM_API_BASE
         self.model_name: str = config_frontend.LLM_MODEL_NAME
@@ -61,6 +65,7 @@ class CodeParser:
             cleaned = self._clean_response(response)
             parsed = json.loads(cleaned)
             parsed["commands"] = self._remove_redundant_moves(parsed["commands"]) # This is the bug fix for double move commands when using offset keyword
+            parsed = self._normalize_name_fields(parsed)  # Force lowercase on all name/identifier fields to fix occasional LLM name hallucination
             logger.debug("Parsed JSON after cleanup: %s", json.dumps(parsed)[:500])
 
             is_valid, error_msg = self._validate_answer(parsed)
@@ -259,6 +264,21 @@ SCRIPT RULES:
             if response.startswith("json"):
                 response = response[4:]
         return response.strip()
+
+    def _normalize_name_fields(self, data: Any) -> Any:
+        """Recursively lowercase string values for name and identifier keys.
+
+        Enforces lowercase on fields in _NAME_KEYS regardless of LLM output casing.
+        Recurses into dicts and lists; all other values pass through unchanged.
+        """
+        if isinstance(data, dict):
+            return {
+                k: v.lower() if isinstance(v, str) and k in self._NAME_KEYS else self._normalize_name_fields(v)
+                for k, v in data.items()
+            }
+        if isinstance(data, list):
+            return [self._normalize_name_fields(item) for item in data]
+        return data
 
     def _validate_answer(self, parsed: dict) -> tuple[bool, str]:
         """Validate parsed command structure. Returns (is_valid, error_message)."""
