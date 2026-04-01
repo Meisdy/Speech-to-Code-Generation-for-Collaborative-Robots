@@ -32,7 +32,7 @@ from typing import Optional
 from scipy.spatial.transform import Rotation
 
 from Backend.robot_controllers.base_robot_controller import BaseRobotController
-from  Backend.config_backend import PC_IP
+from Backend.config_backend import PC_IP
 
 logger = logging.getLogger("cobot_backend")
 

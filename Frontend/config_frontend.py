@@ -22,7 +22,7 @@ LLM_TIMEOUT     = 60                # Long — LLM may need to load on first cal
 BACKEND_IPS = {
     "franka": "tcp://192.168.2.20:5555",    # Backend runs on Linux PC for Franka
     "ur":     "tcp://localhost:5555",       # Backend runs on Operator machine for UR
-    "mock":   "tcp://localhost:5555",       # Backend runs on Operator machinie for Mock
+    "mock":   "tcp://localhost:5555",       # Backend runs on Operator machine for Mock
 }
 
 ROBOT_TYPE_KEYS = {                         # Are used in GUI and for backend robot type matching
