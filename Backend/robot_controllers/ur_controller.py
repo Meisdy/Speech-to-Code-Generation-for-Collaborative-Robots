@@ -32,7 +32,7 @@ from typing import Optional
 from scipy.spatial.transform import Rotation
 
 from Backend.robot_controllers.base_robot_controller import BaseRobotController
-from  Backend.config_backend import PC_IP
+from Backend.config_backend import PC_IP
 
 logger = logging.getLogger("cobot_backend")
 
@@ -51,11 +51,11 @@ STATE_RECV_BYTES = 1220   # max packet size; covers both CB3 (1060) and e-Series
 RT_JOINT_OFFSET  = 252    # byte offset of joint positions in state packet
 RT_TCP_OFFSET    = 444    # byte offset of TCP pose in state packet
 
-MAX_JOINT_SPEED  = 3.14   # rad/s
-MAX_JOINT_ACCEL  = 3.14   # rad/s²
-MAX_LINEAR_SPEED = 0.5    # m/s
-MAX_LINEAR_ACCEL = 0.5    # m/s²
-DEFAULT_SPEED    = 0.5    # fraction 0.0-1.0
+MAX_JOINT_SPEED  = 2*3.14   # rad/s
+MAX_JOINT_ACCEL  = 2*3.14   # rad/s²
+MAX_LINEAR_SPEED = 1.0    # m/s
+MAX_LINEAR_ACCEL = 1.0    # m/s²
+DEFAULT_SPEED    = 1.0    # fraction 0.0-1.0
 
 
 def _recv_exactly(sock: socket.socket, n: int) -> bytes:
@@ -92,7 +92,7 @@ class URController(BaseRobotController):
     GRIPPER_CLOSE_PROGRAM = "close_UG2_Gripper.urp"
     GRIPPER_ACTUATE_TIME  = 3.0   # seconds — tune to match physical actuation duration
 
-    def __init__(self, robot_ip: str = DEFAULT_ROBOT_IP, poses_file: str = POSES_FILE):
+    def __init__(self, robot_ip: str = DEFAULT_ROBOT_IP, poses_file: str = POSES_FILE) -> None:
         super().__init__(poses_file)
         self.robot_ip: str = robot_ip
         self._dash_sock: Optional[socket.socket] = None
@@ -266,7 +266,7 @@ class URController(BaseRobotController):
                     f"  movej(p[{t[0]:.6f},{t[1]:.6f},{t[2]:.6f},"
                     f"{t[3]:.6f},{t[4]:.6f},{t[5]:.6f}],a={acc:.4f},v={spd:.4f})\n"
                 )
-                logger.info(f"Offset used: {offset}")
+                logger.info("Offset used: %s", offset)
             else:
                 j = pose["joints"]
                 inner = (
@@ -298,7 +298,7 @@ class URController(BaseRobotController):
             acc = (speed or DEFAULT_SPEED) * MAX_LINEAR_ACCEL
             logger.info("Moving with moveL to '%s' with speed %.2f", pose["name"], spd)
             if offset:
-                logger.info(f"Offset used: {offset}")
+                logger.info("Offset used: %s", offset)
 
             script = (
                 f"def move_cb():\n"

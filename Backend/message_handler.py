@@ -2,10 +2,11 @@ import importlib
 import inspect
 import logging
 import time
+import threading
 from typing import Dict, Optional, Type
 
 from Backend.robot_controllers.base_robot_controller import BaseRobotController
-from Backend.config_backend import AVAILABLE_ROBOTS
+from Backend.config_backend import AVAILABLE_ROBOTS, ALLOWED_COMMANDS
 
 logger = logging.getLogger("cobot_backend")
 
@@ -32,10 +33,11 @@ CONTROLLERS: Dict[str, Type[BaseRobotController]] = _load_controllers()
 class MessageHandler:
     """Processes incoming commands and dispatches them to the robot controller."""
 
-    ALLOWED_COMMANDS = ["ping", "get_status", "execute_sequence"]
-
-    def __init__(self):
+    def __init__(self) -> None:
         self.robot: Optional[BaseRobotController] = None
+        self._script_stop_event: threading.Event = threading.Event()
+        self._script_thread: Optional[threading.Thread] = None
+
         for robot_type, cls in CONTROLLERS.items():
             logger.debug("Controller available: '%s' -> %s", robot_type, cls.__name__)
 
@@ -54,13 +56,18 @@ class MessageHandler:
             command = message.get("command", "")
             data = message.get("data", {})
 
-            if command not in self.ALLOWED_COMMANDS:
+            if command not in ALLOWED_COMMANDS:
                 return self._unknown_command(command)
 
             commands = {
                 "ping": self._answer_ping,
                 "get_status": self._send_status,
                 "execute_sequence": lambda: self._execute_sequence(data),
+                "save_script": lambda: self._save_script(data),
+                "run_script": lambda: self._run_script(data),
+                "stop_script": self._stop_script,
+                "get_script_status": self._get_script_status,
+                "delete_script": lambda: self._delete_script(data),
             }
 
             return commands[command]()
@@ -68,6 +75,8 @@ class MessageHandler:
         except Exception as e:
             logger.exception("Error processing message: %s", message)
             return self._formatted_response("error", {"error message": str(e)})
+
+
 
     def _ensure_robot_ready(self, robot_type: str) -> dict:
         self._current_robot_type = robot_type
@@ -187,7 +196,7 @@ class MessageHandler:
             offset = None
             if target.get("type") == "offset_from_pose":
                 raw = target.get("offset", {})
-                offset = [raw["x_mm"], raw["y_mm"], raw["z_mm"]]
+                offset = [raw.get("x_mm", 0.0), raw.get("y_mm", 0.0), raw.get("z_mm", 0.0)]
 
             if motion_type == "moveJ":
                 return robot.move_joint(pose, speed, offset)
@@ -231,3 +240,113 @@ class MessageHandler:
 
         else:
             return {"success": False, "message": f"Unknown action: {action}"}
+
+    def _save_script(self, data: dict) -> dict:
+        robot_type = data.get("robot")
+        script_name = data.get("script_name")
+        commands = data.get("commands", [])
+
+        if not robot_type or robot_type not in CONTROLLERS:
+            return self._formatted_response("rejected", {"message": f"Unsupported robot type: {robot_type}"})
+        if not script_name or not isinstance(commands, list):
+            return self._formatted_response("rejected", {"message": "Missing script_name or commands"})
+
+        result = self._ensure_robot_ready(robot_type)
+        if not result["success"]:
+            return self._formatted_response("rejected",
+                                            {"message": f"Could not connect to {robot_type}: {result['message']}"})
+
+        result = self.robot.save_script(script_name, commands)
+        if not result["success"]:
+            return self._formatted_response("error", {"message": result["message"]})
+
+        logger.info("Script '%s' saved for robot '%s' with %d command(s)", script_name, robot_type, len(commands))
+        return self._formatted_response("success", {"message": f"Script '{script_name}' saved"})
+
+    def _run_script(self, data: dict) -> dict:
+        robot_type = data.get("robot")
+        script_name = data.get("script_name")
+        loop = data.get("loop", 1)
+
+        if not robot_type or robot_type not in CONTROLLERS:
+            return self._formatted_response("rejected", {"message": f"Unsupported robot type: {robot_type}"})
+
+        result = self._ensure_robot_ready(robot_type)
+        if not result["success"]:
+            return self._formatted_response("rejected",
+                                            {"message": f"Could not connect to {robot_type}: {result['message']}"})
+
+        script = self.robot.get_script(script_name)
+        if script is None:
+            return self._formatted_response("rejected", {"message": f"Unknown script: '{script_name}'"})
+
+        if self._script_thread and self._script_thread.is_alive():
+            return self._formatted_response("rejected", {"message": "A script is already running"})
+
+        validation_errors = [
+            error
+            for cmd in script
+            if (error := self._validate_command(cmd, self.robot)) is not None
+        ]
+        if validation_errors:
+            logger.warning("Script '%s' rejected: %s", script_name, validation_errors)
+            return self._formatted_response("rejected", {"reasons": validation_errors})
+
+        self._script_stop_event.clear()
+        self._script_thread = threading.Thread(
+            target=self._run_script_loop,
+            args=(script_name, loop, script),
+            daemon=True,
+            name="thread_script_loop"
+        )
+        self._script_thread.start()
+        logger.info("Script '%s' started for robot '%s', loop=%d", script_name, robot_type, loop)
+        return self._formatted_response("success", {"message": f"Script '{script_name}' started"})
+
+    def _stop_script(self) -> dict:
+        """Signal the running script loop to stop after the current command."""
+        self._script_stop_event.set()
+        logger.info("Stop signal sent to script loop")
+        return self._formatted_response("success", {"message": "Stop signal sent"})
+
+    def _run_script_loop(self, script_name: str, loop: int, commands: list) -> None:
+        """Execute script commands in a loop. Checks stop event between commands."""
+        iteration = 0
+        while not self._script_stop_event.is_set():
+            logger.info("Script '%s' — iteration %d", script_name, iteration + 1)
+            for cmd in commands:
+                if self._script_stop_event.is_set():
+                    break
+                result = self._process_command(cmd, self.robot)
+                if not result["success"]:
+                    logger.error("Script '%s' aborted at command: %s", script_name, result["message"])
+                    return
+
+            iteration += 1
+            if loop != -1 and iteration >= loop:
+                break
+
+        logger.info("Script '%s' finished after %d iteration(s)", script_name, iteration)
+
+    def _get_script_status(self) -> dict:
+        is_running = self._script_thread is not None and self._script_thread.is_alive()
+        return self._formatted_response("success", {"is_running": is_running})
+
+    def _delete_script(self, data: dict) -> dict:
+        robot_type = data.get("robot")
+        script_name = data.get("script_name")
+
+        if not robot_type or robot_type not in CONTROLLERS:
+            return self._formatted_response("rejected", {"message": f"Unsupported robot type: {robot_type}"})
+
+        result = self._ensure_robot_ready(robot_type)
+        if not result["success"]:
+            return self._formatted_response("rejected",
+                                            {"message": f"Could not connect to {robot_type}: {result['message']}"})
+
+        result = self.robot.delete_script(script_name)
+        if not result["success"]:
+            return self._formatted_response("error", {"message": result["message"]})
+
+        logger.info("Script '%s' deleted", script_name)
+        return self._formatted_response("success", {"message": f"Script '{script_name}' deleted"})

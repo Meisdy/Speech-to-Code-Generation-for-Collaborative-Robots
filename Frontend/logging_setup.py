@@ -36,7 +36,7 @@ class _ColorFormatter(logging.Formatter):
         'CRITICAL': "\x1b[1;31m",
     }
 
-    def __init__(self, base_fmt: str, datefmt: str | None = None):
+    def __init__(self, base_fmt: str, datefmt: str | None = None) -> None:
         super().__init__(base_fmt, datefmt=datefmt)
 
     def format(self, record: logging.LogRecord) -> str:

@@ -90,8 +90,20 @@
           "required": true
         }
       }
-    }
-
-
+    },
+    "script": {
+      "description": "Manipulates scripts for replay functionality",
+      "commands": ["start", "save", "run", "stop", "delete"],
+      "parameters": {
+        "script_name": {
+          "type": "string",
+          "required": true
+        },
+        "loop": {
+          "type": "int",
+          "required": true
+        }
+      }
+      }
   }
 }

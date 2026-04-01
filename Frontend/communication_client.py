@@ -4,7 +4,7 @@ import logging
 
 import zmq
 
-MAX_ATTEMPTS = 2
+from Frontend.config_frontend import MAX_ATTEMPTS
 
 logger = logging.getLogger("cobot")
 
@@ -64,10 +64,9 @@ def main() -> None:
     sender = ClientZeroMQ("tcp://localhost:5555")
 
     data = {
-        "mode": "live",
         "robot": "mock",
         "commands": [
-            {"action": "move", "motion_type": "moveJ", "target": {"type": "named_pose", "name": "home_position"}},
+            {"action": "move", "motion_type": "moveJ", "target": {"type": "named_pose", "name": "home"}},
             {"action": "gripper", "command": "open"},
             {"action": "wait", "duration_s": 0.5}
         ],

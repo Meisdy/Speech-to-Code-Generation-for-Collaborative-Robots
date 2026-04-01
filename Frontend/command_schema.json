@@ -1,5 +1,4 @@
 {
-  "mode": "live",
   "robot": "<robot_key>",
   "commands": [
     {
@@ -61,6 +60,35 @@
     {
       "action": "connection",
       "command": "connect | disconnect"
+    },
+    {
+      "action": "script",
+      "command": "start",
+      "script_name": "dance",
+      "loop": 1
+    },
+    {
+      "action": "script",
+      "command": "save",
+      "script_name": "dance",
+      "loop": 1
+    },
+    {
+      "action": "script",
+      "command": "run",
+      "script_name": "dance",
+      "loop": -1
+    },
+    {
+      "action": "script",
+      "command": "stop",
+      "script_name": "dance",
+      "loop": 1
+    },
+    {
+      "action": "script",
+      "command": "delete",
+      "script_name": "dance"
     }
   ],
   "message": "Optional feedback from LLM here."

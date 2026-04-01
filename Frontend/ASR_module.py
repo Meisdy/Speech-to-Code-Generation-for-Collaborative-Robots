@@ -20,7 +20,7 @@ logger = logging.getLogger("cobot")
 class SpeechRecognizer:
     """Handles microphone capture and Whisper transcription for the pipeline."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.model_size: str = config_frontend.ASR_MODEL_SIZE
         self.language: str = config_frontend.ASR_LANGUAGE
         self.threshold: float = config_frontend.ASR_CONFIDENCE_THRESHOLD
@@ -34,7 +34,7 @@ class SpeechRecognizer:
 
         # Errors here propagate to Controller.__init__ and are caught in main.py
         self.model = whisper.load_model(self.model_size)
-        self.audio_interpreter: pyaudio.PyAudio = pyaudio.PyAudio()
+        self.audio_interpreter: pyaudio.PyAudio | None = pyaudio.PyAudio()
         self.start_listening()
 
     def start_listening(self) -> None:
@@ -140,7 +140,7 @@ def main() -> None:
     recording.set()
     print("🔴 Recording... (press ENTER to stop)")
 
-    def record_loop():
+    def record_loop() -> None:
         while recording.is_set():
             asr.read_chunk()
 

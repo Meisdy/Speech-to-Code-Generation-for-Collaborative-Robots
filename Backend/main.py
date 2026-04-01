@@ -11,14 +11,14 @@ from Backend.config_backend import BINDING_ADDRESS
 def main() -> None:
     """Entry point for the robot backend server."""
     logger = setup_logging()
-    logger.info(f"Starting backend server on {BINDING_ADDRESS}")
+    logger.info("Starting backend server on %s", BINDING_ADDRESS)
 
     server = ServerZeroMQ(BINDING_ADDRESS)
 
     try:
         server.start()
     except Exception as e:
-        logger.exception(f"Unhandled server error: {e}")
+        logger.exception("Unhandled server error: %s", e)
 
 
 if __name__ == "__main__":

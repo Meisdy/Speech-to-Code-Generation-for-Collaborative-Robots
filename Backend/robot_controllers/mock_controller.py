@@ -10,7 +10,7 @@ logger = logging.getLogger("cobot_backend")
 class MockRobotController(BaseRobotController):
     """Mock robot controller for testing without hardware."""
 
-    def __init__(self, poses_file: str = "Backend/poses/mock_poses.jsonl"):
+    def __init__(self, poses_file: str = "Backend/poses/mock_poses.jsonl") -> None:
         super().__init__(poses_file)
         self._joint_angles: list = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
         self._tcp_pose: list = [0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0]  # pos + identity quat
@@ -38,6 +38,7 @@ class MockRobotController(BaseRobotController):
         target_pos = list(pose["pos"])
         if offset:
             target_pos = [p + o for p, o in zip(target_pos, offset)]
+            logger.info("Offset used: '%s'", offset)
         time.sleep(2)
         self._joint_angles = list(pose["joints"])
         self._tcp_pose = target_pos + list(pose["quat"])
@@ -49,6 +50,7 @@ class MockRobotController(BaseRobotController):
         target_pos = list(pose["pos"])
         if offset:
             target_pos = [p + o for p, o in zip(target_pos, offset)]
+            logger.info("Offset used: '%s'", offset)
         time.sleep(2)
         self._joint_angles = list(pose["joints"])
         self._tcp_pose = target_pos + list(pose["quat"])

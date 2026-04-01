@@ -1,7 +1,7 @@
 # Evaluation Protocol
 ## Speech-to-Code Generation for Collaborative Robots
 
-This protocol defines the test procedures used to evaluate the speech-to-code framework. Tests are grouped by research question. Each entry states the objective, procedure, and pass criterion.
+This protocol defines the test procedures used to evaluate the speech-to-code framework for the thesis. Tests are grouped by research question. Each entry states the objective, procedure, and pass criterion.
 
 Every trial is documented through three sources. The parser logging option captures the raw LLM output as a JSON file. The audio recording option saves the microphone input for that trial as a `.wav` file. The frontend and backend logs capture the full system activity across the session, including command dispatch, validation results, execution status, and timing. All logs are written to the `logs/` folder.
 

@@ -34,14 +34,14 @@ class ServerZeroMQ:
             while self.running:
                 try:
                     message = self.socket.recv_json()
-                    logger.debug(f"Received message: {message}")
+                    logger.debug("Received message: %s", message)
                     response = self.handler.process_message(message=message)
                     self.socket.send_json(response)
-                    logger.debug(f"Sent response: {response}")
+                    logger.debug("Sent response: %s", response)
                 except zmq.Again:
                     continue
                 except zmq.ZMQError as e:
-                    logger.error(f"ZMQ error in server loop: {e}")
+                    logger.error("ZMQ error in server loop: %s", e)
         finally:
             self.close()
 
@@ -52,6 +52,6 @@ class ServerZeroMQ:
         self.socket.close()
         self.context.term()
 
-    def _handle_signal(self, sig, frame: object):
+    def _handle_signal(self, sig, frame: object) -> None:
         logger.info('Signal %s received, shutting down', sig)
         self.running = False

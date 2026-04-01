@@ -139,13 +139,13 @@ The backend connects to the robot at `192.168.1.100` by default. Verify the robo
 
 ## Configuration Files
 
-Both components have a single configuration file that covers all runtime parameters. These are the only files that typically need to be edited when deploying to a different environment.
+Both components have a single configuration file that covers all runtime parameters. Edit these files to configure the system for your environment.
 
 **Frontend — `Frontend/config_frontend.py`**
 
 | Parameter | Description |
 |---|---|
-| `FRAMEWORK_MODE` | `live` for real execution, other modes for testing |
+
 | `ASR_MODEL_SIZE` | Whisper model size: `tiny`, `base`, `small`, `medium`, `large` |
 | `LLM_API_BASE` | LM Studio server URL (default: `http://localhost:1234/v1`) |
 | `LLM_MODEL_NAME` | Model name as shown in LM Studio |

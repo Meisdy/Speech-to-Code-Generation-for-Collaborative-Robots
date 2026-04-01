@@ -21,20 +21,23 @@ logger = logging.getLogger("cobot")
 class CodeParser:
     """Converts natural language commands to structured robot control JSON via LLM."""
 
-    def __init__(self):
+    # Keys whose string values must always be lowercase identifiers.
+    # "motion_type" is intentionally excluded — moveJ/moveL are camelCase by spec.
+    _NAME_KEYS: frozenset[str] = frozenset({"name", "robot", "pose_name", "script_name"})
+
+    def __init__(self) -> None:
         self.api_base: str = config_frontend.LLM_API_BASE
         self.model_name: str = config_frontend.LLM_MODEL_NAME
         self.temperature: float = config_frontend.LLM_TEMPERATURE
         self.max_tokens: int = config_frontend.LLM_MAX_TOKENS
         self.timeout: int = config_frontend.LLM_TIMEOUT
-        self.mode: str = config_frontend.FRAMEWORK_MODE
         self.log_parsing: bool = config_frontend.LOGGING_SAVE_PARSE
         self.log_path: str = config_frontend.DATA_DIR
 
         # Errors here propagate to Controller.__init__ and are caught in main.py
         self.ruleset: dict = self._load_json("ruleset.json")
         self.command_schema: dict = self._load_json("command_schema.json")
-        self.system_prompt: str = self._build_system_prompt()
+        self.system_prompt: str = self._load_prompt("system_prompt.txt")
 
     def parse(self, text: str, robot_key: str) -> dict[str, Any]:
         """Parse natural language to structured robot command JSON.
@@ -42,7 +45,7 @@ class CodeParser:
         Returns {"command": {...}, "status": "success"} or
                 {"command": {...}, "status": "error", "error": "..."}
         """
-        if not text or len(text.strip()) < 8:
+        if not text or len(text.strip()) < 7:  # Arbitrary minimum length to filter out non-commands
             return self._error_response(robot_key, "Command empty or too short")
 
         user_prompt = f"Robot type: {robot_key}\nCommand: {text}\n\nGenerate JSON output:"
@@ -61,12 +64,15 @@ class CodeParser:
 
             cleaned = self._clean_response(response)
             parsed = json.loads(cleaned)
+            logger.debug(f'Before calling remove redundant {parsed}')
             parsed["commands"] = self._remove_redundant_moves(parsed["commands"]) # This is the bug fix for double move commands when using offset keyword
+            logger.debug(f'Before calling remove redundant {parsed}')
+            parsed = self._normalize_name_fields(parsed)  # Force lowercase on all name/identifier fields to fix occasional LLM name hallucination
             logger.debug("Parsed JSON after cleanup: %s", json.dumps(parsed)[:500])
 
             is_valid, error_msg = self._validate_answer(parsed)
             if not is_valid:
-                logger.error("Validation failed - %s", error_msg)
+                logger.warning("Validation failed - %s", error_msg)
                 return self._error_response(robot_key, f"Invalid command structure: {error_msg}")
 
             logger.info("Parsing successful")
@@ -110,46 +116,12 @@ class CodeParser:
         with open(file_path, "r") as f:
             return json.load(f)
 
-    def _build_system_prompt(self) -> str:
-        """Build LLM system prompt with ruleset and schema definitions."""
-        return f"""You are a robot command parser. Convert natural language to structured JSON commands.
-
-AVAILABLE PRIMITIVES:
-{json.dumps(self.ruleset, indent=2)}
-
-REQUIRED OUTPUT FORMAT:
-{json.dumps(self.command_schema, indent=2)}
-
-RULES:
-- Return ONLY valid JSON (no markdown, no explanations)
-- Use only actions from AVAILABLE PRIMITIVES
-- Commands array can contain multiple sequential commands
-- Use defaults from ruleset when parameters not specified
-- Always include "mode", "robot", and "commands" fields
-- Always convert number words to digits in pose names (e.g. "test_1" not "test_one", "position_2" not "position_two")
-- Use snake_case for position names (e.g. "home" not "Home")
-- Add any feedback to the "message" field
-- Always use the JSON format of the command schema exactly
-- When the user asks to 'reconnect', execute disconnect then connect
-- Map spatial directions to axes: up/down = Z, forward/back = X, left/right = Y
-- Always convert measurements to millimetres (e.g. 5cm → 50.0, 1 inch → 25.4)
-- If no unit is given for a distance, assume millimetres
-- Ignore speed qualifiers unless an explicit numeric value is given; omit the speed field to use defaults
-- Use offset_from_current when no reference pose is mentioned (e.g. "move 500mm in x")
-- Use offset_from_pose when a reference pose is mentioned (e.g. "place 50mm above home")
-- "Pick"/"Grab" at a position ALWAYS generates exactly two sequential commands:
-  1. moveL to the target pose
-  2. close_gripper — this step is MANDATORY, never omit it
-- "Place"/"Release"/"Put" at a position ALWAYS generates exactly two sequential commands:
-  1. moveL to the target pose
-  2. open_gripper — this step is MANDATORY, never omit it
-- A single-word action like "place at position_2" is NOT just a move — it MUST include the gripper action
-- For pick-and-place commands like "pick at P1 and place 50mm in x", the place target uses offset_from_pose with the pick pose name as reference, not offset_from_current
-- Always prefer moveL for offset_from_current moves
-- If the input does not contain a clear robot command, return an empty commands array and explain in the "message" field why the input was rejected
-- Do not infer or guess commands from ambiguous or non-robot-related speech
-- Never add intermediate approach or retract moves unless explicitly stated. Named poses already encode the final target position.
-"""
+    def _load_prompt(self, filename: str) -> str:
+        """Load and interpolate a prompt template from the prompts directory."""
+        file_path = Path(__file__).parent / "prompts" / filename
+        content = file_path.read_text(encoding="utf-8")
+        return content.replace("{{ruleset}}", json.dumps(self.ruleset, indent=2)) \
+                      .replace("{{command_schema}}", json.dumps(self.command_schema, indent=2))
 
     def _call_llm(self, user_prompt: str) -> dict[str, Any]:
         """Send prompt to LM Studio and return the full API response."""
@@ -177,9 +149,24 @@ RULES:
                 response = response[4:]
         return response.strip()
 
+    def _normalize_name_fields(self, data: Any) -> Any:
+        """Recursively lowercase string values for name and identifier keys.
+
+        Enforces lowercase on fields in _NAME_KEYS regardless of LLM output casing.
+        Recurses into dicts and lists; all other values pass through unchanged.
+        """
+        if isinstance(data, dict):
+            return {
+                k: v.lower() if isinstance(v, str) and k in self._NAME_KEYS else self._normalize_name_fields(v)
+                for k, v in data.items()
+            }
+        if isinstance(data, list):
+            return [self._normalize_name_fields(item) for item in data]
+        return data
+
     def _validate_answer(self, parsed: dict) -> tuple[bool, str]:
         """Validate parsed command structure. Returns (is_valid, error_message)."""
-        for field in ["mode", "robot", "commands"]:
+        for field in ["robot", "commands"]:
             if field not in parsed:
                 return False, f'Missing required field: "{field}"'
 
@@ -235,6 +222,19 @@ RULES:
                 if "pose_name" not in cmd:
                     return False, "Pose command missing pose_name"
 
+            elif action == "script":
+                if "command" not in cmd:
+                    return False, "Script command missing command field"
+                if cmd["command"] not in ["start", "stop", "run", "save", "delete"]:
+                    return False, f"Invalid script command: {cmd['command']}"
+                if "script_name" not in cmd:
+                    return False, "Script command missing script_name"
+                if cmd["command"] == "run":
+                    if "loop" not in cmd:
+                        return False, "Script run command missing loop"
+                    if not isinstance(cmd["loop"], int):
+                        return False, "Script loop must be an integer"
+
         return True, ""
 
     def _remove_redundant_moves(self, commands: list) -> list:
@@ -260,7 +260,7 @@ RULES:
 
     def _error_response(self, robot_key: str, error_msg: str) -> dict[str, Any]:
         """Build standardised error response."""
-        return {"command": {"robot": robot_key, "mode": self.mode}, "status": "error", "error": error_msg}
+        return {"command": {"robot": robot_key}, "status": "error", "error": error_msg}
 
     def _save_parsed_command(self, parsed: dict[str, Any]) -> None:
         """Save parsed command to the data folder for debugging."""

@@ -21,7 +21,10 @@ def main() -> None:
     gui = UserGUI(
         on_record_start=controller.start_recording,
         on_record_stop=controller.start_execution,
-        on_ping=controller.ping
+        on_ping=controller.ping,
+        on_confirm=controller.confirm_script,
+        on_discard=controller.discard_script,
+        on_stop=controller.stop_script,
     )
     controller.set_gui(gui)
 

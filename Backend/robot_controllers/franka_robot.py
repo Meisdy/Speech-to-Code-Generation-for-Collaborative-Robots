@@ -17,7 +17,7 @@ class FrankaRobot:
     and forwards them to MoveIt. Has no knowledge of named poses or files.
     """
 
-    def __init__(self, arm_name: str, hand_name: str, moveit_commander):
+    def __init__(self, arm_name: str, hand_name: str, moveit_commander) -> None:
         self.arm     = moveit_commander.MoveGroupCommander(arm_name)
         self.gripper = moveit_commander.MoveGroupCommander(hand_name)
 

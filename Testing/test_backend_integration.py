@@ -19,35 +19,35 @@ ADDRESS = "tcp://localhost:5555"
 class TestBackendIntegration(unittest.TestCase):
 
     @classmethod
-    def setUpClass(cls):
+    def setUpClass(cls) -> None:
         cls.client = ClientZeroMQ(ADDRESS)
 
     @classmethod
-    def tearDownClass(cls):
+    def tearDownClass(cls) -> None:
         cls.client.close()
 
     # ── Utility commands ───────────────────────────────────────────────────────
 
-    def test_01_ping(self):
+    def test_01_ping(self) -> None:
         success, resp = self.client.send_command("ping", {})
         self.assertTrue(success)
         self.assertEqual(resp["command"], "success")
         self.assertEqual(resp["data"]["message"], "Backend Alive")
 
-    def test_02_get_status(self):
+    def test_02_get_status(self) -> None:
         success, resp = self.client.send_command("get_status", {})
         self.assertTrue(success)
         self.assertEqual(resp["command"], "success")
         self.assertIn("Connected Robots", resp["data"])
 
-    def test_03_unknown_command(self):
+    def test_03_unknown_command(self) -> None:
         success, resp = self.client.send_command("launch_rockets", {})
         self.assertTrue(success)
         self.assertEqual(resp["command"], "rejected")
 
     # ── Rejection cases ────────────────────────────────────────────────────────
 
-    def test_04_unknown_robot_type(self):
+    def test_04_unknown_robot_type(self) -> None:
         success, resp = self.client.send_command("execute_sequence", {
             "robot": "r2d2",
             "commands": [{"action": "gripper", "command": "open"}]
@@ -55,7 +55,7 @@ class TestBackendIntegration(unittest.TestCase):
         self.assertTrue(success)
         self.assertEqual(resp["command"], "rejected")
 
-    def test_05_empty_commands(self):
+    def test_05_empty_commands(self) -> None:
         success, resp = self.client.send_command("execute_sequence", {
             "robot": ROBOT,
             "commands": []
@@ -63,7 +63,7 @@ class TestBackendIntegration(unittest.TestCase):
         self.assertTrue(success)
         self.assertEqual(resp["command"], "success")  # Empty sequence completes trivially
 
-    def test_06_unknown_pose(self):
+    def test_06_unknown_pose(self) -> None:
         success, resp = self.client.send_command("execute_sequence", {
             "robot": ROBOT,
             "commands": [{
@@ -86,7 +86,7 @@ class TestBackendIntegration(unittest.TestCase):
         self.assertTrue(success, "ZeroMQ send failed")
         return resp
 
-    def test_07_move_joint(self):
+    def test_07_move_joint(self) -> None:
         resp = self._execute([{
             "action": "move",
             "motion_type": "moveJ",
@@ -94,7 +94,7 @@ class TestBackendIntegration(unittest.TestCase):
         }])
         self.assertEqual(resp["command"], "success")
 
-    def test_08_move_joint_offset(self):
+    def test_08_move_joint_offset(self) -> None:
         resp = self._execute([{
             "action": "move",
             "motion_type": "moveJ",
@@ -103,7 +103,7 @@ class TestBackendIntegration(unittest.TestCase):
         }])
         self.assertEqual(resp["command"], "success")
 
-    def test_09_move_linear(self):
+    def test_09_move_linear(self) -> None:
         resp = self._execute([{
             "action": "move",
             "motion_type": "moveL",
@@ -111,7 +111,7 @@ class TestBackendIntegration(unittest.TestCase):
         }])
         self.assertEqual(resp["command"], "success")
 
-    def test_10_move_linear_offset(self):
+    def test_10_move_linear_offset(self) -> None:
         resp = self._execute([{
             "action": "move",
             "motion_type": "moveL",
@@ -120,19 +120,19 @@ class TestBackendIntegration(unittest.TestCase):
         }])
         self.assertEqual(resp["command"], "success")
 
-    def test_11_gripper_open(self):
+    def test_11_gripper_open(self) -> None:
         resp = self._execute([{"action": "gripper", "command": "open"}])
         self.assertEqual(resp["command"], "success")
 
-    def test_12_gripper_close(self):
+    def test_12_gripper_close(self) -> None:
         resp = self._execute([{"action": "gripper", "command": "close"}])
         self.assertEqual(resp["command"], "success")
 
-    def test_13_wait(self):
+    def test_13_wait(self) -> None:
         resp = self._execute([{"action": "wait", "duration_s": 0.1}])
         self.assertEqual(resp["command"], "success")
 
-    def test_14_pose_teach_and_delete(self):
+    def test_14_pose_teach_and_delete(self) -> None:
         resp = self._execute([{
             "action": "pose",
             "command": "teach",
@@ -148,14 +148,14 @@ class TestBackendIntegration(unittest.TestCase):
         }])
         self.assertEqual(resp["command"], "success")
 
-    def test_15_freedrive(self):
+    def test_15_freedrive(self) -> None:
         resp = self._execute([{"action": "freedrive", "active": True}])
         self.assertIn(resp["command"], ("success", "error"))  # May not be supported — must not crash
 
         resp = self._execute([{"action": "freedrive", "active": False}])
         self.assertIn(resp["command"], ("success", "error"))
 
-    def test_16_connection_disconnect_reconnect(self):
+    def test_16_connection_disconnect_reconnect(self) -> None:
         resp = self._execute([{"action": "connection", "command": "disconnect"}])
         self.assertEqual(resp["command"], "success")
 
@@ -164,7 +164,7 @@ class TestBackendIntegration(unittest.TestCase):
 
     # ── Multi-command sequence ─────────────────────────────────────────────────
 
-    def test_17_full_sequence(self):
+    def test_17_full_sequence(self) -> None:
         resp = self._execute([
             {"action": "move", "motion_type": "moveJ",
              "target": {"type": "named_pose", "name": "home"}},

@@ -2,8 +2,6 @@
 
 Software repository for the master's thesis *Speech-to-Code Generation for Collaborative Robots — A Modular Framework for Multi-Vendor Robot Programming in Structured Workspaces* at University West, Department of Engineering Science.
 
-> **Status:** Work in progress. The framework is functional and usable for its intended purpose, but development is ongoing and the codebase will change until thesis submission.
-
 ---
 
 ## What this is
@@ -20,16 +18,14 @@ The framework supports multiple robot backends through a swappable adapter archi
 ├── Frontend/        — GUI, ASR module, LLM parser, ZeroMQ client
 ├── Backend/         — ZeroMQ server, message handler, robot adapters
 ├── Testing/         — Integration tests, field test scripts, evaluation protocol
-└── Setup/           — Installer and uninstaller scripts, setup guide pyproject.toml   — Python dependency definitions (managed by uv)
+└── Setup/           — Installer and uninstaller scripts, setup guide
 ```
 
 ---
 
-## Installation
+## Quick installation
 
-See the [Setup Guide](Setup/README.md) for full installation instructions.
-
-The framework ships with one-command installers for Windows 11:
+The one-line installer sets up everything and creates a Desktop shortcut. Requires PowerShell running as Administrator.
 
 ```powershell
 # Frontend
@@ -39,20 +35,56 @@ irm https://raw.githubusercontent.com/Meisdy/Speech-to-Code-Generation-for-Colla
 irm https://raw.githubusercontent.com/Meisdy/Speech-to-Code-Generation-for-Collaborative-Robots/main/Setup/setup_backend.ps1 | iex
 ```
 
-Both require PowerShell running as Administrator.
+**Requirements:**
+- **Frontend:** Windows 11, [LM Studio](https://lmstudio.ai) with `meta-llama-3.1-8b-instruct` loaded and served locally
+- **Backend (UR / Mock):** Windows 11
+- **Backend (Franka):** Ubuntu 20.04 with RT kernel, ROS Noetic, MoveIt — see [Setup/README.md](Setup/README.md)
+
+Launch via the Desktop shortcuts. The mock adapter starts selected in the GUI — no robot or LM Studio required to test the pipeline end-to-end.
 
 ---
 
-## Requirements
+## Development
 
-- **Frontend:** Windows 11, [LM Studio](https://lmstudio.ai) with `meta-llama-3.1-8b-instruct` loaded and served locally
-- **Backend (UR / Mock):** Windows 11
-- **Backend (Franka):** Ubuntu 20.04 with RT kernel, ROS Noetic, MoveIt — see setup guide
+See [Setup/README.md](Setup/README.md) for full installation instructions covering all robot adapters and operating systems.
+
+### Manual setup (no installer)
+
+Requires: Python 3.12, [LM Studio](https://lmstudio.ai) running locally on port 1234 with a model loaded.
+
+```powershell
+# Clone the repo
+git clone https://github.com/Meisdy/Speech-to-Code-Generation-for-Collaborative-Robots
+cd "Speech-to-Code-Generation-for-Collaborative-Robots"
+
+# Create and activate virtual environment
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+
+# Install dependencies
+pip install -r Setup/requirements_frontend.txt
+
+# Start backend (Mock adapter — no hardware)
+python -m Backend.main
+
+# In a new terminal, start frontend
+python -m Frontend.main
+```
+
+### Testing
+
+Tests live in `Testing/`. Run them in your IDE or with `pytest` — the backend must be running on `tcp://localhost:5555` first.
+
+### Adding a new robot adapter
+
+1. Backend: create `Backend/robot_controllers/<robot>_controller.py` inheriting from `BaseRobotController`. Implement the abstract methods — see `BaseRobotController` docstrings for signatures and expected behavior. `URController` serves as a complete reference implementation.
+2. Backend: add `<robot>` to `AVAILABLE_ROBOTS` in `Backend/config_backend.py`.
+3. Frontend: add `<robot>` to `ROBOT_TYPE_KEYS` in `Frontend/config_frontend.py` — this adds it to the robot selection dropdown.
 
 ---
 
 ## Thesis
 
-**Title:** Speech-to-Code Generation for Collaborative Robots  
-**Author:** Sandy Meister  
-**Programme:** Master in Robotics and Automation, University West  
+**Title:** Speech-to-Code Generation for Collaborative Robots
+**Author:** Sandy Meister
+**Programme:** Master in Robotics and Automation, University West

@@ -60,7 +60,7 @@ MOVE_GROUP_NODE = "/move_group"
 
 class FrankaController(BaseRobotController):
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__(POSES_FILE)
         self._robot: Optional[FrankaRobot] = None
         self._ros_process: Optional[subprocess.Popen] = None

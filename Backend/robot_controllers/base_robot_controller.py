@@ -10,9 +10,11 @@ logger = logging.getLogger("cobot_backend")
 class BaseRobotController(ABC):
     """Abstract base class defining common robot controller interface."""
 
-    def __init__(self, poses_file: str):
+    def __init__(self, poses_file: str) -> None:
         self.poses_file: str = poses_file
         self.poses: dict = self._load_poses()
+        self._scripts_file: str = poses_file.replace("_poses.jsonl", "_scripts.jsonl")
+        self.scripts: dict = self._load_scripts()
         self.connected: bool = False
         self.gripper_state: Optional[str] = None
 
@@ -35,18 +37,37 @@ class BaseRobotController(ABC):
         }
         self.poses[name] = entry
         self._write_poses()
-        logger.info(f"Saved position '{name}'")
+        logger.info("Saved position '%s'", name)
         return {"success": True, "message": f"Pose '{name}' saved"}
 
     def delete_pose(self, name: str) -> dict:
         """Delete a named pose."""
         if name not in self.poses:
-            logger.info(f"Pose '{name}' unknown")
+            logger.info("Pose '%s' unknown", name)
             return {"success": False, "message": f"Pose '{name}' not found"}
         del self.poses[name]
         self._write_poses()
-        logger.info(f"Deleted position '{name}'")
+        logger.info("Deleted position '%s'", name)
         return {"success": True, "message": f"Pose '{name}' deleted"}
+
+    def save_script(self, name: str, commands: list) -> dict:
+        """Save a named command sequence for later replay."""
+        self.scripts[name] = commands
+        self._write_scripts()
+        logger.info("Saved script '%s' with %d command(s)", name, len(commands))
+        return {"success": True, "message": f"Script '{name}' saved"}
+
+    def get_script(self, name: str) -> Optional[list]:
+        """Return the command list for a named script, or None if not found."""
+        return self.scripts.get(name)
+
+    def delete_script(self, name: str) -> dict:
+        if name not in self.scripts:
+            return {"success": False, "message": f"Script '{name}' not found"}
+        del self.scripts[name]
+        self._write_scripts()
+        logger.info("Deleted script '%s'", name)
+        return {"success": True, "message": f"Script '{name}' deleted"}
 
     def is_ready(self) -> bool:
         """Returns connected status if not overridden by robot controller."""
@@ -129,3 +150,21 @@ class BaseRobotController(ABC):
         with open(self.poses_file, 'w') as f:
             for entry in self.poses.values():
                 f.write(json.dumps(entry) + '\n')
+
+    def _load_scripts(self) -> dict:
+        if not os.path.exists(self._scripts_file):
+            os.makedirs(os.path.dirname(self._scripts_file), exist_ok=True)
+            with open(self._scripts_file, 'w'):
+                pass
+            return {}
+        scripts = {}
+        with open(self._scripts_file, 'r') as f:
+            for line in f:
+                entry = json.loads(line.strip())
+                scripts[entry["name"]] = entry["commands"]
+        return scripts
+
+    def _write_scripts(self) -> None:
+        with open(self._scripts_file, 'w') as f:
+            for name, commands in self.scripts.items():
+                f.write(json.dumps({"name": name, "commands": commands}) + '\n')
