@@ -139,7 +139,7 @@ The backend connects to the robot at `192.168.1.100` by default. Verify the robo
 
 ## Configuration Files
 
-Both components have a single configuration file that covers all runtime parameters. These are the only files that typically need to be edited when deploying to a different environment.
+Both components have a single configuration file that covers all runtime parameters. Edit these files to configure the system for your environment.
 
 **Frontend — `Frontend/config_frontend.py`**
 
