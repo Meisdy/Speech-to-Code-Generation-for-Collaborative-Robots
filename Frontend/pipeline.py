@@ -326,9 +326,9 @@ class Controller:
         }
         logger.info("Client: Sending data to backend")
         logger.debug("Sending data: %s", json.dumps(data)[:500])
-        self.client = ClientZeroMQ(BACKEND_IPS[command["robot"]])
-        success, response = self.client.send_command("execute_sequence", data)
-        self.client.close()
+        client = ClientZeroMQ(BACKEND_IPS[command["robot"]])
+        success, response = client.send_command("execute_sequence", data)
+        client.close()
         self.gui.root.after(0, lambda: self._display_execution_result(success, response))
 
     def _send_save_script(self, robot_key: str, data: dict) -> None:
