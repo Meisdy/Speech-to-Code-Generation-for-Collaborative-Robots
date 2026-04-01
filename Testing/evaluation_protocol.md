@@ -132,21 +132,7 @@ Before starting each new test, return the robot to `HOME` to ensure a defined st
 
 ## RQ3 — Modularity and Switch Cost
 
-### Test 3.1 — Modularity Verification
-
-**Objective:** Confirm that identical IR executes correctly on both backends without any upstream modification.
-
-**Procedure:** Issue the following three commands by voice via the push-to-talk interface on each backend in sequence. The same voice input is used on both backends — no upstream module is modified between backend swaps. Record the execution outcome for each.
-
-1. `"Go to HOME"` — single joint move to a named pose
-2. `"Open gripper"` — gripper primitive
-3. `"Go to P1, then close gripper"` — compound command
-
-**Pass criterion:** Correct execution on both backends for all three commands. No upstream module modified.
-
----
-
-### Test 3.2 — Switch Cost Documentation
+### Test 3.1 — Switch Cost Documentation
 
 **Objective:** Quantify the effort required to switch between vendor backends.
 
