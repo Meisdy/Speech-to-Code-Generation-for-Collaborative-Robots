@@ -320,7 +320,6 @@ class Controller:
     def _send_command(self, command: dict) -> None:
         """Serialise and dispatch a parsed command to the backend."""
         data = {
-            "mode": "live",
             "robot": command["robot"],
             "commands": command.get("commands", []),
             "message": ""

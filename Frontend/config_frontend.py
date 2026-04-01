@@ -4,9 +4,6 @@ All values can be edited directly in this file.
 """
 import os
 
-# ── General ───────────────────────────────────────────────────────────────────
-FRAMEWORK_MODE = "live"
-
 # ── ASR ───────────────────────────────────────────────────────────────────────
 ASR_MODEL_SIZE           = "small"    # tiny | base | small | medium | large
 ASR_LANGUAGE             = "en"      # ISO language code
@@ -28,7 +25,7 @@ BACKEND_IPS = {
     "mock":   "tcp://localhost:5555",       # Backend runs on Operator machinie for Mock
 }
 
-ROBOT_TYPE_KEYS = {
+ROBOT_TYPE_KEYS = {                         # Are used in GUI and for backend robot type matching
     "Franka Emika":    "franka",
     "Universal Robot": "ur",
     "Mock Adapter":    "mock",

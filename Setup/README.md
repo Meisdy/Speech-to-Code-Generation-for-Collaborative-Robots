@@ -145,7 +145,7 @@ Both components have a single configuration file that covers all runtime paramet
 
 | Parameter | Description |
 |---|---|
-| `FRAMEWORK_MODE` | `live` for real execution, other modes for testing |
+
 | `ASR_MODEL_SIZE` | Whisper model size: `tiny`, `base`, `small`, `medium`, `large` |
 | `LLM_API_BASE` | LM Studio server URL (default: `http://localhost:1234/v1`) |
 | `LLM_MODEL_NAME` | Model name as shown in LM Studio |

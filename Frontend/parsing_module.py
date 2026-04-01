@@ -27,7 +27,6 @@ class CodeParser:
         self.temperature: float = config_frontend.LLM_TEMPERATURE
         self.max_tokens: int = config_frontend.LLM_MAX_TOKENS
         self.timeout: int = config_frontend.LLM_TIMEOUT
-        self.mode: str = config_frontend.FRAMEWORK_MODE
         self.log_parsing: bool = config_frontend.LOGGING_SAVE_PARSE
         self.log_path: str = config_frontend.DATA_DIR
 
@@ -128,7 +127,7 @@ GENERAL RULES:
 - Use only actions from AVAILABLE PRIMITIVES
 - Commands array can contain multiple sequential commands
 - Use defaults from ruleset when parameters not specified
-- Always include "mode", "robot", and "commands" fields
+- Always include "robot", and "commands" fields
 - Add any feedback to the "message" field
 - Always use the JSON format of the command schema exactly
 - If the input does not contain a clear robot command, return an empty commands array and explain in the "message" field why the input was rejected
@@ -263,7 +262,7 @@ SCRIPT RULES:
 
     def _validate_answer(self, parsed: dict) -> tuple[bool, str]:
         """Validate parsed command structure. Returns (is_valid, error_message)."""
-        for field in ["mode", "robot", "commands"]:
+        for field in ["robot", "commands"]:
             if field not in parsed:
                 return False, f'Missing required field: "{field}"'
 
@@ -357,7 +356,7 @@ SCRIPT RULES:
 
     def _error_response(self, robot_key: str, error_msg: str) -> dict[str, Any]:
         """Build standardised error response."""
-        return {"command": {"robot": robot_key, "mode": self.mode}, "status": "error", "error": error_msg}
+        return {"command": {"robot": robot_key}, "status": "error", "error": error_msg}
 
     def _save_parsed_command(self, parsed: dict[str, Any]) -> None:
         """Save parsed command to the data folder for debugging."""
