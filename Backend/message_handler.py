@@ -244,7 +244,7 @@ class MessageHandler:
     def _save_script(self, data: dict) -> dict:
         robot_type = data.get("robot")
         script_name = data.get("script_name")
-        commands = data.get("commands")
+        commands = data.get("commands", [])
 
         if not robot_type or robot_type not in CONTROLLERS:
             return self._formatted_response("rejected", {"message": f"Unsupported robot type: {robot_type}"})
