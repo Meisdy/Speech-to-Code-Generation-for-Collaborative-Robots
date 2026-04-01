@@ -1,0 +1,42 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Package frontend
+        shell: powershell
+        run: |
+          $frontendFiles = Get-ChildItem -Recurse -Path Frontend -File | Where-Object {
+            $_.FullName -notlike "*__pycache__*" -and
+            $_.FullName -notlike "*logs*"
+          }
+          $frontendFiles += Get-ChildItem -Path Setup\uninstall_frontend.ps1
+          Compress-Archive -Path $frontendFiles -DestinationPath "stcgcr-frontend.zip" -Force
+
+      - name: Package backend
+        shell: powershell
+        run: |
+          $backendFiles = Get-ChildItem -Recurse -Path Backend -File | Where-Object {
+            $_.FullName -notlike "*__pycache__*" -and
+            $_.FullName -notlike "*poses*" -and
+            $_.FullName -notlike "*logs*"
+          }
+          $backendFiles += Get-ChildItem -Path Setup\uninstall_backend.ps1
+          Compress-Archive -Path $backendFiles -DestinationPath "stcgcr-backend.zip" -Force
+
+      - name: Create draft release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: stcgcr-frontend.zip stcgcr-backend.zip
+          draft: true
+          tag_name: ${{ github.ref_name }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
