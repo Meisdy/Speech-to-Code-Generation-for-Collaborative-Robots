@@ -43,7 +43,7 @@ class UserGUI:
         self.root.geometry(f"1200x900+{screen_x}+{screen_y}")
         self.root.minsize(600, 500)
 
-        self.robot_type: tk.StringVar = tk.StringVar(value=next(iter(ROBOT_TYPE_KEYS)))
+        self.robot_type: tk.StringVar = tk.StringVar(value="Mock Adapter")
 
         self.record_btn: ttkb.Button | None = None
         self.stop_btn: ttkb.Button | None = None
