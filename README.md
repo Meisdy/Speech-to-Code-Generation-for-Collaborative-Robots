@@ -51,6 +51,7 @@ See [Setup/README.md](Setup/README.md) for full classic installation instruction
 ### Manual setup for Devs (no installer) in PowerShell.
 
 Requires: Python 3.12, [LM Studio](https://lmstudio.ai) running locally on port 1234 with a model loaded.
+Make sure you are in the directory where you want to clone the repo before running these commands.
 
 ```powershell
 # Clone the repo
