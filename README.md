@@ -59,10 +59,11 @@ cd "Speech-to-Code-Generation-for-Collaborative-Robots"
 
 # Create and activate virtual environment
 python -m venv .venv
-.\.venv\Scripts\Activate.ps1
+cmd /c ".\.venv\Scripts\activate.bat"
 
 # Install dependencies
 pip install -r Setup/requirements_frontend.txt
+pip install -r Setup/requirements_backend.txt
 
 # Start backend (Mock adapter — no hardware)
 python -m Backend.main
