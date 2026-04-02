@@ -46,9 +46,9 @@ Launch via the Desktop shortcuts. The mock adapter starts selected in the GUI �
 
 ## Development
 
-See [Setup/README.md](Setup/README.md) for full installation instructions covering all robot adapters and operating systems.
+See [Setup/README.md](Setup/README.md) for full classic installation instructions covering all robot adapters and operating systems.
 
-### Manual setup (no installer)
+### Manual setup for Devs (no installer) in PowerShell.
 
 Requires: Python 3.12, [LM Studio](https://lmstudio.ai) running locally on port 1234 with a model loaded.
 
@@ -59,7 +59,8 @@ cd "Speech-to-Code-Generation-for-Collaborative-Robots"
 
 # Create and activate virtual environment
 python -m venv .venv
-cmd /c ".\.venv\Scripts\activate.bat"
+Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned -Force # Allow running local scripts
+.\.venv\Scripts\Activate.ps1
 
 # Install dependencies
 pip install -r Setup/requirements_frontend.txt
@@ -77,6 +78,8 @@ python -m Frontend.main
 Tests live in `Testing/`. Run them in your IDE or with `pytest` — the backend must be running on `tcp://localhost:5555` first.
 
 ### Adding a new robot adapter
+
+The adapter translates high-level commands (move, gripper, etc.) into robot-specific communication. Once registered, the backend dispatches commands to it automatically — no other code changes are needed.
 
 1. Backend: create `Backend/robot_controllers/<robot>_controller.py` inheriting from `BaseRobotController`. Implement the abstract methods — see `BaseRobotController` docstrings for signatures and expected behavior. `URController` serves as a complete reference implementation.
 2. Backend: add `<robot>` to `AVAILABLE_ROBOTS` in `Backend/config_backend.py`.
