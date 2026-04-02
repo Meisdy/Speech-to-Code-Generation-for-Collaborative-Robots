@@ -13,7 +13,7 @@
 # =============================================================================
 
 $INSTALL_DIR   = "C:\Program Files\Speech-to-Cobot-Backend"
-$RELEASE_TAG   = "v1.1.0"
+$RELEASE_TAG   = "v1.1.2"
 $ZIP_URL       = "https://github.com/Meisdy/Speech-to-Code-Generation-for-Collaborative-Robots/releases/download/$RELEASE_TAG/stcgcr-backend.zip"
 $ZIP_PATH      = "C:\Windows\Temp\stcgcr-backend.zip"
 $EXTRACT_PATH  = "C:\Windows\Temp\stcgcr-backend-extract"
@@ -154,6 +154,12 @@ $shortcut.WorkingDirectory = $INSTALL_DIR
 $shortcut.Description      = "Start Speech-to-Cobot Backend Server"
 $shortcut.Save()
 Write-OK "Shortcut created at $shortcutPath"
+
+# Set shortcut to always run as Administrator (sets flag byte in .lnk file)
+$bytes = [System.IO.File]::ReadAllBytes($shortcutPath)
+$bytes[0x15] = $bytes[0x15] -bor 0x20
+[System.IO.File]::WriteAllBytes($shortcutPath, $bytes)
+Write-OK "Shortcut set to run as Administrator"
 
 # --- Done ---------------------------------------------------------------------
 

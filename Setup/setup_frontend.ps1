@@ -15,7 +15,7 @@
 # =============================================================================
 
 $INSTALL_DIR   = "C:\Program Files\Speech-to-Cobot"
-$RELEASE_TAG   = "v1.1.0"
+$RELEASE_TAG   = "v1.1.2"
 $ZIP_URL       = "https://github.com/Meisdy/Speech-to-Code-Generation-for-Collaborative-Robots/releases/download/$RELEASE_TAG/stcgcr-frontend.zip"
 $ZIP_PATH      = "C:\Windows\Temp\stcgcr-frontend.zip"
 $EXTRACT_PATH  = "C:\Windows\Temp\stcgcr-frontend-extract"
@@ -222,6 +222,6 @@ Write-Host "   $INSTALL_DIR"                                       -ForegroundCo
 Write-Host ""
 Write-Host " To launch the application:"                           -ForegroundColor Green
 Write-Host "   Double-click Speech-to-Cobot on the Desktop"       -ForegroundColor White
-Write-Host "   or: cd '$INSTALL_DIR'"                             -ForegroundColor White
+Write-Host "   or: cd '$INSTALL_DIR' as admin"                     -ForegroundColor White
 Write-Host "   and: uv run pythonw -m Frontend.main"              -ForegroundColor White
 Write-Host "=====================================================" -ForegroundColor Green
