@@ -21,6 +21,7 @@ jobs:
           if ($LASTEXITCODE -ge 8) { throw "robocopy failed with exit code $LASTEXITCODE" }
           $LASTEXITCODE = 0
           Copy-Item Setup/uninstall_frontend.ps1 -Destination "staging-frontend/" -Force
+          Copy-Item Setup/Pyproject.toml -Destination "staging-frontend/" -Force
           Compress-Archive -Path "staging-frontend/*" -DestinationPath "stcgcr-frontend.zip" -Force
 
       - name: Package backend
@@ -30,6 +31,7 @@ jobs:
           if ($LASTEXITCODE -ge 8) { throw "robocopy failed with exit code $LASTEXITCODE" }
           $LASTEXITCODE = 0
           Copy-Item Setup/uninstall_backend.ps1 -Destination "staging-backend/" -Force
+          Copy-Item Setup/Pyproject.toml -Destination "staging-backend/" -Force
           Compress-Archive -Path "staging-backend/*" -DestinationPath "stcgcr-backend.zip" -Force
 
       - name: Create draft release
