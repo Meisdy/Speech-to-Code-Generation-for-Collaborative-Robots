@@ -188,16 +188,16 @@ Write-OK "Shortcut created at $shortcutPath"
 # Saved to %USERPROFILE%\.cache\whisper — outside the project directory.
 # uninstall_frontend.ps1 removes this.
 
-Write-Step "Pre-downloading Whisper base model (~140 MB)"
+Write-Step "Pre-downloading Whisper small model (~466 MB)"
 Write-Host "  Model will be saved to $WHISPER_CACHE" -ForegroundColor Gray
 Write-Warn "This is outside the project directory. Run uninstall_frontend.ps1 to remove it."
 $stepStart = Get-Date
-uv run python -c "import whisper; whisper.load_model('base')"
+uv run python -c "import whisper; whisper.load_model('small')"
 if ($LASTEXITCODE -ne 0) {
     Write-Warn "Whisper model pre-download failed — it will download on first application launch instead."
 } else {
     $elapsed = [math]::Round(((Get-Date) - $stepStart).TotalSeconds, 1)
-    Write-OK "Whisper base model ready ($elapsed s)"
+    Write-OK "Whisper small model ready ($elapsed s)"
 }
 
 # --- LM Studio check ----------------------------------------------------------
