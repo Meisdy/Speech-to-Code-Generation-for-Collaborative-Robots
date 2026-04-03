@@ -1,0 +1,38 @@
+{
+    "robot": "franka",
+    "commands": [
+        {
+            "action": "move",
+            "motion_type": "moveJ",
+            "target": {
+                "type": "named_pose",
+                "name": "p1"
+            }
+        },
+        {
+            "action": "wait",
+            "duration_s": 2.0
+        },
+        {
+            "action": "move",
+            "motion_type": "moveL",
+            "target": {
+                "type": "named_pose",
+                "name": "p2"
+            }
+        },
+        {
+            "action": "gripper",
+            "command": "close"
+        },
+        {
+            "action": "move",
+            "motion_type": "moveJ",
+            "target": {
+                "type": "named_pose",
+                "name": "home"
+            }
+        }
+    ],
+    "message": ""
+}

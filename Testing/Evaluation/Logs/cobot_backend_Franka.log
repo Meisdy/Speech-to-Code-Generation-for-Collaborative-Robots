@@ -1,0 +1,316 @@
+11:24:19  INFO      main.py  Starting backend server on tcp://*:5555
+11:24:19  DEBUG     message_handler.py  Controller available: 'mock' -> MockRobotController
+11:24:19  DEBUG     message_handler.py  Controller available: 'franka' -> FrankaController
+11:24:19  DEBUG     message_handler.py  Controller available: 'ur' -> URController
+11:24:19  INFO      communication_server.py  Server ready and listening on tcp://*:5555
+11:25:10  DEBUG     communication_server.py  Received message: {'command': 'ping', 'data': {}}
+11:25:10  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Backend Alive'}}
+11:25:25  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}], 'message': ''}}
+11:25:26  INFO      franka_controller.py  Starting MoveIt stack
+11:25:26  WARNING   franka_controller.py  xterm not found — launching ROS hidden, output in Backend/logs/franka_ros.log
+11:25:37  INFO      franka_controller.py  Connected successfully
+11:25:37  INFO      franka_controller.py  Moving with moveJ to 'home'
+11:25:38  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+11:25:47  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'p1'}}], 'message': ''}}
+11:25:47  INFO      franka_controller.py  Moving with moveJ to 'p1'
+11:25:48  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+11:25:54  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}], 'message': ''}}
+11:25:54  INFO      franka_controller.py  Moving with moveJ to 'home'
+11:25:56  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+11:26:02  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'p1'}}], 'message': ''}}
+11:26:02  INFO      franka_controller.py  Moving with moveJ to 'p1'
+11:26:04  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+11:26:10  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}], 'message': ''}}
+11:26:10  INFO      franka_controller.py  Moving with moveJ to 'home'
+11:26:11  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+11:26:18  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'p1'}}], 'message': ''}}
+11:26:18  INFO      franka_controller.py  Moving with moveJ to 'p1'
+11:26:19  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+11:26:25  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}], 'message': ''}}
+11:26:25  INFO      franka_controller.py  Moving with moveJ to 'home'
+11:26:27  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+11:26:34  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'p1'}}], 'message': ''}}
+11:26:34  INFO      franka_controller.py  Moving with moveJ to 'p1'
+11:26:35  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+11:26:42  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}], 'message': ''}}
+11:26:42  INFO      franka_controller.py  Moving with moveJ to 'home'
+11:26:43  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+11:26:49  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'p1'}}], 'message': ''}}
+11:26:49  INFO      franka_controller.py  Moving with moveJ to 'p1'
+11:26:51  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+11:26:57  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}], 'message': ''}}
+11:26:57  INFO      franka_controller.py  Moving with moveJ to 'home'
+11:26:59  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+11:27:10  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'named_pose', 'name': 'p2'}}], 'message': ''}}
+11:27:10  INFO      franka_controller.py  Moving with moveL to 'p2'
+11:27:12  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+11:27:19  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}], 'message': ''}}
+11:27:19  INFO      franka_controller.py  Moving with moveJ to 'home'
+11:27:20  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+11:27:28  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'named_pose', 'name': 'p2'}}], 'message': ''}}
+11:27:28  INFO      franka_controller.py  Moving with moveL to 'p2'
+11:27:30  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+11:27:36  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}], 'message': ''}}
+11:27:36  INFO      franka_controller.py  Moving with moveJ to 'home'
+11:27:38  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+11:27:46  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'named_pose', 'name': 'p2'}}], 'message': ''}}
+11:27:46  INFO      franka_controller.py  Moving with moveL to 'p2'
+11:27:48  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+11:27:57  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}], 'message': ''}}
+11:27:57  INFO      franka_controller.py  Moving with moveJ to 'home'
+11:27:58  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+11:28:07  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'named_pose', 'name': 'p2'}}], 'message': ''}}
+11:28:07  INFO      franka_controller.py  Moving with moveL to 'p2'
+11:28:09  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+11:28:16  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}], 'message': ''}}
+11:28:16  INFO      franka_controller.py  Moving with moveJ to 'home'
+11:28:18  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+11:28:28  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'named_pose', 'name': 'p2'}}], 'message': ''}}
+11:28:28  INFO      franka_controller.py  Moving with moveL to 'p2'
+11:28:30  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+11:28:37  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}], 'message': ''}}
+11:28:37  INFO      franka_controller.py  Moving with moveJ to 'home'
+11:28:38  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+11:28:46  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'franka', 'commands': [{'action': 'gripper', 'command': 'close'}], 'message': ''}}
+11:28:46  INFO      franka_controller.py  Closing gripper
+11:28:47  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+11:28:53  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'franka', 'commands': [{'action': 'gripper', 'command': 'open'}], 'message': ''}}
+11:28:53  INFO      franka_controller.py  Opening gripper
+11:28:54  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+11:29:00  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'franka', 'commands': [{'action': 'gripper', 'command': 'close'}], 'message': ''}}
+11:29:00  INFO      franka_controller.py  Closing gripper
+11:29:02  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+11:29:08  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'franka', 'commands': [{'action': 'gripper', 'command': 'open'}], 'message': ''}}
+11:29:08  INFO      franka_controller.py  Opening gripper
+11:29:09  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+11:29:15  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'franka', 'commands': [{'action': 'gripper', 'command': 'close'}], 'message': ''}}
+11:29:15  INFO      franka_controller.py  Closing gripper
+11:29:17  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+11:29:23  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'franka', 'commands': [{'action': 'gripper', 'command': 'open'}], 'message': ''}}
+11:29:23  INFO      franka_controller.py  Opening gripper
+11:29:24  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+11:29:31  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'franka', 'commands': [{'action': 'gripper', 'command': 'close'}], 'message': ''}}
+11:29:31  INFO      franka_controller.py  Closing gripper
+11:29:32  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+11:29:38  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'franka', 'commands': [{'action': 'gripper', 'command': 'open'}], 'message': ''}}
+11:29:38  INFO      franka_controller.py  Opening gripper
+11:29:40  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+11:29:50  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'franka', 'commands': [{'action': 'gripper', 'command': 'close'}], 'message': ''}}
+11:29:50  INFO      franka_controller.py  Closing gripper
+11:29:52  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+11:29:58  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'franka', 'commands': [{'action': 'gripper', 'command': 'open'}], 'message': ''}}
+11:29:58  INFO      franka_controller.py  Opening gripper
+11:29:59  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+11:30:14  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'franka', 'commands': [{'action': 'pose', 'command': 'teach', 'pose_name': 'p3', 'overwrite': True}], 'message': ''}}
+11:30:14  INFO      base_robot_controller.py  Saved position 'p3'
+11:30:14  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+11:30:24  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'franka', 'commands': [{'action': 'pose', 'command': 'teach', 'pose_name': 'p3', 'overwrite': True}], 'message': ''}}
+11:30:24  INFO      base_robot_controller.py  Saved position 'p3'
+11:30:24  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+11:30:33  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'franka', 'commands': [{'action': 'pose', 'command': 'teach', 'pose_name': 'p3', 'overwrite': True}], 'message': ''}}
+11:30:33  INFO      base_robot_controller.py  Saved position 'p3'
+11:30:33  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+11:30:41  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'franka', 'commands': [{'action': 'pose', 'command': 'teach', 'pose_name': 'p3', 'overwrite': True}], 'message': ''}}
+11:30:41  INFO      base_robot_controller.py  Saved position 'p3'
+11:30:41  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+11:30:49  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'franka', 'commands': [{'action': 'pose', 'command': 'teach', 'pose_name': 'p3', 'overwrite': True}], 'message': ''}}
+11:30:49  INFO      base_robot_controller.py  Saved position 'p3'
+11:30:49  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+11:31:02  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'named_pose', 'name': 'p1'}}, {'action': 'gripper', 'command': 'close'}, {'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'offset_from_pose', 'name': 'p2', 'offset': {'x_mm': 0.0, 'y_mm': 0.0, 'z_mm': 0.0}}}, {'action': 'gripper', 'command': 'open'}], 'message': ''}}
+11:31:02  INFO      franka_controller.py  Moving with moveL to 'p1'
+11:31:04  INFO      franka_controller.py  Closing gripper
+11:31:05  INFO      franka_controller.py  Moving with moveL to 'p2'
+11:31:05  INFO      franka_controller.py  Offset used: [0.0, 0.0, 0.0]
+11:31:07  INFO      franka_controller.py  Opening gripper
+11:31:08  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 4 command(s) completed'}}
+11:31:19  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'named_pose', 'name': 'p1'}}, {'action': 'gripper', 'command': 'close'}, {'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'named_pose', 'name': 'p2'}}, {'action': 'gripper', 'command': 'open'}], 'message': ''}}
+11:31:19  INFO      franka_controller.py  Moving with moveL to 'p1'
+11:31:21  INFO      franka_controller.py  Closing gripper
+11:31:22  INFO      franka_controller.py  Moving with moveL to 'p2'
+11:31:24  INFO      franka_controller.py  Opening gripper
+11:31:26  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 4 command(s) completed'}}
+11:31:36  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'named_pose', 'name': 'p1'}}, {'action': 'gripper', 'command': 'close'}, {'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'offset_from_pose', 'name': 'p2', 'offset': {'x_mm': 0.0, 'y_mm': 0.0, 'z_mm': 0.0}}}, {'action': 'gripper', 'command': 'open'}], 'message': ''}}
+11:31:36  INFO      franka_controller.py  Moving with moveL to 'p1'
+11:31:38  INFO      franka_controller.py  Closing gripper
+11:31:40  INFO      franka_controller.py  Moving with moveL to 'p2'
+11:31:40  INFO      franka_controller.py  Offset used: [0.0, 0.0, 0.0]
+11:31:41  INFO      franka_controller.py  Opening gripper
+11:31:43  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 4 command(s) completed'}}
+11:31:54  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'named_pose', 'name': 'p1'}}, {'action': 'gripper', 'command': 'close'}, {'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'offset_from_pose', 'name': 'p2', 'offset': {'x_mm': 0.0, 'y_mm': 0.0, 'z_mm': 0.0}}}, {'action': 'gripper', 'command': 'open'}], 'message': ''}}
+11:31:54  INFO      franka_controller.py  Moving with moveL to 'p1'
+11:31:56  INFO      franka_controller.py  Closing gripper
+11:31:57  INFO      franka_controller.py  Moving with moveL to 'p2'
+11:31:57  INFO      franka_controller.py  Offset used: [0.0, 0.0, 0.0]
+11:31:59  INFO      franka_controller.py  Opening gripper
+11:32:00  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 4 command(s) completed'}}
+11:32:13  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'named_pose', 'name': 'p1'}}, {'action': 'gripper', 'command': 'close'}, {'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'offset_from_pose', 'name': 'p2', 'offset': {'x_mm': 0.0, 'y_mm': 0.0, 'z_mm': 0.0}}}, {'action': 'gripper', 'command': 'open'}], 'message': ''}}
+11:32:13  INFO      franka_controller.py  Moving with moveL to 'p1'
+11:32:15  INFO      franka_controller.py  Closing gripper
+11:32:17  INFO      franka_controller.py  Moving with moveL to 'p2'
+11:32:17  INFO      franka_controller.py  Offset used: [0.0, 0.0, 0.0]
+11:32:19  INFO      franka_controller.py  Opening gripper
+11:32:20  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 4 command(s) completed'}}
+11:32:35  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'named_pose', 'name': 'p1'}}, {'action': 'gripper', 'command': 'close'}, {'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'offset_from_pose', 'name': 'p1', 'offset': {'x_mm': 80.0, 'y_mm': 50.0, 'z_mm': 0.0}}}, {'action': 'gripper', 'command': 'open'}], 'message': ''}}
+11:32:35  INFO      franka_controller.py  Moving with moveL to 'p1'
+11:32:37  INFO      franka_controller.py  Closing gripper
+11:32:38  INFO      franka_controller.py  Moving with moveL to 'p1'
+11:32:38  INFO      franka_controller.py  Offset used: [80.0, 50.0, 0.0]
+11:32:39  INFO      franka_controller.py  Opening gripper
+11:32:41  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 4 command(s) completed'}}
+11:32:54  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'named_pose', 'name': 'p1'}}, {'action': 'gripper', 'command': 'close'}, {'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'offset_from_pose', 'name': 'p1', 'offset': {'x_mm': 80.0, 'y_mm': 50.0, 'z_mm': 0.0}}}, {'action': 'gripper', 'command': 'open'}], 'message': ''}}
+11:32:54  INFO      franka_controller.py  Moving with moveL to 'p1'
+11:32:55  INFO      franka_controller.py  Closing gripper
+11:32:57  INFO      franka_controller.py  Moving with moveL to 'p1'
+11:32:57  INFO      franka_controller.py  Offset used: [80.0, 50.0, 0.0]
+11:32:58  INFO      franka_controller.py  Opening gripper
+11:32:59  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 4 command(s) completed'}}
+11:33:13  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'named_pose', 'name': 'p1'}}, {'action': 'gripper', 'command': 'close'}, {'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'offset_from_pose', 'name': 'p1', 'offset': {'x_mm': 80.0, 'y_mm': 50.0, 'z_mm': 0.0}}}, {'action': 'gripper', 'command': 'open'}], 'message': ''}}
+11:33:13  INFO      franka_controller.py  Moving with moveL to 'p1'
+11:33:14  INFO      franka_controller.py  Closing gripper
+11:33:15  INFO      franka_controller.py  Moving with moveL to 'p1'
+11:33:15  INFO      franka_controller.py  Offset used: [80.0, 50.0, 0.0]
+11:33:16  INFO      franka_controller.py  Opening gripper
+11:33:18  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 4 command(s) completed'}}
+11:33:31  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'named_pose', 'name': 'p1'}}, {'action': 'gripper', 'command': 'close'}, {'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'offset_from_pose', 'name': 'p1', 'offset': {'x_mm': 80.0, 'y_mm': 50.0, 'z_mm': 0.0}}}, {'action': 'gripper', 'command': 'open'}], 'message': ''}}
+11:33:31  INFO      franka_controller.py  Moving with moveL to 'p1'
+11:33:32  INFO      franka_controller.py  Closing gripper
+11:33:34  INFO      franka_controller.py  Moving with moveL to 'p1'
+11:33:34  INFO      franka_controller.py  Offset used: [80.0, 50.0, 0.0]
+11:33:35  INFO      franka_controller.py  Opening gripper
+11:33:36  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 4 command(s) completed'}}
+11:33:50  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'named_pose', 'name': 'p1'}}, {'action': 'gripper', 'command': 'close'}, {'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'offset_from_pose', 'name': 'p1', 'offset': {'x_mm': 80.0, 'y_mm': 50.0, 'z_mm': 0.0}}}, {'action': 'gripper', 'command': 'open'}], 'message': ''}}
+11:33:50  INFO      franka_controller.py  Moving with moveL to 'p1'
+11:33:51  INFO      franka_controller.py  Closing gripper
+11:33:52  INFO      franka_controller.py  Moving with moveL to 'p1'
+11:33:52  INFO      franka_controller.py  Offset used: [80.0, 50.0, 0.0]
+11:33:53  INFO      franka_controller.py  Opening gripper
+11:33:55  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 4 command(s) completed'}}
+11:34:27  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'p1'}}, {'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}], 'message': ''}}
+11:34:27  INFO      franka_controller.py  Moving with moveJ to 'p1'
+11:34:28  INFO      franka_controller.py  Moving with moveJ to 'home'
+11:34:30  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 2 command(s) completed'}}
+11:34:40  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'p1'}}, {'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}], 'message': ''}}
+11:34:40  INFO      franka_controller.py  Moving with moveJ to 'p1'
+11:34:41  INFO      franka_controller.py  Moving with moveJ to 'home'
+11:34:43  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 2 command(s) completed'}}
+11:34:51  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'p1'}}, {'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}], 'message': ''}}
+11:34:51  INFO      franka_controller.py  Moving with moveJ to 'p1'
+11:34:53  INFO      franka_controller.py  Moving with moveJ to 'home'
+11:34:54  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 2 command(s) completed'}}
+11:35:03  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'p1'}}, {'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}], 'message': ''}}
+11:35:03  INFO      franka_controller.py  Moving with moveJ to 'p1'
+11:35:05  INFO      franka_controller.py  Moving with moveJ to 'home'
+11:35:07  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 2 command(s) completed'}}
+11:35:17  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'p1'}}, {'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}], 'message': ''}}
+11:35:17  INFO      franka_controller.py  Moving with moveJ to 'p1'
+11:35:19  INFO      franka_controller.py  Moving with moveJ to 'home'
+11:35:20  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 2 command(s) completed'}}
+11:35:46  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'named_pose', 'name': 'p2'}}], 'message': ''}}
+11:35:46  INFO      franka_controller.py  Moving with moveL to 'p2'
+11:35:48  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+11:35:55  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}], 'message': ''}}
+11:35:55  INFO      franka_controller.py  Moving with moveJ to 'home'
+11:35:57  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+11:36:06  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'named_pose', 'name': 'p2'}}], 'message': ''}}
+11:36:06  INFO      franka_controller.py  Moving with moveL to 'p2'
+11:36:08  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+11:36:14  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}], 'message': ''}}
+11:36:14  INFO      franka_controller.py  Moving with moveJ to 'home'
+11:36:16  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+11:36:25  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'named_pose', 'name': 'p2'}}, {'action': 'gripper', 'command': 'close'}], 'message': ''}}
+11:36:25  INFO      franka_controller.py  Moving with moveL to 'p2'
+11:36:27  INFO      franka_controller.py  Closing gripper
+11:36:29  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 2 command(s) completed'}}
+11:36:58  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}], 'message': ''}}
+11:36:58  INFO      franka_controller.py  Moving with moveJ to 'home'
+11:37:00  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+11:37:10  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'named_pose', 'name': 'p2'}}], 'message': ''}}
+11:37:10  INFO      franka_controller.py  Moving with moveL to 'p2'
+11:37:12  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+11:37:21  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}], 'message': ''}}
+11:37:21  INFO      franka_controller.py  Moving with moveJ to 'home'
+11:37:23  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+11:37:32  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'named_pose', 'name': 'p2'}}], 'message': ''}}
+11:37:32  INFO      franka_controller.py  Moving with moveL to 'p2'
+11:37:34  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+11:37:41  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}], 'message': ''}}
+11:37:41  INFO      franka_controller.py  Moving with moveJ to 'home'
+11:37:43  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+11:37:55  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'franka', 'commands': [{'action': 'pose', 'command': 'teach', 'pose_name': 'p3', 'overwrite': True}], 'message': ''}}
+11:37:55  INFO      base_robot_controller.py  Saved position 'p3'
+11:37:55  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+11:38:04  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'franka', 'commands': [{'action': 'pose', 'command': 'teach', 'pose_name': 'p3', 'overwrite': True}], 'message': ''}}
+11:38:04  INFO      base_robot_controller.py  Saved position 'p3'
+11:38:04  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+11:38:13  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'franka', 'commands': [{'action': 'pose', 'command': 'teach', 'pose_name': 'p3', 'overwrite': True}], 'message': ''}}
+11:38:13  INFO      base_robot_controller.py  Saved position 'p3'
+11:38:13  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+11:38:21  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'franka', 'commands': [{'action': 'pose', 'command': 'teach', 'pose_name': 'p3', 'overwrite': True}], 'message': ''}}
+11:38:21  INFO      base_robot_controller.py  Saved position 'p3'
+11:38:21  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+11:38:29  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'franka', 'commands': [{'action': 'pose', 'command': 'teach', 'pose_name': 'p3', 'overwrite': True}], 'message': ''}}
+11:38:29  INFO      base_robot_controller.py  Saved position 'p3'
+11:38:29  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+11:38:42  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'p99'}}], 'message': ''}}
+11:38:42  WARNING   message_handler.py  Sequence rejected due to 1 validation error(s)
+11:38:42  DEBUG     communication_server.py  Sent response: {'command': 'rejected', 'data': {'reasons': ["Unknown pose: 'p99'"]}}
+11:39:43  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'p1'}}], 'message': ''}}
+11:39:43  INFO      franka_controller.py  Moving with moveJ to 'p1'
+11:39:45  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+11:39:52  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'named_pose', 'name': 'p2'}}], 'message': ''}}
+11:39:52  INFO      franka_controller.py  Moving with moveL to 'p2'
+11:39:53  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+11:40:00  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'franka', 'commands': [{'action': 'gripper', 'command': 'open'}], 'message': ''}}
+11:40:00  INFO      franka_controller.py  Opening gripper
+11:40:01  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+11:40:16  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'franka', 'commands': [{'action': 'pose', 'command': 'teach', 'pose_name': 'p3', 'overwrite': True}], 'message': ''}}
+11:40:16  INFO      base_robot_controller.py  Saved position 'p3'
+11:40:16  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+11:40:27  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'named_pose', 'name': 'p1'}}, {'action': 'gripper', 'command': 'close'}, {'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'named_pose', 'name': 'p2'}}, {'action': 'gripper', 'command': 'open'}], 'message': ''}}
+11:40:27  INFO      franka_controller.py  Moving with moveL to 'p1'
+11:40:28  INFO      franka_controller.py  Closing gripper
+11:40:30  INFO      franka_controller.py  Moving with moveL to 'p2'
+11:40:31  INFO      franka_controller.py  Opening gripper
+11:40:33  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 4 command(s) completed'}}
+11:40:45  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'named_pose', 'name': 'p1'}}, {'action': 'gripper', 'command': 'close'}, {'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'offset_from_pose', 'name': 'p1', 'offset': {'x_mm': 80.0, 'y_mm': 50.0, 'z_mm': 0.0}}}, {'action': 'gripper', 'command': 'open'}], 'message': ''}}
+11:40:45  INFO      franka_controller.py  Moving with moveL to 'p1'
+11:40:47  INFO      franka_controller.py  Closing gripper
+11:40:48  INFO      franka_controller.py  Moving with moveL to 'p1'
+11:40:48  INFO      franka_controller.py  Offset used: [80.0, 50.0, 0.0]
+11:40:49  INFO      franka_controller.py  Opening gripper
+11:40:51  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 4 command(s) completed'}}
+11:41:07  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'p1'}}, {'action': 'wait', 'duration_s': 2.0}, {'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'named_pose', 'name': 'p2'}}, {'action': 'gripper', 'command': 'close'}, {'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}], 'message': ''}}
+11:41:07  INFO      franka_controller.py  Moving with moveJ to 'p1'
+11:41:08  INFO      message_handler.py  Waiting for 2s
+11:41:10  INFO      franka_controller.py  Moving with moveL to 'p2'
+11:41:11  INFO      franka_controller.py  Closing gripper
+11:41:13  INFO      franka_controller.py  Moving with moveJ to 'home'
+11:41:14  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 5 command(s) completed'}}
+11:41:32  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'p1'}}, {'action': 'wait', 'duration_s': 2.0}, {'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'named_pose', 'name': 'p2'}}, {'action': 'gripper', 'command': 'close'}, {'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}], 'message': ''}}
+11:41:32  INFO      franka_controller.py  Moving with moveJ to 'p1'
+11:41:34  INFO      message_handler.py  Waiting for 2s
+11:41:36  INFO      franka_controller.py  Moving with moveL to 'p2'
+11:41:37  INFO      franka_controller.py  Closing gripper
+11:41:38  INFO      franka_controller.py  Moving with moveJ to 'home'
+11:41:39  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 5 command(s) completed'}}
+11:41:56  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'p1'}}, {'action': 'wait', 'duration_s': 2.0}, {'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'named_pose', 'name': 'p2'}}, {'action': 'gripper', 'command': 'close'}, {'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}], 'message': ''}}
+11:41:56  INFO      franka_controller.py  Moving with moveJ to 'p1'
+11:41:57  INFO      message_handler.py  Waiting for 2s
+11:41:59  INFO      franka_controller.py  Moving with moveL to 'p2'
+11:42:01  INFO      franka_controller.py  Closing gripper
+11:42:01  INFO      franka_controller.py  Moving with moveJ to 'home'
+11:42:03  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 5 command(s) completed'}}
+11:42:22  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'p1'}}, {'action': 'wait', 'duration_s': 2.0}, {'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'named_pose', 'name': 'p2'}}, {'action': 'gripper', 'command': 'close'}, {'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}], 'message': ''}}
+11:42:22  INFO      franka_controller.py  Moving with moveJ to 'p1'
+11:42:24  INFO      message_handler.py  Waiting for 2s
+11:42:26  INFO      franka_controller.py  Moving with moveL to 'p2'
+11:42:27  INFO      franka_controller.py  Closing gripper
+11:42:28  INFO      franka_controller.py  Moving with moveJ to 'home'
+11:42:30  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 5 command(s) completed'}}
+11:42:46  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'franka', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'p1'}}, {'action': 'wait', 'duration_s': 2.0}, {'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'named_pose', 'name': 'p2'}}, {'action': 'gripper', 'command': 'close'}, {'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}], 'message': ''}}
+11:42:46  INFO      franka_controller.py  Moving with moveJ to 'p1'
+11:42:48  INFO      message_handler.py  Waiting for 2s
+11:42:50  INFO      franka_controller.py  Moving with moveL to 'p2'
+11:42:52  INFO      franka_controller.py  Closing gripper
+11:42:52  INFO      franka_controller.py  Moving with moveJ to 'home'
+11:42:54  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 5 command(s) completed'}}

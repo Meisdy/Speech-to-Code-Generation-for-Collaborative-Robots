@@ -1,0 +1,10 @@
+{
+    "robot": "ur",
+    "commands": [
+        {
+            "action": "gripper",
+            "command": "close"
+        }
+    ],
+    "message": ""
+}

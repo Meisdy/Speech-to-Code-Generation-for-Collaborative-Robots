@@ -1,0 +1,12 @@
+{
+    "robot": "franka",
+    "commands": [
+        {
+            "action": "pose",
+            "command": "teach",
+            "pose_name": "p3",
+            "overwrite": true
+        }
+    ],
+    "message": ""
+}

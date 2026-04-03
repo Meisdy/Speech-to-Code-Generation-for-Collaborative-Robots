@@ -1,0 +1,35 @@
+{
+    "robot": "ur",
+    "commands": [
+        {
+            "action": "move",
+            "motion_type": "moveL",
+            "target": {
+                "type": "named_pose",
+                "name": "p1"
+            }
+        },
+        {
+            "action": "gripper",
+            "command": "close"
+        },
+        {
+            "action": "move",
+            "motion_type": "moveL",
+            "target": {
+                "type": "offset_from_pose",
+                "name": "p2",
+                "offset": {
+                    "x_mm": 0.0,
+                    "y_mm": 0.0,
+                    "z_mm": 0.0
+                }
+            }
+        },
+        {
+            "action": "gripper",
+            "command": "open"
+        }
+    ],
+    "message": ""
+}

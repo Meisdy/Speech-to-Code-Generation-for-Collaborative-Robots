@@ -1,0 +1,196 @@
+11:45:05  INFO      main.py  Starting backend server on tcp://*:5555
+11:45:05  DEBUG     message_handler.py  Controller available: 'mock' -> MockRobotController
+11:45:05  DEBUG     message_handler.py  Controller available: 'ur' -> URController
+11:45:05  INFO      communication_server.py  Server ready and listening on tcp://*:5555
+11:45:11  DEBUG     communication_server.py  Received message: {'command': 'ping', 'data': {}}
+11:45:11  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Backend Alive'}}
+11:45:28  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'ur', 'commands': [{'action': 'gripper', 'command': 'close'}], 'message': ''}}
+11:45:28  INFO      ur_controller.py  Connected
+11:45:28  INFO      ur_controller.py  Activating Robot
+11:45:50  INFO      ur_controller.py  Robot active and ready
+11:45:50  INFO      ur_controller.py  Closing gripper
+11:45:55  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+11:45:55  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'ur', 'commands': [{'action': 'gripper', 'command': 'close'}], 'message': ''}}
+11:45:55  INFO      ur_controller.py  Closing gripper
+11:45:55  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+11:47:01  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'ur', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'p1'}}], 'message': ''}}
+11:47:01  INFO      ur_controller.py  Moving with moveJ to 'p1' with speed 6.28
+11:47:02  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+11:47:09  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'ur', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}], 'message': ''}}
+11:47:09  INFO      ur_controller.py  Moving with moveJ to 'home' with speed 6.28
+11:47:11  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+11:47:17  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'ur', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'p1'}}], 'message': ''}}
+11:47:17  INFO      ur_controller.py  Moving with moveJ to 'p1' with speed 6.28
+11:47:19  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+11:47:25  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'ur', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}], 'message': ''}}
+11:47:25  INFO      ur_controller.py  Moving with moveJ to 'home' with speed 6.28
+11:47:26  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+11:47:34  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'ur', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'p1'}}], 'message': ''}}
+11:47:34  INFO      ur_controller.py  Moving with moveJ to 'p1' with speed 6.28
+11:47:35  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+11:47:41  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'ur', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}], 'message': ''}}
+11:47:41  INFO      ur_controller.py  Moving with moveJ to 'home' with speed 6.28
+11:47:43  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+11:47:50  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'ur', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'p1'}}], 'message': ''}}
+11:47:50  INFO      ur_controller.py  Moving with moveJ to 'p1' with speed 6.28
+11:47:51  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+11:47:57  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'ur', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}], 'message': ''}}
+11:47:57  INFO      ur_controller.py  Moving with moveJ to 'home' with speed 6.28
+11:47:59  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+11:48:05  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'ur', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'p1'}}], 'message': ''}}
+11:48:05  INFO      ur_controller.py  Moving with moveJ to 'p1' with speed 6.28
+11:48:07  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+11:48:13  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'ur', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}], 'message': ''}}
+11:48:13  INFO      ur_controller.py  Moving with moveJ to 'home' with speed 6.28
+11:48:15  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+11:48:30  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'ur', 'commands': [{'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'named_pose', 'name': 'p2'}}], 'message': ''}}
+11:48:30  INFO      ur_controller.py  Moving with moveL to 'p2' with speed 1.00
+11:48:32  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+11:48:42  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'ur', 'commands': [{'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'named_pose', 'name': 'p2'}}], 'message': ''}}
+11:48:42  INFO      ur_controller.py  Moving with moveL to 'p2' with speed 1.00
+11:48:43  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+11:48:50  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'ur', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}], 'message': ''}}
+11:48:50  INFO      ur_controller.py  Moving with moveJ to 'home' with speed 6.28
+11:48:51  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+11:48:58  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'ur', 'commands': [{'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'named_pose', 'name': 'p2'}}], 'message': ''}}
+11:48:58  INFO      ur_controller.py  Moving with moveL to 'p2' with speed 1.00
+11:49:00  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+11:49:07  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'ur', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}], 'message': ''}}
+11:49:07  INFO      ur_controller.py  Moving with moveJ to 'home' with speed 6.28
+11:49:08  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+11:49:15  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'ur', 'commands': [{'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'named_pose', 'name': 'p2'}}], 'message': ''}}
+11:49:15  INFO      ur_controller.py  Moving with moveL to 'p2' with speed 1.00
+11:49:17  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+11:49:23  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'ur', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}], 'message': ''}}
+11:49:23  INFO      ur_controller.py  Moving with moveJ to 'home' with speed 6.28
+11:49:24  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+11:49:32  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'ur', 'commands': [{'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'named_pose', 'name': 'p2'}}], 'message': ''}}
+11:49:32  INFO      ur_controller.py  Moving with moveL to 'p2' with speed 1.00
+11:49:34  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+11:49:40  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'ur', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}], 'message': ''}}
+11:49:40  INFO      ur_controller.py  Moving with moveJ to 'home' with speed 6.28
+11:49:41  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+11:49:48  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'ur', 'commands': [{'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'named_pose', 'name': 'p2'}}], 'message': ''}}
+11:49:48  INFO      ur_controller.py  Moving with moveL to 'p2' with speed 1.00
+11:49:49  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+11:49:55  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'ur', 'commands': [{'action': 'move', 'motion_type': 'moveJ', 'target': {'type': 'named_pose', 'name': 'home'}}], 'message': ''}}
+11:49:55  INFO      ur_controller.py  Moving with moveJ to 'home' with speed 6.28
+11:49:57  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+11:50:06  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'ur', 'commands': [{'action': 'gripper', 'command': 'close'}], 'message': ''}}
+11:50:06  INFO      ur_controller.py  Closing gripper
+11:50:06  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+11:51:13  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'ur', 'commands': [{'action': 'gripper', 'command': 'open'}], 'message': ''}}
+11:51:13  INFO      ur_controller.py  Opening gripper
+11:51:16  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+11:51:25  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'ur', 'commands': [{'action': 'gripper', 'command': 'close'}], 'message': ''}}
+11:51:25  INFO      ur_controller.py  Closing gripper
+11:51:28  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+11:51:45  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'ur', 'commands': [{'action': 'gripper', 'command': 'open'}], 'message': ''}}
+11:51:45  INFO      ur_controller.py  Opening gripper
+11:51:49  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+11:51:56  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'ur', 'commands': [{'action': 'gripper', 'command': 'close'}], 'message': ''}}
+11:51:56  INFO      ur_controller.py  Closing gripper
+11:51:59  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+11:52:15  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'ur', 'commands': [{'action': 'gripper', 'command': 'open'}], 'message': ''}}
+11:52:15  INFO      ur_controller.py  Opening gripper
+11:52:18  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+11:52:25  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'ur', 'commands': [{'action': 'gripper', 'command': 'close'}], 'message': ''}}
+11:52:25  INFO      ur_controller.py  Closing gripper
+11:52:28  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+11:52:37  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'ur', 'commands': [{'action': 'gripper', 'command': 'open'}], 'message': ''}}
+11:52:37  INFO      ur_controller.py  Opening gripper
+11:52:40  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+11:52:47  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'ur', 'commands': [{'action': 'gripper', 'command': 'close'}], 'message': ''}}
+11:52:47  INFO      ur_controller.py  Closing gripper
+11:52:50  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+11:52:58  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'ur', 'commands': [{'action': 'gripper', 'command': 'open'}], 'message': ''}}
+11:52:58  INFO      ur_controller.py  Opening gripper
+11:53:01  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+11:53:10  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'ur', 'commands': [{'action': 'pose', 'command': 'teach', 'pose_name': 'p3', 'overwrite': True}], 'message': ''}}
+11:53:11  INFO      base_robot_controller.py  Saved position 'p3'
+11:53:11  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+11:53:26  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'ur', 'commands': [{'action': 'pose', 'command': 'teach', 'pose_name': 'p3', 'overwrite': True}], 'message': ''}}
+11:53:26  INFO      base_robot_controller.py  Saved position 'p3'
+11:53:26  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+11:53:35  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'ur', 'commands': [{'action': 'pose', 'command': 'teach', 'pose_name': 'p3', 'overwrite': True}], 'message': ''}}
+11:53:35  INFO      base_robot_controller.py  Saved position 'p3'
+11:53:35  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+11:53:44  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'ur', 'commands': [{'action': 'pose', 'command': 'teach', 'pose_name': 'p3', 'overwrite': True}], 'message': ''}}
+11:53:44  INFO      base_robot_controller.py  Saved position 'p3'
+11:53:44  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+11:53:55  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'ur', 'commands': [{'action': 'pose', 'command': 'teach', 'pose_name': 'p3', 'overwrite': True}], 'message': ''}}
+11:53:55  INFO      base_robot_controller.py  Saved position 'p3'
+11:53:55  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 1 command(s) completed'}}
+11:54:10  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'ur', 'commands': [{'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'named_pose', 'name': 'p1'}}, {'action': 'gripper', 'command': 'close'}, {'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'offset_from_pose', 'name': 'p2', 'offset': {'x_mm': 0.0, 'y_mm': 0.0, 'z_mm': 0.0}}}, {'action': 'gripper', 'command': 'open'}], 'message': ''}}
+11:54:10  INFO      ur_controller.py  Moving with moveL to 'p1' with speed 1.00
+11:54:12  INFO      ur_controller.py  Closing gripper
+11:54:16  INFO      ur_controller.py  Moving with moveL to 'p2' with speed 1.00
+11:54:16  INFO      ur_controller.py  Offset used: [0.0, 0.0, 0.0]
+11:54:17  INFO      ur_controller.py  Opening gripper
+11:54:21  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 4 command(s) completed'}}
+11:54:32  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'ur', 'commands': [{'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'named_pose', 'name': 'p1'}}, {'action': 'gripper', 'command': 'close'}, {'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'offset_from_pose', 'name': 'p2', 'offset': {'x_mm': 0.0, 'y_mm': 0.0, 'z_mm': 0.0}}}, {'action': 'gripper', 'command': 'open'}], 'message': ''}}
+11:54:32  INFO      ur_controller.py  Moving with moveL to 'p1' with speed 1.00
+11:54:33  INFO      ur_controller.py  Closing gripper
+11:54:37  INFO      ur_controller.py  Moving with moveL to 'p2' with speed 1.00
+11:54:37  INFO      ur_controller.py  Offset used: [0.0, 0.0, 0.0]
+11:54:38  INFO      ur_controller.py  Opening gripper
+11:54:41  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 4 command(s) completed'}}
+11:54:58  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'ur', 'commands': [{'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'named_pose', 'name': 'p1'}}, {'action': 'gripper', 'command': 'close'}, {'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'offset_from_pose', 'name': 'p2', 'offset': {'x_mm': 0.0, 'y_mm': 0.0, 'z_mm': 0.0}}}, {'action': 'gripper', 'command': 'open'}], 'message': ''}}
+11:54:58  INFO      ur_controller.py  Moving with moveL to 'p1' with speed 1.00
+11:54:59  INFO      ur_controller.py  Closing gripper
+11:55:02  INFO      ur_controller.py  Moving with moveL to 'p2' with speed 1.00
+11:55:02  INFO      ur_controller.py  Offset used: [0.0, 0.0, 0.0]
+11:55:03  INFO      ur_controller.py  Opening gripper
+11:55:07  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 4 command(s) completed'}}
+11:55:20  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'ur', 'commands': [{'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'named_pose', 'name': 'p1'}}, {'action': 'gripper', 'command': 'close'}, {'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'offset_from_pose', 'name': 'p2', 'offset': {'x_mm': 0.0, 'y_mm': 0.0, 'z_mm': 0.0}}}, {'action': 'gripper', 'command': 'open'}], 'message': ''}}
+11:55:20  INFO      ur_controller.py  Moving with moveL to 'p1' with speed 1.00
+11:55:21  INFO      ur_controller.py  Closing gripper
+11:55:24  INFO      ur_controller.py  Moving with moveL to 'p2' with speed 1.00
+11:55:24  INFO      ur_controller.py  Offset used: [0.0, 0.0, 0.0]
+11:55:26  INFO      ur_controller.py  Opening gripper
+11:55:29  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 4 command(s) completed'}}
+11:55:41  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'ur', 'commands': [{'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'named_pose', 'name': 'p1'}}, {'action': 'gripper', 'command': 'close'}, {'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'offset_from_pose', 'name': 'p2', 'offset': {'x_mm': 0.0, 'y_mm': 0.0, 'z_mm': 0.0}}}, {'action': 'gripper', 'command': 'open'}], 'message': ''}}
+11:55:41  INFO      ur_controller.py  Moving with moveL to 'p1' with speed 1.00
+11:55:42  INFO      ur_controller.py  Closing gripper
+11:55:46  INFO      ur_controller.py  Moving with moveL to 'p2' with speed 1.00
+11:55:46  INFO      ur_controller.py  Offset used: [0.0, 0.0, 0.0]
+11:55:47  INFO      ur_controller.py  Opening gripper
+11:55:50  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 4 command(s) completed'}}
+11:56:12  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'ur', 'commands': [{'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'named_pose', 'name': 'p1'}}, {'action': 'gripper', 'command': 'close'}, {'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'offset_from_pose', 'name': 'p1', 'offset': {'x_mm': 80.0, 'y_mm': 50.0, 'z_mm': 0.0}}}, {'action': 'gripper', 'command': 'open'}], 'message': ''}}
+11:56:12  INFO      ur_controller.py  Moving with moveL to 'p1' with speed 1.00
+11:56:13  INFO      ur_controller.py  Closing gripper
+11:56:16  INFO      ur_controller.py  Moving with moveL to 'p1' with speed 1.00
+11:56:16  INFO      ur_controller.py  Offset used: [80.0, 50.0, 0.0]
+11:56:17  INFO      ur_controller.py  Opening gripper
+11:56:21  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 4 command(s) completed'}}
+11:56:38  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'ur', 'commands': [{'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'named_pose', 'name': 'p1'}}, {'action': 'gripper', 'command': 'close'}, {'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'offset_from_pose', 'name': 'p1', 'offset': {'x_mm': 80.0, 'y_mm': 50.0, 'z_mm': 0.0}}}, {'action': 'gripper', 'command': 'open'}], 'message': ''}}
+11:56:38  INFO      ur_controller.py  Moving with moveL to 'p1' with speed 1.00
+11:56:39  INFO      ur_controller.py  Closing gripper
+11:56:42  INFO      ur_controller.py  Moving with moveL to 'p1' with speed 1.00
+11:56:42  INFO      ur_controller.py  Offset used: [80.0, 50.0, 0.0]
+11:56:44  INFO      ur_controller.py  Opening gripper
+11:56:47  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 4 command(s) completed'}}
+11:57:00  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'ur', 'commands': [{'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'named_pose', 'name': 'p1'}}, {'action': 'gripper', 'command': 'close'}, {'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'offset_from_pose', 'name': 'p1', 'offset': {'x_mm': 80.0, 'y_mm': 50.0, 'z_mm': 0.0}}}, {'action': 'gripper', 'command': 'open'}], 'message': ''}}
+11:57:00  INFO      ur_controller.py  Moving with moveL to 'p1' with speed 1.00
+11:57:01  INFO      ur_controller.py  Closing gripper
+11:57:04  INFO      ur_controller.py  Moving with moveL to 'p1' with speed 1.00
+11:57:04  INFO      ur_controller.py  Offset used: [80.0, 50.0, 0.0]
+11:57:06  INFO      ur_controller.py  Opening gripper
+11:57:09  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 4 command(s) completed'}}
+11:57:23  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'ur', 'commands': [{'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'named_pose', 'name': 'p1'}}, {'action': 'gripper', 'command': 'close'}, {'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'offset_from_pose', 'name': 'p1', 'offset': {'x_mm': 80.0, 'y_mm': 50.0, 'z_mm': 0.0}}}, {'action': 'gripper', 'command': 'open'}], 'message': ''}}
+11:57:23  INFO      ur_controller.py  Moving with moveL to 'p1' with speed 1.00
+11:57:24  INFO      ur_controller.py  Closing gripper
+11:57:27  INFO      ur_controller.py  Moving with moveL to 'p1' with speed 1.00
+11:57:27  INFO      ur_controller.py  Offset used: [80.0, 50.0, 0.0]
+11:57:29  INFO      ur_controller.py  Opening gripper
+11:57:32  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 4 command(s) completed'}}
+11:57:45  DEBUG     communication_server.py  Received message: {'command': 'execute_sequence', 'data': {'robot': 'ur', 'commands': [{'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'named_pose', 'name': 'p1'}}, {'action': 'gripper', 'command': 'close'}, {'action': 'move', 'motion_type': 'moveL', 'target': {'type': 'offset_from_pose', 'name': 'p1', 'offset': {'x_mm': 80.0, 'y_mm': 50.0, 'z_mm': 0.0}}}, {'action': 'gripper', 'command': 'open'}], 'message': ''}}
+11:57:45  INFO      ur_controller.py  Moving with moveL to 'p1' with speed 1.00
+11:57:46  INFO      ur_controller.py  Closing gripper
+11:57:50  INFO      ur_controller.py  Moving with moveL to 'p1' with speed 1.00
+11:57:50  INFO      ur_controller.py  Offset used: [80.0, 50.0, 0.0]
+11:57:51  INFO      ur_controller.py  Opening gripper
+11:57:54  DEBUG     communication_server.py  Sent response: {'command': 'success', 'data': {'message': 'Sequence of 4 command(s) completed'}}
+11:58:04  INFO      communication_server.py  Signal 2 received, shutting down
+11:58:04  INFO      communication_server.py  Shutting down server
+11:58:04  INFO      ur_controller.py  Disconnected

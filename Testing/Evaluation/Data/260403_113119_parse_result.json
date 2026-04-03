@@ -1,0 +1,30 @@
+{
+    "robot": "franka",
+    "commands": [
+        {
+            "action": "move",
+            "motion_type": "moveL",
+            "target": {
+                "type": "named_pose",
+                "name": "p1"
+            }
+        },
+        {
+            "action": "gripper",
+            "command": "close"
+        },
+        {
+            "action": "move",
+            "motion_type": "moveL",
+            "target": {
+                "type": "named_pose",
+                "name": "p2"
+            }
+        },
+        {
+            "action": "gripper",
+            "command": "open"
+        }
+    ],
+    "message": ""
+}
