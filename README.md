@@ -36,17 +36,15 @@ irm https://raw.githubusercontent.com/Meisdy/Speech-to-Code-Generation-for-Colla
 ```
 
 **Requirements:**
-- **Frontend:** Windows 11, [LM Studio](https://lmstudio.ai) with `meta-llama-3.1-8b-instruct` loaded and served locally
+- **Frontend:** Windows 11, [LM Studio](https://lmstudio.ai) with `meta-llama-3.1-8b-instruct` loaded and served locally — required for all adapters including mock
 - **Backend (UR / Mock):** Windows 11
-- **Backend (Franka):** Ubuntu 20.04 with RT kernel, ROS Noetic, MoveIt — see [Setup/README.md](Setup/README.md)
+- **Backend (Franka):** No installer available — see [Setup/README.md](Setup/README.md) for manual setup
 
-Launch via the Desktop shortcuts. The mock adapter starts selected in the GUI — no robot or LM Studio required to test the pipeline end-to-end.
+Launch via the Desktop shortcuts. For full setup instructions covering all robot adapters, see **[Setup/README.md](Setup/README.md)**.
 
 ---
 
 ## Development
-
-See [Setup/README.md](Setup/README.md) for full classic installation instructions covering all robot adapters and operating systems.
 
 ### Manual setup for Devs (no installer) in PowerShell.
 
@@ -85,6 +83,33 @@ The adapter translates high-level commands (move, gripper, etc.) into robot-spec
 1. Backend: create `Backend/robot_controllers/<robot>_controller.py` inheriting from `BaseRobotController`. Implement the abstract methods — see `BaseRobotController` docstrings for signatures and expected behavior. `URController` serves as a complete reference implementation.
 2. Backend: add `<robot>` to `AVAILABLE_ROBOTS` in `Backend/config_backend.py`.
 3. Frontend: add `<robot>` to `ROBOT_TYPE_KEYS` in `Frontend/config_frontend.py` — this adds it to the robot selection dropdown.
+
+---
+
+## Available Commands
+
+Voice commands are parsed by the LLM into structured robot actions. Defaults (motion type, units, wait time) are defined in `Frontend/ruleset.json` — they apply automatically unless overridden.
+
+### Robot Actions
+
+| Command | Description |
+|---|---|
+| `move` | Move to a named pose, or offset from a pose or current position |
+| `gripper` | Open or close the gripper |
+| `wait` | Pause execution for a given duration |
+| `pose` | Teach (save) or delete a named pose |
+| `freedrive` | Enable or disable hand-guiding mode |
+| `connection` | Connect or disconnect from the robot |
+
+### Script Recording & Replay
+
+| Command | Description |
+|---|---|
+| `script start` | Begin recording a command sequence |
+| `script save` | End recording and save the script |
+| `script run` | Execute a saved script |
+| `script stop` | Stop execution or cancel recording |
+| `script delete` | Delete a saved script |
 
 ---
 
