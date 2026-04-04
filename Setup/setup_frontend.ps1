@@ -127,8 +127,8 @@ if (Test-Path $INSTALL_DIR) {
         if (Test-Path $EXTRACT_PATH) { Remove-Item -Recurse -Force $EXTRACT_PATH }
     }
 
-    # Grant read and execute to all users so the app runs without Administrator
-    icacls "$INSTALL_DIR" /grant "Users:(OI)(CI)RX" /T | Out-Null
+    # Grant modify access to all users — allows editing config files without Administrator
+    icacls "$INSTALL_DIR" /grant "Users:(OI)(CI)M" /T | Out-Null
 
     # Grant write access to the logs directory — the app writes log files at runtime
     $logsDir = "$INSTALL_DIR\Frontend\logs"
