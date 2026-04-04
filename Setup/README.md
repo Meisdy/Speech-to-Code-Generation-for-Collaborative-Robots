@@ -25,7 +25,7 @@ LM Studio must be running before the application starts:
 
 ### Install
 
-Use PowerShell as administrator to run the setup script:
+Use PowerShell as administrator to run the frontend setup script:
 
 ```powershell
 irm https://raw.githubusercontent.com/Meisdy/Speech-to-Code-Generation-for-Collaborative-Robots/main/Setup/setup_frontend.ps1 | iex
@@ -39,7 +39,7 @@ To uninstall, see [Uninstall](#uninstall).
 
 ## Backend Installation — Windows (Mock / UR)
 
-Use PowerShell as administrator to run the setup script:
+Use PowerShell as administrator to run the backend setup script:
 
 ```powershell
 irm https://raw.githubusercontent.com/Meisdy/Speech-to-Code-Generation-for-Collaborative-Robots/main/Setup/setup_backend.ps1 | iex
@@ -53,9 +53,9 @@ Before running with a real UR robot, see [Before Each Session](#before-each-sess
 
 ## Backend Installation — Linux (Franka)
 
-**This setup is time-consuming and not recommended as a first test.** It uses an older robot and a full Linux FCI stack that must be configured manually.
+**This setup is time-consuming and not recommended as a first test.** It uses an older robot and a full Linux FCI stack that must be configured manually. If you do not need to use a Franka Emika Panda robot, skip this section.
 
-The Franka adapter requires a dedicated Linux PC with a real-time kernel. This cannot be automated — the ROS stack must be set up manually first.
+The Franka adapter requires a dedicated Linux PC with a real-time kernel. This cannot be automated easily — the ROS stack must be set up manually first.
 
 ### Prerequisites
 
