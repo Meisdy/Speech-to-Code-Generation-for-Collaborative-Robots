@@ -12,35 +12,19 @@ Frontend and backend communicate over ZeroMQ on port `5555`. For Franka, the Lin
 
 ---
 
-## Quick Start
-
-> **This Quick Start covers Mock and UR setups only.** For Franka, follow the dedicated installation and session preparation sections below.
-
-1. Install [LM Studio](https://lmstudio.ai). Load `meta-llama-3.1-8b-instruct` and serve on port `1234`.
-2. Install the frontend:
-   ```powershell
-   irm https://raw.githubusercontent.com/Meisdy/Speech-to-Code-Generation-for-Collaborative-Robots/main/Setup/setup_frontend.ps1 | iex
-   ```
-3. Install the backend:
-   ```powershell
-   irm https://raw.githubusercontent.com/Meisdy/Speech-to-Code-Generation-for-Collaborative-Robots/main/Setup/setup_backend.ps1 | iex
-   ```
-4. Launch frontend and backend from their Desktop shortcuts.
-
-> **Note:** The mock adapter requires no robot hardware, but LM Studio must still be running for LLM parsing.
-
----
-
 ## Frontend Installation (Windows 11)
 
 ### Prerequisites
 
 LM Studio must be running before the application starts:
 1. Download from [lmstudio.ai](https://lmstudio.ai)
-2. Load `meta-llama-3.1-8b-instruct`
-3. Start the local server on port `1234`
+2. Download a `meta-llama-3.1-8b-instruct` model in the `Model Search` tab.
+3. Start the local server on port `1234`, using the `Developer` tab on the left side.
+
+> **Note:** LM Studio is required for all adapters, including the mock adapter. The mock adapter requires no robot hardware, but LM Studio must still be running for LLM parsing.
 
 ### Install
+
 Use PowerShell as administrator to run the setup script:
 
 ```powershell
@@ -136,9 +120,21 @@ The setup below describes the configuration used during development and evaluati
 ### Direct Ethernet (no router)
 
 1. Find the robot IP. Consult your robot's interface or documentation to locate the current IP address.
-2. On the backend machine, set a static IP on the **Ethernet adapter connected to the robot** to the same subnet as the robot. On Windows 11: Settings → Network & Internet → Advanced network settings → select the correct adapter → Edit → Manual → IPv4. No gateway needed. This setting persists per adapter.
-3. Verify that the robot IP in `Backend/robot_controllers/<your_robot_controller>.py` matches the actual robot IP.
-4. If the frontend and backend run on **different machines**, both need to be on the same network. Configure a static IP on each machine's Ethernet adapter facing the other (same process as step 2). Then update `BACKEND_IPS` in `Frontend/config_frontend.py` with the backend machine's IP. If both run on the **same machine**, `localhost` is correct and no network configuration is needed.
+2. On the backend machine, set a static IP on the **Ethernet adapter connected to the robot** to the same subnet as the robot. On Windows 11: Settings → Network & Internet → Advanced network settings → select the correct adapter → Edit → click **IPv4** in the list → Properties → set to Manual. No gateway needed. This setting persists per adapter.
+
+   **Subnet example:** if the robot IP is `192.168.1.100`, set the adapter IP to any address in `192.168.1.x` that is not already in use (e.g. `192.168.1.10`). Subnet mask changes are not needed.
+
+3. Disable and re-enable the adapter for the IP change to take effect. Right-click the adapter in Advanced network settings → Disable, then right-click again → Enable.
+4. Verify the connection by opening a Command Prompt and running:
+   ```
+   ping <robot-ip>
+   ```
+   A successful reply confirms the adapter and IP are configured correctly.
+5. Verify that the robot IP in `C:\Program Files\Speech-to-Cobot-Backend\Backend\robot_controllers\<your_robot_controller>.py` matches the actual robot IP. If using UR, also set `PC_IP` in `Backend/config_backend.py` to the backend machine's adapter IP — this is required for UR motion callbacks.
+
+   > Config files are plain text and can be opened with any text editor, including Notepad. No Python installation is needed to edit them.
+
+6. If the frontend and backend run on **different machines**, both need to be on the same network. Configure a static IP on each machine's Ethernet adapter facing the other (same process as step 2). Then update `BACKEND_IPS` in `Frontend/config_frontend.py` with the backend machine's IP. If both run on the **same machine**, `localhost` is correct and no network configuration is needed.
 
 `Frontend/config_frontend.py` backend address reference:
 
