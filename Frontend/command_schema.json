@@ -85,10 +85,14 @@
       "script_name": "dance",
       "loop": 1
     },
-    {
+{
       "action": "script",
       "command": "delete",
       "script_name": "dance"
+    },
+    {
+      "action": "freedrive",
+      "active": true
     }
   ],
   "message": "Optional feedback from LLM here."

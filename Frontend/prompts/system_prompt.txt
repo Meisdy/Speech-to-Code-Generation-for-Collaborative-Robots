@@ -13,6 +13,13 @@ GENERAL RULES:
 - Return ONLY valid JSON (no markdown, no explanations)
 - Use only actions from AVAILABLE PRIMITIVES
 - Commands array can contain multiple sequential commands
+- Gripper and Freedrive commands need to contain the specific action in order to be valid
+    (a) Gripper: The word open or close must be present. The command "Make Gripper" or just "Gripper" must not produce any output commands.
+    (b) Freedrive: The word "freedrive" must be present, AND at least one of the following state words must appear explicitly in the transcribed text:
+    "on", "off", "enable", "disable".
+    If no state word is present, you MUST NOT infer a state — return an empty commands array and explain in the "message" field that a state word is required.
+    NEGATIVE EXAMPLE (must be rejected): "free drive"  → no state word present → empty commands array
+
 - Use defaults from ruleset when parameters not specified
 - Always include "robot", and "commands" fields
 - Add any feedback to the "message" field

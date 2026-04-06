@@ -235,6 +235,12 @@ class CodeParser:
                     if not isinstance(cmd["loop"], int):
                         return False, "Script loop must be an integer"
 
+            elif action == "freedrive":
+                if "active" not in cmd:
+                    return False, "Freedrive command missing active field"
+                if not isinstance(cmd["active"], bool):
+                    return False, "Freedrive active must be true or false"
+
         return True, ""
 
     def _remove_redundant_moves(self, commands: list) -> list:
