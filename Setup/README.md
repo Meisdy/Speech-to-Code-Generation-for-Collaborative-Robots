@@ -47,7 +47,7 @@ irm https://raw.githubusercontent.com/Meisdy/Speech-to-Code-Generation-for-Colla
 
 Installs `uv` via winget if missing, downloads to `C:\Program Files\Speech-to-Cobot-Backend`, creates a Desktop shortcut. Full script details in [setup_backend.ps1](https://github.com/Meisdy/Speech-to-Code-Generation-for-Collaborative-Robots/blob/main/Setup/setup_backend.ps1)
 
-Before running with a real UR robot, see [Before Each Session](#before-each-session--robot-preparation) for robot preparation steps and [Network Setup](#network-setup) for IP configuration.
+Before running with a real UR robot, see [Before Each Session](#before-each-session--robot-preparation) for robot preparation steps and [Network Setup](#network-setup) for IP configuration. The mock adapter works out of the box without any robot hardware or network configuration.
 
 ---
 
@@ -99,9 +99,9 @@ These steps are required before every session, separate from the one-time softwa
 2. Start the Linux desktop PC, selecting the RT kernel at boot.
 3. *(First-time only)* Configure the network adapters on the Linux PC — one toward the robot, one toward the operator machine. Follow the [Franka documentation](https://frankarobotics.github.io/libfranka) for initial network setup.
 4. Check that the network adapters are active and plug in the Ethernet cable between the Linux PC and the operator machine. Run a test ping to confirm the connection.
-5. Open the Franka Desk in a browser at `https://<franka-robot-ip>`. Accept the self-signed certificate warning — all browsers will show this.
-6. In Desk: unlock the axes.
-7. Engage the hand switch on the arm once, then release it.
+5. Open the Franka Desk in a browser at `https://<franka-robot-ip>`. Accept the self-signed certificate warning — most browsers will show this.
+6. Unlock the Axes in the web desk, usingn the open lock symbol.
+7. Engage the hand switch for the robot, then release it.
 8. Enable FCI in Desk.
 9. Start the backend on the Linux PC:
    ```bash
@@ -124,13 +124,13 @@ The setup below describes the configuration used during development and evaluati
 
    **Subnet example:** if the robot IP is `192.168.1.100`, set the adapter IP to any address in `192.168.1.x` that is not already in use (e.g. `192.168.1.10`). Subnet mask changes are not needed.
 
-3. Disable and re-enable the adapter for the IP change to take effect. Right-click the adapter in Advanced network settings → Disable, then right-click again → Enable.
+3. Close the Ethernet Properties window. Disable and re-enable the adapter for the IP change to take effect. 
 4. Verify the connection by opening a Command Prompt and running:
    ```
    ping <robot-ip>
    ```
    A successful reply confirms the adapter and IP are configured correctly.
-5. Verify that the robot IP in `C:\Program Files\Speech-to-Cobot-Backend\Backend\robot_controllers\<your_robot_controller>.py` matches the actual robot IP. If using UR, also set `PC_IP` in `Backend/config_backend.py` to the backend machine's adapter IP — this is required for UR motion callbacks.
+5. Verify that the robot IP in `C:\Program Files\Speech-to-Cobot-Backend\Backend\robot_controllers\<your_robot_controller>.py` (your chosen Robot Adapter) matches the actual robot IP. If you are using the UR Robot, also set `PC_IP` in `C:\Program Files\Speech-to-Cobot-Backend\Backend\config_backend.py` to the backend machine's adapter IP you chose in step 2 — this is required for UR motion callbacks.
 
    > All source files are python and can be opened with any text editor, including Notepad. No Python installation is needed to edit them.
 
@@ -148,6 +148,8 @@ BACKEND_IPS = {
 
 Use **Ping Backend** in the GUI to verify. A green indicator confirms the connection immediately. If it does not turn green, check that the backend is running, IPs are correct, and port `5555` is not blocked by a firewall.
 
+After the initial setup, the backend and robot should be reachable without reconfiguring IPs. Continue with the [session setup](#before-each-session--robot-preparation) steps now. 
+
 ---
 
 ## Configuration Reference
@@ -157,16 +159,20 @@ Use **Ping Backend** in the GUI to verify. A green indicator confirms the connec
 | Parameter | Default | Description |
 |---|---|---|
 | `ASR_MODEL_SIZE` | `small` | Whisper model: `tiny`, `base`, `small`, `medium`, `large` |
-| `LLM_API_BASE` | `http://localhost:1234/v1` | LM Studio server URL |
-| `LLM_MODEL_NAME` | — | Model name as shown in LM Studio |
-| `BACKEND_IPS` | — | ZeroMQ addresses per robot backend |
-| `ROBOT_TYPE_KEYS` | — | Maps GUI display names to backend robot types |
-| `MAX_ATTEMPTS` | `2` | Retry attempts when backend is unreachable |
 | `ASR_LANGUAGE` | `en` | ISO language code for ASR |
 | `ASR_SAMPLE_RATE` | `16000` | Audio sample rate in Hz |
-| `ASR_CONFIDENCE_THRESHOLD` | — | Warn on transcripts below this threshold (0.0–1.0) |
+| `ASR_CONFIDENCE_THRESHOLD` | `0.7` | Warn on transcripts below this threshold (0.0–1.0) |
+| `ASR_FP16` | `False` | Requires CUDA (not yet implemented) |
+| `LLM_API_BASE` | `http://localhost:1234/v1` | LM Studio server URL |
+| `LLM_MODEL_NAME` | `meta-llama-3.1-8b-instruct` | Model name as shown in LM Studio |
+| `LLM_TEMPERATURE` | `0.1` | Low = more deterministic output |
+| `LLM_MAX_TOKENS` | `2048` | Maximum tokens in LLM response |
+| `LLM_TIMEOUT` | `60` | LLM timeout in seconds |
+| `BACKEND_IPS` | `{"franka": "tcp://192.168.2.20:5555", "ur": "tcp://localhost:5555", "mock": "tcp://localhost:5555"}` | ZeroMQ addresses per robot backend |
+| `ROBOT_TYPE_KEYS` | `{"Franka Emika": "franka", "Universal Robot": "ur", "Mock Adapter": "mock"}` | Maps GUI display names to backend robot types |
+| `MAX_ATTEMPTS` | `2` | Retry attempts when backend is unreachable |
 | `LOGGING_LEVEL` | `INFO` | Console log verbosity |
-| `LOGGING_LEVEL_FILE` | — | File log verbosity (can differ from console) |
+| `LOGGING_LEVEL_FILE` | `DEBUG` | File log verbosity (can differ from console) |
 | `LOGGING_SAVE_AUDIO` | `False` | Save microphone input as `.wav` for debugging |
 | `LOGGING_SAVE_PARSE` | `False` | Save parsed JSON for parser debugging |
 
@@ -176,10 +182,11 @@ Use **Ping Backend** in the GUI to verify. A green indicator confirms the connec
 |---|---|---|
 | `BINDING_ADDRESS` | `tcp://*:5555` | ZeroMQ binding address |
 | `ZMQ_TIMEOUT_MS` | `1000` | ZeroMQ socket timeout |
-| `AVAILABLE_ROBOTS` | `mock, ur, franka` | Adapters to load |
-| `PC_IP` | — | Backend machine IP as seen by the UR robot (UR motion callback only) |
+| `AVAILABLE_ROBOTS` | `["mock", "franka", "ur"]` | Adapters to load |
+| `ALLOWED_COMMANDS` | `["ping", "get_status", "execute_sequence", "save_script", "run_script", "stop_script", "get_script_status", "delete_script"]` | Main-level commands the backend accepts |
+| `PC_IP` | `192.168.1.101` | Backend machine IP as seen by the UR robot (UR motion callback only) |
 | `LOGGING_LEVEL` | `INFO` | Console log verbosity |
-| `LOGGING_LEVEL_FILE` | — | File log verbosity |
+| `LOGGING_LEVEL_FILE` | `DEBUG` | File log verbosity |
 
 ---
 
