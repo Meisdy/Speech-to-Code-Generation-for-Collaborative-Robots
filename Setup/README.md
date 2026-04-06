@@ -17,9 +17,9 @@ Frontend and backend communicate over ZeroMQ on port `5555`. For Franka, the Lin
 ### Prerequisites
 
 LM Studio must be running before the application starts:
-1. Download from [lmstudio.ai](https://lmstudio.ai)
-2. Download a `meta-llama-3.1-8b-instruct` model in the `Model Search` tab.
-3. Start the local server on port `1234`, using the `Developer` tab on the left side.
+1. Download from [lmstudio.ai](https://lmstudio.ai) and install it. 
+2. Download a `meta-llama-3.1-8b-instruct` model in the `Model Search` tab on the left.
+3. Start the local server on port `1234`, using the `Developer` tab on the left.
 
 > **Note:** LM Studio is required for all adapters, including the mock adapter. The mock adapter requires no robot hardware, but LM Studio must still be running for LLM parsing.
 
@@ -132,7 +132,7 @@ The setup below describes the configuration used during development and evaluati
    A successful reply confirms the adapter and IP are configured correctly.
 5. Verify that the robot IP in `C:\Program Files\Speech-to-Cobot-Backend\Backend\robot_controllers\<your_robot_controller>.py` matches the actual robot IP. If using UR, also set `PC_IP` in `Backend/config_backend.py` to the backend machine's adapter IP — this is required for UR motion callbacks.
 
-   > Config files are plain text and can be opened with any text editor, including Notepad. No Python installation is needed to edit them.
+   > All source files are python and can be opened with any text editor, including Notepad. No Python installation is needed to edit them.
 
 6. If the frontend and backend run on **different machines**, both need to be on the same network. Configure a static IP on each machine's Ethernet adapter facing the other (same process as step 2). Then update `BACKEND_IPS` in `Frontend/config_frontend.py` with the backend machine's IP. If both run on the **same machine**, `localhost` is correct and no network configuration is needed.
 
