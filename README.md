@@ -181,6 +181,18 @@ python -m Frontend.main
 
 ---
 
+## Ideas for Extensions
+
+A few directions this framework could be taken further:
+
+- **Cloud LLM support** — replace the local LM Studio backend with a cloud API for faster or more capable parsing
+- **More Robust Parsing** — implement a feedback loop where the LLM can ask clarifying questions if the command is ambiguous or incomplete. Further prompt engienering to handle more complex commands and edge cases, as well as to counter hallucinations and parsing errors.
+- **Configurable motion speed** — expose speed as a user-settable parameter rather than a hardcoded value in the adapter
+- **Support for Zone commands** — allow users to specify approach and departure zones for linear motions, with configurable sizes
+- **Web dashboard** — replace or extend the desktop GUI with a browser-based interface for remote monitoring and control
+
+---
+
 ## Thesis
 
 **Title:** Speech-to-Code Generation for Collaborative Robots  
