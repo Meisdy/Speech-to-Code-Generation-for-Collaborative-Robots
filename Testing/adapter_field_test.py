@@ -15,9 +15,9 @@ import time
 from typing import Dict, List, Optional, Tuple
 
 # ── CONFIG — edit before running ──────────────────────────────────────────────
-from Backend.robot_controllers.franka_controller import FrankaController
+from Backend.robot_controllers.ur_controller import URController
 
-CONTROLLER_CLASS = FrankaController
+CONTROLLER_CLASS = URController
 TEST_POSE_NAME   = "test_position"
 SPEED            = 0.5
 OFFSET           = [250.0, -50, -150.0]   # [x, y, z] in mm
