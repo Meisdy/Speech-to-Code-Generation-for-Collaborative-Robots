@@ -22,10 +22,8 @@ class BaseRobotController(ABC):
         """Return named pose dict or None if not found."""
         return self.poses.get(name)
 
-    def save_pose(self, name: str, overwrite: bool = False) -> dict:
+    def save_pose(self, name: str) -> dict:
         """Save current robot pose under the given name."""
-        if name in self.poses and not overwrite:
-            return {"success": False, "message": f"Pose '{name}' already exists"}
         state = self.get_current_pose()
         if not state.get("success"):
             return {"success": False, "message": f"Could not read robot state: {state.get('message', 'unknown error')}"}

@@ -131,7 +131,7 @@ run("move_linear — named pose 'home' + offset",
 # ── 5. Pose management ────────────────────────────────────────────────────────
 print("\n[ Pose management ]")
 run(f"save_pose('{TEST_POSE_NAME}')",
-    lambda: robot.save_pose(TEST_POSE_NAME, overwrite=True))
+    lambda: robot.save_pose(TEST_POSE_NAME))
 
 test_pose = robot.get_pose(TEST_POSE_NAME)
 if test_pose is None:

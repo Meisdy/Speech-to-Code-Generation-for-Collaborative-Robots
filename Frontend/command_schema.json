@@ -49,8 +49,7 @@
     {
       "action": "pose",
       "command": "teach",
-      "pose_name": "position_1",
-      "overwrite": false
+      "pose_name": "position_1"
     },
     {
       "action": "pose",

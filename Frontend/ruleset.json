@@ -8,8 +8,7 @@
     "motion_type": "moveJ",
     "frame": "base",
     "units": "mm",
-    "wait_time_s": 1.0,
-    "overwrite": false
+    "wait_time_s": 1.0
   },
   "primitives": {
     "move": {
@@ -65,11 +64,6 @@
         "pose_name": {
           "type": "string",
           "required": true
-        },
-        "overwrite": {
-          "type": "bool",
-          "default": false,
-          "applicable": ["teach"]
         }
       }
     },

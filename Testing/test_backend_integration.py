@@ -136,8 +136,7 @@ class TestBackendIntegration(unittest.TestCase):
         resp = self._execute([{
             "action": "pose",
             "command": "teach",
-            "pose_name": "_integration_test_pose",
-            "overwrite": True
+            "pose_name": "_integration_test_pose"
         }])
         self.assertEqual(resp["command"], "success")
 

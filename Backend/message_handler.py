@@ -218,10 +218,9 @@ class MessageHandler:
         elif action == "pose":
             mode = command["command"]
             pose_name = command["pose_name"]
-            overwrite = command.get("overwrite", False)
 
             if mode == "teach":
-                return robot.save_pose(pose_name, overwrite)
+                return robot.save_pose(pose_name)
             else:
                 return robot.delete_pose(pose_name)
 
