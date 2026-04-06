@@ -78,3 +78,11 @@ class MockRobotController(BaseRobotController):
             "pose":            self._tcp_pose,
             "gripper_state":   self.gripper_state,
         }
+
+    def enable_freedrive(self) -> dict:
+        logger.info("freedrive enabled")
+        return {"success": True, "message": "Freedrive enabled"}
+
+    def disable_freedrive(self) -> dict:
+        logger.info("freedrive disabled")
+        return {"success": True, "message": "Freedrive disabled"}
