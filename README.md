@@ -8,7 +8,7 @@ Software repository for the master's thesis *Speech-to-Code Generation for Colla
 
 A modular pipeline that lets users program collaborative robots through spoken commands. The user speaks a command, the system transcribes it, passes it to a local LLM, generates structured robot control code, and executes it on the connected robot — all in real time.
 
-The framework supports multiple robot backends through a swappable adapter architecture. Currently implemented: Franka Emika Panda, Universal Robots UR10e, and a mock adapter for testing without hardware.
+The framework supports multiple robot backends through a swappable adapter architecture. Currently implemented: Franka Emika Panda, Universal Robots UR10e, and a mock adapter for testing without hardware. To add a new robot, simply implement the adapter interface and register it — no changes needed to the frontend or LLM prompts.
 
 ---
 
@@ -25,7 +25,9 @@ The framework supports multiple robot backends through a swappable adapter archi
 
 ## Quick installation
 
-The one-line installer sets up everything and creates a Desktop shortcut. Requires PowerShell running as Administrator.
+The one-line installers set up everything and create Desktop shortcuts. Requires PowerShell running as Administrator.
+
+**Before launching:** LM Studio must already be running with a model loaded and the local server started on port `1234`.
 
 ```powershell
 # Frontend
@@ -36,59 +38,17 @@ irm https://raw.githubusercontent.com/Meisdy/Speech-to-Code-Generation-for-Colla
 ```
 
 **Requirements:**
-- **Frontend:** Windows 11, [LM Studio](https://lmstudio.ai) with `meta-llama-3.1-8b-instruct` loaded and served locally — required for all adapters including mock
+- **Frontend:** Windows 11, [LM Studio](https://lmstudio.ai) with `meta-llama-3.1-8b-instruct` loaded and served on port `1234`
 - **Backend (UR / Mock):** Windows 11
-- **Backend (Franka):** No installer available — see [Setup/README.md](Setup/README.md) for manual setup
+- **Backend (Franka):** No installer — see [Setup/README.md](Setup/README.md) for manual setup
 
-Launch via the Desktop shortcuts. For full setup instructions covering all robot adapters, see **[Setup/README.md](Setup/README.md)**.
-
----
-
-## Development
-
-### Manual setup for Devs (no installer) in PowerShell.
-
-Requires: Python 3.12, [LM Studio](https://lmstudio.ai) running locally on port 1234 with a model loaded.
-Make sure you are in the directory where you want to clone the repo before running these commands.
-
-```powershell
-# Clone the repo
-git clone https://github.com/Meisdy/Speech-to-Code-Generation-for-Collaborative-Robots
-cd "Speech-to-Code-Generation-for-Collaborative-Robots"
-
-# Create and activate virtual environment
-python -m venv .venv
-Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned -Force # Allow running local scripts
-.\.venv\Scripts\Activate.ps1
-
-# Install dependencies
-pip install -r Setup/requirements_frontend.txt
-pip install -r Setup/requirements_backend.txt
-
-# Start backend (Mock adapter — no hardware)
-python -m Backend.main
-
-# In a new terminal, start frontend
-python -m Frontend.main
-```
-
-### Testing
-
-Tests live in `Testing/`. Run them in your IDE or with `pytest` — the backend must be running on `tcp://localhost:5555` first.
-
-### Adding a new robot adapter
-
-The adapter translates high-level commands (move, gripper, etc.) into robot-specific communication. Once registered, the backend dispatches commands to it automatically — no other code changes are needed.
-
-1. Backend: create `Backend/robot_controllers/<robot>_controller.py` inheriting from `BaseRobotController`. Implement the abstract methods — see `BaseRobotController` docstrings for signatures and expected behavior. `URController` serves as a complete reference implementation.
-2. Backend: add `<robot>` to `AVAILABLE_ROBOTS` in `Backend/config_backend.py`.
-3. Frontend: add `<robot>` to `ROBOT_TYPE_KEYS` in `Frontend/config_frontend.py` — this adds it to the robot selection dropdown.
+Launch via the Desktop shortcuts. For full setup instructions, see **[Setup/README.md](Setup/README.md)**.
 
 ---
 
 ## Available Commands
 
-Voice commands are parsed by the LLM into structured robot actions. Defaults (motion type, units, wait time) are defined in `Frontend/ruleset.json` — they apply automatically unless overridden.
+Voice commands are parsed by the LLM into structured JSON. Defaults (motion type, units, wait time) are defined in `Frontend/ruleset.json` — they apply automatically unless overridden.
 
 ### Robot Actions
 
@@ -103,18 +63,126 @@ Voice commands are parsed by the LLM into structured robot actions. Defaults (mo
 
 ### Script Recording & Replay
 
-| Command | Description |
+| Command         | Description                        |
+|-----------------|------------------------------------|
+| `script start`  | Begin recording a command sequence |
+| `script save`   | End recording and save the script  |
+| `script run`    | Execute a saved script N times     |
+| `script stop`   | Cancel script recording mode       |
+| `script delete` | Delete a saved script              |
+
+When a script is running and should be stopped, a simple stop button is visible in the GUI. 
+
+---
+
+## Command Details
+
+### `move`
+
+Three target types — the LLM selects the correct one based on your phrasing:
+
+- **Named pose** — "move to home", "go to P1"
+- **Offset from pose** — "move 50mm right from home", "go to P1 offset x=80 y=50"
+- **Offset from current** — "move up 100mm", "shift left 30mm"
+
+Default motion type is `moveJ` (joint-space). Say "linearly" or "in a straight line" or similar to get `moveL`.
+
+### `gripper`
+
+Say "open" or "close" — the word must be present. Phrases like "make gripper" or just "gripper" with no state word are instructed to produce no action.
+
+### `freedrive`
+
+Hand-guiding mode, if implemented on the robot adapter. The word "freedrive" must be present **and** one of these state words: "on", "off", "enable", "disable". If no state word is detected, the command should get rejected rather than inferred.
+
+Examples that work: "enable freedrive", "freedrive on", "turn off freedrive"  
+
+### `pose`
+
+Teach a pose by moving the robot manually, or using commands like move down 20mm, then saying "teach pose P1" or "save position home". Poses are stored persistently in a JSONL file and survive restarts. Use "delete pose P1" to remove one.
+
+### `script`
+
+Record a sequence of commands as a named script for replay. Trigger script recording with "start new script" or "start new script called dance". Issue commands as you normally would. Commands get saved and are not being executed. When done, use "save script" or similar to save it. A confirmation window appears, which also lets you fix broken lines, and then confirm or cancel the save operation. To run it, say "execute script called dance 5x" or similar. Alows infinite looping with words like "loop forever". Scripts are stored in a JSONL file alongside poses.
+
+---
+
+## Configuration
+
+All settings are in plain-text config files — no reinstallation needed to change them. Just use your favorite text editor.
+
+| File | What it controls |
 |---|---|
-| `script start` | Begin recording a command sequence |
-| `script save` | End recording and save the script |
-| `script run` | Execute a saved script |
-| `script stop` | Stop execution or cancel recording |
-| `script delete` | Delete a saved script |
+| `Frontend/config_frontend.py` | ASR model, LLM connection, backend IPs, logging |
+| `Backend/config_backend.py` | ZeroMQ binding, robot adapters, UR callback IP |
+| `Frontend/ruleset.json` | Default motion type, units, wait time, command structure |
+| `Frontend/prompts/system_prompt.txt` | LLM parsing rules — edit to change how commands are interpreted |
+
+Defaults reference: [Setup/README.md#configuration-reference](Setup/README.md#configuration-reference)
+
+---
+
+## Debugging
+
+**Log files** are written to `Backend/logs/` and `Frontend/logs/` when running from source. The installed version writes to `$INSTALL_DIR\Backend\logs` and `$INSTALL_DIR\Frontend\logs`.
+
+**Save microphone input** for ASR debugging:
+```python
+LOGGING_SAVE_AUDIO = True  # in config_frontend.py
+```
+
+**Save parsed JSON** for parser debugging:
+```python
+LOGGING_SAVE_PARSE = True  # in config_frontend.py
+```
+
+Audio and parse files are saved to `Frontend/data/`.
+
+---
+
+## Adding a new robot adapter
+
+The adapter translates high-level commands into robot-specific communication. Once registered, the backend dispatches commands to it automatically — no other code changes are needed.
+
+1. Backend: create `Backend/robot_controllers/<robot>_controller.py` inheriting from `BaseRobotController`. Implement the abstract methods — see `BaseRobotController` docstrings for signatures and expected behavior. `ur_controller.py` is the reference for real robot integration; `mock_controller.py` is useful for testing without hardware.
+2. Backend: add `<robot>` to `AVAILABLE_ROBOTS` in `Backend/config_backend.py`.
+3. Frontend: add `<robot>` to `ROBOT_TYPE_KEYS` in `Frontend/config_frontend.py` — this adds it to the robot selection dropdown.
+
+---
+
+## Development
+
+### Manual setup
+
+Requires Python 3.12 and LM Studio running on port `1234`.
+
+```powershell
+git clone https://github.com/Meisdy/Speech-to-Code-Generation-for-Collaborative-Robots
+cd "Speech-to-Code-Generation-for-Collaborative-Robots"
+
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+
+pip install -r Setup/requirements_frontend.txt
+pip install -r Setup/requirements_backend.txt
+```
+
+### Running
+
+```powershell
+# Terminal 1 — backend
+python -m Backend.main
+
+# Terminal 2 — frontend
+python -m Frontend.main
+```
+
+`Testing/` contains integration tests and evaluation protocols used during development.
 
 ---
 
 ## Thesis
 
-**Title:** Speech-to-Code Generation for Collaborative Robots
-**Author:** Sandy Meister
+**Title:** Speech-to-Code Generation for Collaborative Robots  
+**Author:** Sandy Meister  
 **Programme:** Master in Robotics and Automation, University West
