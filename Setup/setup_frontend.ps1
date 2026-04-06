@@ -222,6 +222,6 @@ Write-Host "   $INSTALL_DIR"                                       -ForegroundCo
 Write-Host ""
 Write-Host " To launch the application:"                           -ForegroundColor Green
 Write-Host "   Double-click Speech-to-Cobot on the Desktop"       -ForegroundColor White
-Write-Host "   or: cd '$INSTALL_DIR' as admin"                     -ForegroundColor White
+Write-Host "   or: cd '$INSTALL_DIR'"                             -ForegroundColor White
 Write-Host "   and: uv run pythonw -m Frontend.main"              -ForegroundColor White
 Write-Host "=====================================================" -ForegroundColor Green

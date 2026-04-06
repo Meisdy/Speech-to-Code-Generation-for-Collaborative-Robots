@@ -155,12 +155,6 @@ $shortcut.Description      = "Start Speech-to-Cobot Backend Server"
 $shortcut.Save()
 Write-OK "Shortcut created at $shortcutPath"
 
-# Set shortcut to always run as Administrator (sets flag byte in .lnk file)
-$bytes = [System.IO.File]::ReadAllBytes($shortcutPath)
-$bytes[0x15] = $bytes[0x15] -bor 0x20
-[System.IO.File]::WriteAllBytes($shortcutPath, $bytes)
-Write-OK "Shortcut set to run as Administrator"
-
 # --- Done ---------------------------------------------------------------------
 
 Write-Host ""
