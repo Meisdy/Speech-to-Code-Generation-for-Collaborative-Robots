@@ -38,11 +38,13 @@ All six benchmark tasks completed on all five trials. No failed or rejected tria
 | 5    | Pick at P1 and place at P2                | 5/5    | Success |
 | 6    | Pick at P1 and place at offset x=80, y=50 | 5/5    | Success |
 
+*Task 3 note: the protocol requires closing the gripper before each trial to ensure the open command produces a visible state change. The frontend log therefore shows ten gripper commands during this block — five close resets followed by five open trials. Only the five open commands count as benchmark trials; the close commands are pre-trial resets and are not included in the trial count or timing analysis.*
+
 ### Test 1.2 — UR10e (criterion: ≥ 24/30)
 
 **Result: 30/30 · PASS**
 
-The identical task set produced identical outcomes after backend swap. The UR backend registered only the UR and mock controllers, confirming correct vendor isolation. First-connection activation took 22 seconds (hardware cold-start, measured from robot activation signal to ready); all subsequent responses completed within three seconds.
+The identical task set produced identical outcomes after backend swap. The UR backend registered only the UR and mock controllers, confirming correct vendor isolation. First-connection activation took 22 seconds (hardware activation phase only, measured from robot activation signal at 11:45:28 to ready state at 11:45:50); the full end-to-end trial time including ASR, parsing, and execution was 37 seconds. This one-time cold-start trial is excluded from the timing table in the End-to-End Timing section; all subsequent UR trials reflect steady-state performance.
 
 ---
 
@@ -103,15 +105,15 @@ All six benchmark tasks executed back-to-back in a single uninterrupted session 
 
 ### Test 2.5 — Multi-Step Command Parsing (criterion: correct IR on all 3 trials)
 
-**Result: 3/3 · PASS**
+**Result: 5/5 · PASS**
 
-The five-step compound command `"Go to P1, wait 2 seconds, go to P2 linear, close gripper, go to home"` was issued three times. All three trials produced the following IR without error:
+The five-step compound command `"Go to P1, wait 2 seconds, go to P2 linear, close gripper, go to home"` was issued five times. The protocol specifies three trials; five were conducted in practice. All five produced the following IR without error:
 
 ```
 moveJ to p1 → wait 2.0 s → moveL to p2 → close gripper → moveJ to home
 ```
 
-All three trials executed successfully. Backend logs confirm the wait was handled by the message handler layer (logged as `Waiting for 2s`), not delegated to the robot controller.
+All five trials executed successfully. Backend logs confirm the wait was handled by the message handler layer (logged as `Waiting for 2s`), not delegated to the robot controller. The pass criterion is met against the three-trial requirement; the two additional trials provide further confirmatory evidence.
 
 ---
 
@@ -134,13 +136,13 @@ The upstream modules — `pipeline.py`, `ASR_module.py`, `parsing_module.py` —
 ---
 ## End-to-End Timing
  
-Timing was measured from the moment the audio recording stopped to the moment the backend confirmed execution complete. Two hardware-startup events are excluded from these figures: the Franka MoveIt stack initialisation on the first trial (18 s, one-time) and the UR cold-start activation on the first UR command (37 s, one-time). All 123 remaining trials are included. Timestamps are taken from the frontend log at one-second resolution.
+Timing was measured from the moment the audio recording stopped to the moment the backend confirmed execution complete. Three trials are excluded from these figures: the Franka MoveIt stack initialisation on the first trial (18 s, one-time), the UR cold-start activation on the first UR command (37 s, one-time), and the backend-rejected "Move to P99" trial (exec = 0 s; no motion executed). All 122 remaining trials are included. Timestamps are taken from the frontend log at one-second resolution.
  
 The pipeline portion — ASR transcription plus LLM parsing — took an average of 1.0 s and 3.7 s respectively, totalling approximately 4.6 s regardless of command type. Robot execution time is the main source of variation and depends on the number of motion steps and the platform.
  
 | Command type       | N  | ASR avg | LLM avg | Exec avg | Total avg | Total range |
 |--------------------|----|---------|---------|----------|-----------|-------------|
-| Move (joint)       | 37 | 1.0 s   | 3.2 s   | 1.5 s    | 5.7 s     | 4–6 s       |
+| Move (joint)       | 36 | 1.0 s   | 3.2 s   | 1.6 s    | 5.7 s     | 5–6 s       |
 | Move (linear)      | 17 | 0.8 s   | 3.4 s   | 1.9 s    | 6.1 s     | 5–8 s       |
 | Gripper            | 21 | 0.9 s   | 3.1 s   | 2.1 s    | 6.0 s     | 4–8 s       |
 | Teach pose         | 16 | 0.9 s   | 3.3 s   | 0.1 s    | 4.3 s     | 4–5 s       |
@@ -167,7 +169,11 @@ The command `"Pick at P1 and place at P2"` alternated between two structurally d
 - `move to named_pose p2`
 - `move to offset_from_pose p2 [x=0, y=0, z=0]`
 
-Eight of ten trials across both platforms used the offset form; two used the named form. Execution outcomes were identical. The non-determinism originates in the LLM parser and does not affect success rate, but it means the IR is not stable for identical inputs.
+Across all eleven executions of this command — five Franka benchmark trials, five UR10e benchmark trials, and one session-stability trial — nine used the offset form and two used the named form. The named form appeared once in the Franka benchmark (trial 2, at 11:31:19) and once in the session-stability run (at 11:40:22); all UR10e trials used the offset form. Execution outcomes were identical in all cases. The non-determinism originates in the LLM parser and does not affect success rate, but it means the IR is not stable for identical inputs.
+
+### Known bug — duplicate command on UR session initialisation
+
+The UR backend log shows a second `close gripper` command received at 11:45:55, immediately after the first one completed at the same timestamp. This command has no corresponding frontend trial — the frontend log contains only one dispatch for this period. The duplicate is a known issue in the UR backend: on first connection, the initialisation sequence can cause the first command to be queued and executed twice. The behaviour has been observed in prior sessions. It does not affect any reported metric — no additional trial was recorded, no incorrect state resulted, and the gripper was already closed when the duplicate fired. The issue is confined to the first command of a new UR session.
 
 ### Protocol deviation — UR task 2, trial 2
 
