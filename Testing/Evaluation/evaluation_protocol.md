@@ -3,14 +3,14 @@
 
 This protocol defines the test procedures used to evaluate the speech-to-code framework for the thesis. Tests are grouped by research question. Each entry states the objective, procedure, and pass criterion.
 
-Every trial is documented through three sources. The parser logging option captures the raw LLM output as a JSON file. The audio recording option saves the microphone input for that trial as a `.wav` file. The frontend and backend logs capture the full system activity across the session, including command dispatch, validation results, execution status, and timing. All logs are written to the `logs/` folder.
+Every trial is documented through three sources. The parser logging option captures the raw LLM output as a JSON file. The audio recording option saves the microphone input for that trial as a `.wav` file. The frontend and backend logs capture the full system activity across the session, including command dispatch, validation results, execution status, and timing. All logs are written to the `logs/` folders.
 
 Each trial receives one of three outcome classifications:
 - `Success` — the robot reached the expected final state
 - `Failed` — the framework interpreted the command correctly but execution did not complete
 - `Rejected` — the framework refused the command before any robot motion began
 
-All tests are conducted on physical robots in the laboratory setup described in the thesis (section 3.4).
+All tests are conducted on physical robots in the laboratory setup described in the thesis (section 3.5).
 
 ---
 
