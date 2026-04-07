@@ -71,7 +71,7 @@ Voice commands are parsed by the LLM into structured JSON. Defaults (motion type
 | `script stop`   | Cancel script recording mode       |
 | `script delete` | Delete a saved script              |
 
-When a script is running and should be stopped, a simple stop button is visible in the GUI.
+When a script is running and needs to be stopped, this can be done with a dedicated Stop button in the GUI.
 
 ---
 
