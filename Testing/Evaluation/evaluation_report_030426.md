@@ -137,25 +137,25 @@ The upstream modules — `pipeline.py`, `ASR_module.py`, `parsing_module.py` —
 ---
 ## End-to-End Timing
  
-Timing was measured from the moment the audio recording stopped to the moment the backend confirmed execution complete. Three trials are excluded from these figures: the Franka MoveIt stack initialisation on the first trial (18 s, one-time), the UR cold-start activation on the first UR command (37 s, one-time), and the backend-rejected "Move to P99" trial (exec = 0 s; no motion executed). All 122 remaining trials are included. Timestamps are taken from the frontend log at one-second resolution.
+From the logging files, timing estimates can be extracted. Timing was measured from trial start ("New trial start") to execution complete ("Execution: Backend executed command successfully"). Three trials are excluded from these figures: the Franka MoveIt stack initialisation on the first trial (18 s, one-time), the UR cold-start activation on the first UR command (37 s, one-time), and the backend-rejected "Move to P99" trial (exec = 0 s; no motion executed). All 122 remaining trials are included. Timestamps are taken from the frontend log at one-second resolution.
  
 The pipeline portion — ASR transcription plus LLM parsing — took an average of 1.0 s and 3.7 s respectively, totalling approximately 4.6 s regardless of command type. Robot execution time is the main source of variation and depends on the number of motion steps and the platform.
  
 | Command type       | N  | ASR avg | LLM avg | Exec avg | Total avg | Total range |
 |--------------------|----|---------|---------|----------|-----------|-------------|
-| Move (joint)       | 36 | 1.0 s   | 3.2 s   | 1.6 s    | 5.7 s     | 5–6 s       |
-| Move (linear)      | 17 | 0.8 s   | 3.4 s   | 1.9 s    | 6.1 s     | 5–8 s       |
-| Gripper            | 21 | 0.9 s   | 3.1 s   | 2.1 s    | 6.0 s     | 4–8 s       |
-| Teach pose         | 16 | 0.9 s   | 3.3 s   | 0.1 s    | 4.3 s     | 4–5 s       |
-| Two-step sequence  | 5  | 0.8 s   | 4.0 s   | 3.2 s    | 8.0 s     | 8–8 s       |
-| Pick & place       | 11 | 1.0 s   | 5.1 s   | 7.8 s    | 13.9 s    | 12–17 s     |
-| Pick + offset      | 11 | 1.2 s   | 5.2 s   | 7.0 s    | 13.4 s    | 11–16 s     |
-| Multi-step (5-cmd) | 5  | 1.4 s   | 5.0 s   | 7.4 s    | 13.8 s    | 13–14 s     |
+| Move (joint)       | 36 | 1.0 s   | 3.2 s   | 1.6 s    | 7.3 s     | 6–8 s       |
+| Move (linear)      | 16 | 1.0 s   | 3.3 s   | 1.8 s    | 8.7 s     | 7–11 s      |
+| Gripper            | 21 | 1.0 s   | 3.1 s   | 2.1 s    | 7.8 s     | 6–9 s       |
+| Teach pose         | 16 | 1.0 s   | 3.3 s   | 0.1 s    | 7.5 s     | 7–9 s       |
+| Two-step sequence  | 5  | 1.0 s   | 4.0 s   | 3.2 s    | 11.2 s    | 11–12 s     |
+| Pick & place       | 11 | 1.0 s   | 5.1 s   | 7.8 s    | 17.7 s    | 16–20 s     |
+| Pick + offset      | 11 | 1.2 s   | 5.2 s   | 7.0 s    | 19.5 s    | 17–22 s     |
+| Multi-step (5-cmd) | 5  | 1.4 s   | 5.0 s   | 7.4 s    | 21.2 s    | 21–22 s     |
  
-Pick-and-place tasks split by platform: Franka averaged 12.1 s (range 11–13 s); UR10e averaged 15.5 s (range 15–17 s). The difference reflects robot motion speed rather than any pipeline difference — the pipeline contribution is identical across platforms.
- 
-The LLM parsing time scales with command complexity: 3.1–3.4 s for single-step commands, rising to 5.0–5.2 s for four- and five-step sequences. ASR time remains stable across all command types at approximately 1 s.
- 
+Pick-and-place tasks split by platform: Franka averaged 16.5 s (range 16–17 s); UR10e averaged 19.2 s (range 19–20 s). The difference reflects robot motion speed rather than any pipeline difference — the pipeline contribution is identical across platforms. The UR Gripper commands are especially slow, because the chosen adapter implementation uses the On Robot RG6 gripper laod script workaround. 
+
+The LLM parsing time scales with command complexity: 3.1–3.3 s for single-step commands, rising to 4.0–5.2 s for two- to five-step sequences. ASR time remains stable across all command types at approximately 1.0 s. Note: ASR times are derived from frontend logs at one-second resolution; sub-second precision would require millisecond-level timestamping to capture the true transcription latency accurately.
+
 ---
 ## Cross-Session Observations
 
@@ -170,7 +170,7 @@ The command `"Pick at P1 and place at P2"` alternated between two structurally d
 - `move to named_pose p2`
 - `move to offset_from_pose p2 [x=0, y=0, z=0]`
 
-Across all eleven executions of this command — five Franka benchmark trials, five UR10e benchmark trials, and one session-stability trial — nine used the offset form and two used the named form. The named form appeared once in the Franka benchmark (trial 2, at 11:31:19) and once in the session-stability run (at 11:40:22); all UR10e trials used the offset form. Execution outcomes were identical in all cases. The non-determinism originates in the LLM parser and does not affect success rate, but it means the IR is not stable for identical inputs.
+Across all eleven executions of this command — five Franka benchmark trials, five UR10e benchmark trials, and one session-stability trial — nine used the offset form and two used the named form. The named form appeared once in the Franka benchmark (trial 2, at 11:31:19) and once in the session-stability run (at 11:40:22); all UR10e trials used the offset form. Execution outcomes were identical in all cases. The non-determinism originates in the LLM parser and does not affect success rate, but it means the IR was not fully stable for identical inputs of this specific command.
 
 ### Known bug — duplicate command on UR session initialisation
 
@@ -184,4 +184,4 @@ No HOME reset was performed between trial 1 and trial 2 of task 2 on the UR10e. 
 
 ## Verdict
 
-The framework meets all criteria defined in the evaluation protocol. End-to-end success rate is 100% on both platforms, exceeding the 80% pass threshold by 20 percentage points. The single IR error in test 2.2 did not affect execution safety and the test still passes. Modularity is demonstrated by a sub-three-minute backend swap with zero code changes. No crashes or state errors were recorded across either vendor session.
+The framework meets all criteria defined in the evaluation protocol. End-to-end success rate is 100% on both platforms, exceeding the 80% pass threshold. The single IR error in test 2.2 did not affect execution safety and the test still passes. Modularity is demonstrated by a sub-three-minute backend swap with zero code changes. No crashes or state errors were recorded across either vendor session. ASR and LLM Parser robustness it good, yet not perfect — ASR garbles occurred but were mostly recovered by the parser, and the one parsing failure did not cause a test failure. The framework is therefore deemed successful against the defined criteria, with some minor areas for improvement identified in ASR robustness and IR stability.
