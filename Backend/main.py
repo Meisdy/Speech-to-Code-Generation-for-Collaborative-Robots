@@ -1,7 +1,8 @@
 import os
 import sys
 
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))  # package root resolution for python devices without IDE auto add
+# package root resolution for python devices without IDE auto add
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from Backend.communication_server import ServerZeroMQ
 from Backend.logging_setup import setup_logging
