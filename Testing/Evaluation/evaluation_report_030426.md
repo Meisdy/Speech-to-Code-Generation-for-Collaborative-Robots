@@ -4,6 +4,7 @@
 **Date:** 03 April 2026
 **Session window:** 11:24 – 11:58
 **Platforms tested:** Franka Panda · UR10e
+**Microphone:** Røde Wireless GO 2
 **Source logs:** [cobot_frontend.log](./Logs/cobot_frontend.log), [cobot_backend_Franka.log](./Logs/cobot_backend_Franka.log), [cobot_backend_UR.log](./Logs/cobot_backend_UR.log)
 **Source data:** [Evaluation/Data/](./Data/) — 129 audio recordings + 125 parse-result JSONs (timestamp-named pairs)
 
@@ -11,7 +12,7 @@
 
 ## Summary
 
-All eight tests passed. The framework achieved a 100% end-to-end success rate across both robot platforms (60/60 benchmark trials). The invalid-input rejection test produced five correct rejections. The backend swap was completed in approximately 2 minutes with no changes to code or any upstream module.
+All eight tests passed. The framework achieved a 100% end-to-end success rate across both robot platforms (60/60 benchmark trials). The invalid-input rejection test produced five correct rejections. The backend swap was completed in approximately 2 minutes with no changes to code or any upstream module. Six ASR garbles were observed across the session; five were recovered correctly by the LLM parser, and one produced an incorrect IR in test 2.2 — the only parsing failure in the session, which did not affect execution safety and did not cause the test to fail.
 
 | Research question                     | Tests     | Outcome  |
 |---------------------------------------|-----------|----------|
@@ -44,13 +45,13 @@ All six benchmark tasks completed on all five trials. No failed or rejected tria
 
 **Result: 30/30 · PASS**
 
-The identical task set produced identical outcomes after backend swap. The UR backend registered only the UR and mock controllers, confirming correct vendor isolation. First-connection activation took 22 seconds (hardware activation phase only, measured from robot activation signal at 11:45:28 to ready state at 11:45:50); the full end-to-end trial time including ASR, parsing, and execution was 37 seconds. This one-time cold-start trial is excluded from the timing table in the End-to-End Timing section; all subsequent UR trials reflect steady-state performance.
+The identical task set produced identical outcomes after backend swap. The UR backend registered only the UR and mock controllers at startup; the Franka controller was not loaded because the backend detected it was not running on a Linux system with the required Franka MoveIt stack. First-connection activation took 22 seconds (hardware activation phase only, measured from robot activation signal at 11:45:28 to ready state at 11:45:50); the full end-to-end trial time including ASR, parsing, and execution was 37 seconds. This one-time cold-start trial is excluded from the timing table in the End-to-End Timing section; all subsequent UR trials reflect steady-state performance.
 
 ---
 
 ## RQ2 — Input Variability and Stability
 
-### Test 2.1 — Repeatability (criterion: identical IR on all 5 trials, all success)
+### Test 2.1 — Repeatability (criterion: identical IR on all 5 trials, all classified as `Success`)
 
 **Result: 5/5 · PASS**
 
@@ -60,7 +61,7 @@ The command `"Go to P1, then go to home"` produced an identical intermediate rep
 moveJ to p1 → moveJ to home
 ```
 
-All five trials executed successfully. ASR confidence ranged from 0.92 to 0.95 across the five recordings.
+All five trials were classified as `Success`. ASR confidence ranged from 0.92 to 0.95 across the five recordings.
 
 ### Test 2.2 — Paraphrase Robustness (criterion: ≥ 8/10 correct IR)
 
@@ -92,10 +93,10 @@ Five paraphrases of the linear-motion command and five paraphrases of the teach-
 | "Move to P99"                   | Backend validator    | `Unknown pose: 'p99'`                                                      |
 | "Pick at somewhere"             | Parser               | `Vague or non-resolvable words such as 'somewhere' are NOT valid targets.` |
 | "Hello robot"                   | Parser               | `No valid command detected. Please provide a specific robot command.`      |
-| "Go to"                         | Pre-parser (dropped) | No LLM call dispatched; no backend request sent                            |
+| "Go to"                         | Pre-parser (dropped) | Transcript length below the 7-character minimum threshold; no LLM call dispatched and no backend request sent |
 | "Move P1 and P2 simultaneously" | Parser               | `Impossible command: cannot move to two poses at the same time.`           |
 
-No robot motion occurred for any of the five inputs. One observation: the incomplete command `"Go to"` was discarded silently before the parsing stage. No rejection log entry was written for this input. The pass criterion is met, but a logged rejection message would provide clearer evidence of intentional handling.
+No robot motion occurred for any of the five inputs. One observation: the incomplete command `"Go to"` (6 characters) was discarded by a hardcoded minimum-length check in the parser module before any LLM call was made. No rejection log entry was written for this input. The pass criterion is met, but a logged rejection message would provide clearer evidence of intentional handling.
 
 ### Test 2.4 — Sequential Session Stability (criterion: no crashes, correct state throughout)
 
@@ -113,7 +114,7 @@ The five-step compound command `"Go to P1, wait 2 seconds, go to P2 linear, clos
 moveJ to p1 → wait 2.0 s → moveL to p2 → close gripper → moveJ to home
 ```
 
-All five trials executed successfully. Backend logs confirm the wait was handled by the message handler layer (logged as `Waiting for 2s`), not delegated to the robot controller. The pass criterion is met against the three-trial requirement; the two additional trials provide further confirmatory evidence.
+All five trials were classified as `Success`. Backend logs confirm the wait was handled by the message handler layer (logged as `Waiting for 2s`), not delegated to the robot controller. The pass criterion is met against the three-trial requirement; the two additional trials provide further confirmatory evidence.
 
 ---
 
@@ -131,7 +132,7 @@ All five trials executed successfully. Backend logs confirm the wait was handled
 | Lines of code changed                 | 0                                                                               |
 | Configuration steps                   | 5 (unplug Franka → move laptop → plug UR → start backend → switch robot in GUI) |
 
-The upstream modules — `pipeline.py`, `ASR_module.py`, `parsing_module.py` — are identical across both vendor sessions, confirmed by the continuous frontend log. The IR format is identical across both backends. The Franka backend registered three controllers (mock, franka, ur) at startup; the UR backend registered two (mock, ur), confirming correct vendor isolation without code changes.
+The upstream modules — `pipeline.py`, `ASR_module.py`, `parsing_module.py` — are identical across both vendor sessions, confirmed by the continuous frontend log. The IR format is identical across both backends. The Franka backend registered all three controllers (mock, franka, ur) at startup, as the UR controller can initialise on any platform regardless of whether the robot is connected. The UR backend registered only mock and ur — the Franka controller was not loaded because the backend detected the absence of the Linux-based Franka MoveIt stack on the host machine.
 
 ---
 ## End-to-End Timing
