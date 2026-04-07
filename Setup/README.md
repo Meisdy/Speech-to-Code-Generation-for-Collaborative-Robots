@@ -100,7 +100,7 @@ These steps are required before every session, separate from the one-time softwa
 3. *(First-time only)* Configure the network adapters on the Linux PC — one toward the robot, one toward the operator machine. Follow the [Franka documentation](https://frankarobotics.github.io/libfranka) for initial network setup.
 4. Check that the network adapters are active and plug in the Ethernet cable between the Linux PC and the operator machine. Run a test ping to confirm the connection.
 5. Open the Franka Desk in a browser at `https://<franka-robot-ip>`. Accept the self-signed certificate warning — most browsers will show this.
-6. Unlock the Axes in the web desk, usingn the open lock symbol.
+6. Unlock the Axes in the web desk, using the open lock symbol.
 7. Engage the hand switch for the robot, then release it.
 8. Enable FCI in Desk.
 9. Start the backend on the Linux PC:

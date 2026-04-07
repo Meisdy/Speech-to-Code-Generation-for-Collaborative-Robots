@@ -71,7 +71,7 @@ Voice commands are parsed by the LLM into structured JSON. Defaults (motion type
 | `script stop`   | Cancel script recording mode       |
 | `script delete` | Delete a saved script              |
 
-When a script is running and should be stopped, a simple stop button is visible in the GUI. 
+When a script is running and should be stopped, a simple stop button is visible in the GUI.
 
 ---
 
@@ -103,7 +103,7 @@ Teach a pose by moving the robot manually, or using commands like move down 20mm
 
 ### `script`
 
-Record a sequence of commands as a named script for replay. Trigger script recording with "start new script" or "start new script called dance". Issue commands as you normally would. Commands get saved and are not being executed. When done, use "save script" or similar to save it. A confirmation window appears, which also lets you fix broken lines, and then confirm or cancel the save operation. To run it, say "execute script called dance 5x" or similar. Alows infinite looping with words like "loop forever". Scripts are stored in a JSONL file alongside poses.
+Record a sequence of commands as a named script for replay. Trigger script recording with "start new script" or "start new script called dance". Issue commands as you normally would. Commands get saved and are not being executed. When done, use "save script" or similar to save it. A confirmation window appears, which also lets you fix broken lines, and then confirm or cancel the save operation. To run it, say "execute script called dance 5x" or similar. Allows infinite looping with words like "loop forever". Scripts are stored in a JSONL file alongside poses.
 
 ---
 
@@ -186,7 +186,7 @@ python -m Frontend.main
 A few directions this framework could be taken further:
 
 - **Cloud LLM support** — replace the local LM Studio backend with a cloud API for faster or more capable parsing
-- **More Robust Parsing** — implement a feedback loop where the LLM can ask clarifying questions if the command is ambiguous or incomplete. Further prompt engienering to handle more complex commands and edge cases, as well as to counter hallucinations and parsing errors.
+- **More Robust Parsing** — implement a feedback loop where the LLM can ask clarifying questions if the command is ambiguous or incomplete. Further prompt engineering to handle more complex commands and edge cases, as well as to counter hallucinations and parsing errors.
 - **Configurable motion speed** — expose speed as a user-settable parameter rather than a hardcoded value in the adapter
 - **Support for Zone commands** — allow users to specify approach and departure zones for linear motions, with configurable sizes
 - **Web dashboard** — replace or extend the desktop GUI with a browser-based interface for remote monitoring and control
