@@ -1,2 +1,2 @@
-scipy
-pyzmq
+scipy==1.17.1
+pyzmq==27.1.0
