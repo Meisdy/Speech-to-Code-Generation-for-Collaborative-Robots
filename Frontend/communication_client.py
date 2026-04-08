@@ -12,7 +12,7 @@ logger = logging.getLogger("cobot")
 class ClientZeroMQ:
     """REQ/REP ZeroMQ client with timeout and reconnect on failure."""
 
-    def __init__(self, connection_string: str, timeout_ms: int = 15000) -> None:
+    def __init__(self, connection_string: str, timeout_ms: int = 30000) -> None:
         """
         Args:
             connection_string: ZeroMQ endpoint, e.g. "tcp://192.168.2.20:5555"
