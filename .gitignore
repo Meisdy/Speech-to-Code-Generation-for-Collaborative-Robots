@@ -15,9 +15,3 @@ Backend/data/
 Backend/poses/
 Backend/logs/
 Frontend/logs/
-
-# Misc
-Testing/testrecording.mp3
-Testing/api_key_gemini.txt
-kill_port.txt
-AGENTS.md
