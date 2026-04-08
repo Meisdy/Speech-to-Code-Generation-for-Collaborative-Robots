@@ -84,9 +84,10 @@ class URController(BaseRobotController):
     MOTION_POLL_INTERVAL = 0.005  # seconds between joint position polls
     MOTION_THRESHOLD     = 0.001  # rad — max delta to consider joints stopped
     MOTION_START_DELAY   = 0.2    # seconds to wait for motion to begin before polling
-    ACTIVATION_SETTLE    = 3.8    # seconds to wait after RUNNING confirmed — the Dashboard
-                                  # sends an implicit stop ~3.5s after brake release if no
-                                  # program is running; this clears that window
+    ACTIVATION_SETTLE    = 4.25   # seconds to wait after RUNNING confirmed — the Dashboard
+                                  # sends an implicit stop ~3.5s after brake release if no program is running;
+                                  # this clears that window. Additionally, an instant gripper command after startup
+                                  # will not execute at all without a slightly bigger delay. Found using trial n error
 
     GRIPPER_OPEN_PROGRAM  = "open_UG2_Gripper.urp"
     GRIPPER_CLOSE_PROGRAM = "close_UG2_Gripper.urp"
