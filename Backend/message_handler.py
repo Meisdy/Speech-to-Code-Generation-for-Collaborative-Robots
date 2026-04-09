@@ -94,7 +94,7 @@ class MessageHandler:
         if self.robot:
             self.robot.disconnect()
 
-        self.robot = expected_class()
+        self.robot = expected_class() # Arg warning can be ignored. A controller should always declare a fixed pos file
 
         result = self.robot.connect()
         if not result["success"]:
@@ -107,6 +107,15 @@ class MessageHandler:
             return result
 
         return result
+
+    def _is_script_robot_supported(self, robot_type: str) -> tuple[bool, dict]:
+        """Check if robot type is supported for script operations.
+
+        Returns (True, {}) if supported, (False, error_response) otherwise.
+        """
+        if not robot_type or robot_type not in CONTROLLERS:
+            return False, self._formatted_response("rejected", {"message": f"Unsupported robot type: {robot_type}"})
+        return True, {}
 
     def _formatted_response(self, command: str, data: dict) -> dict:
         return {"command": command, "data": data}
@@ -241,15 +250,15 @@ class MessageHandler:
         script_name = data.get("script_name")
         commands = data.get("commands", [])
 
-        if not robot_type or robot_type not in CONTROLLERS:
-            return self._formatted_response("rejected", {"message": f"Unsupported robot type: {robot_type}"})
+        supported, response = self._is_script_robot_supported(robot_type)
+        if not supported:
+            return response
         if not script_name or not isinstance(commands, list):
             return self._formatted_response("rejected", {"message": "Missing script_name or commands"})
 
-        result = self._ensure_robot_ready(robot_type)
+        result = self._ensure_robot_ready(robot_type) # This could be handled differently to save on execution time
         if not result["success"]:
-            return self._formatted_response("rejected",
-                                            {"message": f"Could not connect to {robot_type}: {result['message']}"})
+            return self._formatted_response("rejected", {"message": f"Could not connect to {robot_type}: {result['message']}"})
 
         result = self.robot.save_script(script_name, commands)
         if not result["success"]:
@@ -263,13 +272,13 @@ class MessageHandler:
         script_name = data.get("script_name")
         loop = data.get("loop", 1)
 
-        if not robot_type or robot_type not in CONTROLLERS:
-            return self._formatted_response("rejected", {"message": f"Unsupported robot type: {robot_type}"})
+        supported, response = self._is_script_robot_supported(robot_type)
+        if not supported:
+            return response
 
         result = self._ensure_robot_ready(robot_type)
         if not result["success"]:
-            return self._formatted_response("rejected",
-                                            {"message": f"Could not connect to {robot_type}: {result['message']}"})
+            return self._formatted_response("rejected", {"message": f"Could not connect to {robot_type}: {result['message']}"})
 
         script = self.robot.get_script(script_name)
         if script is None:
@@ -331,13 +340,13 @@ class MessageHandler:
         robot_type = data.get("robot")
         script_name = data.get("script_name")
 
-        if not robot_type or robot_type not in CONTROLLERS:
-            return self._formatted_response("rejected", {"message": f"Unsupported robot type: {robot_type}"})
+        supported, response = self._is_script_robot_supported(robot_type)
+        if not supported:
+            return response
 
         result = self._ensure_robot_ready(robot_type)
         if not result["success"]:
-            return self._formatted_response("rejected",
-                                            {"message": f"Could not connect to {robot_type}: {result['message']}"})
+            return self._formatted_response("rejected", {"message": f"Could not connect to {robot_type}: {result['message']}"})
 
         result = self.robot.delete_script(script_name)
         if not result["success"]:
