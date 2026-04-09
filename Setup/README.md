@@ -183,7 +183,7 @@ After the initial setup, the backend and robot should be reachable without recon
 | `BINDING_ADDRESS` | `tcp://*:5555` | ZeroMQ binding address |
 | `ZMQ_TIMEOUT_MS` | `1000` | ZeroMQ socket timeout |
 | `AVAILABLE_ROBOTS` | `["mock", "franka", "ur"]` | Adapters to load |
-| `ALLOWED_COMMANDS` | `["ping", "get_status", "execute_sequence", "save_script", "run_script", "stop_script", "get_script_status", "delete_script"]` | Main-level commands the backend accepts |
+| `ALLOWED_COMMANDS` | `["ping", "execute_sequence", "save_script", "run_script", "stop_script", "get_script_status", "delete_script"]` | Main-level commands the backend accepts |
 | `PC_IP` | `192.168.1.101` | Backend machine IP as seen by the UR robot (UR motion callback only) |
 | `LOGGING_LEVEL` | `INFO` | Console log verbosity |
 | `LOGGING_LEVEL_FILE` | `DEBUG` | File log verbosity |

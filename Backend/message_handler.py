@@ -61,7 +61,6 @@ class MessageHandler:
 
             commands = {
                 "ping": self._answer_ping,
-                "get_status": self._send_status,
                 "execute_sequence": lambda: self._execute_sequence(data),
                 "save_script": lambda: self._save_script(data),
                 "run_script": lambda: self._run_script(data),
@@ -117,9 +116,6 @@ class MessageHandler:
 
     def _unknown_command(self, command: str) -> dict:
         return self._formatted_response("rejected", {"reason": f"Unknown command: {command}"})
-
-    def _send_status(self) -> dict:
-        return self._formatted_response("success", {"Connected Robots": "unknown"})
 
     def _execute_sequence(self, data: dict) -> dict:
         robot_type = data["robot"]

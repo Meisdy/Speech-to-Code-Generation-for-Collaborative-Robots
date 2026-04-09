@@ -34,13 +34,7 @@ class TestBackendIntegration(unittest.TestCase):
         self.assertEqual(resp["command"], "success")
         self.assertEqual(resp["data"]["message"], "Backend Alive")
 
-    def test_02_get_status(self) -> None:
-        success, resp = self.client.send_command("get_status", {})
-        self.assertTrue(success)
-        self.assertEqual(resp["command"], "success")
-        self.assertIn("Connected Robots", resp["data"])
-
-    def test_03_unknown_command(self) -> None:
+    def test_02_unknown_command(self) -> None:
         success, resp = self.client.send_command("launch_rockets", {})
         self.assertTrue(success)
         self.assertEqual(resp["command"], "rejected")
