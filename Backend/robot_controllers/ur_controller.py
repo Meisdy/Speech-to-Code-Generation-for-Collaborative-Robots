@@ -80,11 +80,9 @@ class URController(BaseRobotController):
       - State port (30003)  : short-lived connection opened per state read
     """
 
-    MOTION_TIMEOUT       = 30.0   # seconds before giving up on a motion
-    MOTION_POLL_INTERVAL = 0.005  # seconds between joint position polls
-    MOTION_THRESHOLD     = 0.001  # rad — max delta to consider joints stopped
-    MOTION_START_DELAY   = 0.2    # seconds to wait for motion to begin before polling
-    ACTIVATION_SETTLE    = 4.25   # seconds to wait after RUNNING confirmed — the Dashboard
+    MOTION_TIMEOUT       = 90.0   # seconds before giving up on a motion. Even with a slow speed chosen, 90s should
+                                  # suffice in any case. If not, change this value.
+    ACTIVATION_SETTLE    = 4.25   # seconds to wait after RUNNING confirmed by dashboard — the Dashboard
                                   # sends an implicit stop ~3.5s after brake release if no program is running;
                                   # this clears that window. Additionally, an instant gripper command after startup
                                   # will not execute at all without a slightly bigger delay. Found using trial n error
