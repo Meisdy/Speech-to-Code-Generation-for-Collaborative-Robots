@@ -1,3 +1,5 @@
+"""Mock implementation to demonstrate the framework and troubleshoot it without needing a real robot"""
+
 import logging
 import time
 from typing import Optional
@@ -12,7 +14,7 @@ class MockRobotController(BaseRobotController):
 
     def __init__(self, poses_file: str = "Backend/poses/mock_poses.jsonl") -> None:
         super().__init__(poses_file)
-        self._joint_angles: list = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+        self._joint_angles = None
         self._tcp_pose: list = [0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0]  # pos + identity quat
 
     def connect(self) -> dict:
