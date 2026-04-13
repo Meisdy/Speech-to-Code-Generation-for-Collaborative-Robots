@@ -1,11 +1,5 @@
 """Main entry point for backend. Is written to be downwards compatible with python 3.8, to allow for ROS1 franka stack to work"""
 
-import os
-import sys
-
-# package root resolution for python devices without IDE auto add
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__)))) # Legacy, test to remove this fully
-
 from Backend.communication_server import ServerZeroMQ
 from Backend.logging_setup import setup_logging
 from Backend.config_backend import BINDING_ADDRESS
