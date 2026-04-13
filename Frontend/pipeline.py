@@ -51,7 +51,7 @@ class Controller:
         threading.Thread(target=lambda: self._run_ping(robot_key), daemon=True, name="thread_ping").start()
 
     def _run_ping(self, robot_key: str) -> None:
-        client = ClientZeroMQ(BACKEND_IPS[robot_key])
+        client = ClientZeroMQ(BACKEND_IPS[robot_key], timeout_ms=1000)
         success, _ = client.send_command("ping", {})
         client.close()
         status = "ok" if success else "error"
