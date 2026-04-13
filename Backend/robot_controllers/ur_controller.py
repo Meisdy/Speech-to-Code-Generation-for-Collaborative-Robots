@@ -80,14 +80,14 @@ class URController(BaseRobotController):
       - State port (30003)  : short-lived connection opened per state read
     """
 
-    MOTION_TIMEOUT       = 90.0   # seconds before giving up on a motion. Even with a slow speed chosen, 90s should
-                                  # suffice in any case. If not, change this value.
+    MOTION_TIMEOUT       = 90.0   # seconds before giving up on a motion. Covers slow moves (e.g., 10% speed)
+                                  # and long trajectories. Increase if timeouts occur on legitimate slow motions.
     ACTIVATION_SETTLE    = 4.25   # seconds to wait after RUNNING confirmed by dashboard — the Dashboard
                                   # sends an implicit stop ~3.5s after brake release if no program is running;
                                   # this clears that window. Additionally, an instant gripper command after startup
                                   # will not execute at all without a slightly bigger delay. Found using trial n error
 
-    GRIPPER_OPEN_PROGRAM  = "open_UG2_Gripper.urp"
+    GRIPPER_OPEN_PROGRAM  = "open_UG2_Gripper.urp" # Needed for RG6 Gripper workaround
     GRIPPER_CLOSE_PROGRAM = "close_UG2_Gripper.urp"
     GRIPPER_ACTUATE_TIME  = 3.0   # seconds — tune to match physical actuation duration
 
@@ -208,7 +208,7 @@ class URController(BaseRobotController):
         """
         try:
             logger.info("Activating Robot")
-            safety = self.get_safety_status()
+            safety = self.get_safety_status() # Cannot activate if robot is not in a safe state
             if not safety["success"] or not safety["safe"]:
                 return {"success": False, "message": safety["message"]}
 
@@ -234,7 +234,7 @@ class URController(BaseRobotController):
             deadline = time.time() + 15.0
             while time.time() < deadline:
                 if self.get_robot_mode()["ready"]:
-                    time.sleep(self.ACTIVATION_SETTLE)  # Dashboard sends implicit stop ~3s after brake release
+                    time.sleep(self.ACTIVATION_SETTLE)  # Dashboard sends implicit stop ~3.5s after brake release
                     logger.info("Robot active and ready")
                     return {"success": True, "message": "Robot active and ready"}
                 time.sleep(0.5)
