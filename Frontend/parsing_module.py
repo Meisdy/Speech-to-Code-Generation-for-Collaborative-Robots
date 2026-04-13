@@ -64,9 +64,6 @@ class CodeParser:
 
             cleaned = self._clean_response(response)
             parsed = json.loads(cleaned)
-            #logger.debug(f'Before calling remove redundant {parsed}')
-            #parsed["commands"] = self._remove_redundant_moves(parsed["commands"]) # This is the bug fix for double move commands when using offset keyword
-            #logger.debug(f'After calling remove redundant {parsed}')
             parsed = self._normalize_name_fields(parsed)  # Force lowercase on all name/identifier fields to fix occasional LLM name hallucination
             logger.debug("Parsed JSON after cleanup: %s", json.dumps(parsed)[:500])
 
@@ -243,27 +240,6 @@ class CodeParser:
 
         return True, ""
 
-    def _remove_redundant_moves(self, commands: list) -> list:
-        """Drop a named_pose move immediately before an offset_from_pose to the same pose.
-
-        The LLM habitually inserts a redundant named_pose move before offset moves —
-        the offset move already encodes the base pose so the prior move is never needed.
-        """
-        cleaned = []
-        for i, cmd in enumerate(commands):
-            if cmd.get("action") == "move" and cmd.get("target", {}).get("type") == "named_pose":
-                next_cmd = commands[i + 1] if i + 1 < len(commands) else None
-                if (
-                    next_cmd
-                    and next_cmd.get("action") == "move"
-                    and next_cmd.get("target", {}).get("type") == "offset_from_pose"
-                    and next_cmd.get("target", {}).get("name") == cmd["target"]["name"]
-                ):
-                    logger.debug("Stripped redundant named_pose move before offset_from_pose")
-                    continue
-            cleaned.append(cmd)
-        return cleaned
-
     def _error_response(self, robot_key: str, error_msg: str) -> dict[str, Any]:
         """Build standardised error response."""
         return {"command": {"robot": robot_key}, "status": "error", "error": error_msg}
@@ -290,7 +266,6 @@ def main() -> None:
         ("Open the gripper", robot_keys[0]),
         ("Teach a new pose called new_home", robot_keys[0]),
         ("Move to home position and close gripper", robot_keys[1]),
-        ("Move to home, then pick, open gripper, move to place, close gripper", robot_keys[1]),
     ]
 
     for text, robot_type in test_commands:
