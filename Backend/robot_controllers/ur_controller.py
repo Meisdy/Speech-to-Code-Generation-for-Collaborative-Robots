@@ -1,6 +1,12 @@
 """
 URController — pure TCP/IP socket implementation for UR10 (and compatible UR cobots).
 
+Official UR Documentation:
+- Client Interfaces: https://www.universal-robots.com/articles/ur/interface-communication/client-interfaces-primarysecondary-and-realtime/
+- Dashboard Server: https://s3-eu-west-1.amazonaws.com/ur-support-site/42728/DashboardServer_e-Series_2022.pdf
+- Overview: https://www.universal-robots.com/articles/ur/interface-communication/overview-of-client-interfaces/
+- UR Handbook: See official Universal Robots documentation portal
+
 Port layout
 -----------
   29999  Dashboard Server  : text-based admin commands (power, brake release, play/stop)
