@@ -42,7 +42,7 @@ irm https://raw.githubusercontent.com/Meisdy/Speech-to-Code-Generation-for-Colla
 - **Backend (UR / Mock):** Windows 11
 - **Backend (Franka):** No installer — see [Setup/README.md](Setup/README.md) for manual setup
 
-Launch via the Desktop shortcuts. For full setup instructions, see **[Setup/README.md](Setup/README.md)**.
+Launch via the Desktop shortcuts. For full setup instructions and uninstallers, see **[Setup/README.md](Setup/README.md)**.
 
 ---
 
