@@ -154,7 +154,8 @@ The adapter translates high-level commands into robot-specific communication. On
 
 ### Manual setup
 
-Requires Python 3.12 and LM Studio running on port `1234`.
+Requires Python 3.12 and LM Studio running on port `1234`. First frontend startup will download Whisper model either in background or teminal. 
+Obviously, one can install it without a venv aswell. 
 
 ```powershell
 git clone https://github.com/Meisdy/Speech-to-Code-Generation-for-Collaborative-Robots
