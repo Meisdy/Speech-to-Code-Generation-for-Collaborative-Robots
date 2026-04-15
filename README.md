@@ -10,6 +10,8 @@ A modular pipeline that lets users program collaborative robots through spoken c
 
 The framework supports multiple robot backends through a swappable adapter architecture. Currently implemented: Franka Emika Panda, Universal Robots UR10e, and a mock adapter for testing without hardware. To add a new robot, simply implement the adapter interface and register it — no changes needed to the frontend or LLM prompts.
 
+▶ Watch quick Demo on [YouTube](https://www.youtube.com/watch?v=o2OhVHsUCjw). 
+
 ---
 
 ## Repository structure
