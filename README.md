@@ -25,6 +25,14 @@ The framework supports multiple robot backends through a swappable adapter archi
 
 ## Quick installation
 
+
+**Requirements:**
+- **Frontend:** Windows 11, [LM Studio](https://lmstudio.ai) with `meta-llama-3.1-8b-instruct` loaded and served on port `1234`
+- **Backend (Universal Robot UR10e / Mock):** Windows 11
+- **Backend (Franka Emika Panda):** No installer — see [Setup/README.md](Setup/README.md) for manual setup
+
+For full setup instructions and uninstallers, see **[Setup/README.md](Setup/README.md)**.
+
 The one-line installers set up everything and create Desktop shortcuts. Requires PowerShell running as Administrator.
 
 **Before launching:** LM Studio must already be running with a model loaded and the local server started on port `1234`.
@@ -36,13 +44,6 @@ irm https://raw.githubusercontent.com/Meisdy/Speech-to-Code-Generation-for-Colla
 # Backend
 irm https://raw.githubusercontent.com/Meisdy/Speech-to-Code-Generation-for-Collaborative-Robots/main/Setup/setup_backend.ps1 | iex
 ```
-
-**Requirements:**
-- **Frontend:** Windows 11, [LM Studio](https://lmstudio.ai) with `meta-llama-3.1-8b-instruct` loaded and served on port `1234`
-- **Backend (UR / Mock):** Windows 11
-- **Backend (Franka):** No installer — see [Setup/README.md](Setup/README.md) for manual setup
-
-Launch via the Desktop shortcuts. For full setup instructions and uninstallers, see **[Setup/README.md](Setup/README.md)**.
 
 ---
 
