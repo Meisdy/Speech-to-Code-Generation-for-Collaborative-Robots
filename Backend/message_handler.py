@@ -3,7 +3,7 @@ import inspect
 import logging
 import time
 import threading
-from typing import Dict, Optional, Type
+from typing import Dict, Optional, Type, Tuple
 
 from Backend.robot_controllers.base_robot_controller import BaseRobotController
 from Backend.config_backend import AVAILABLE_ROBOTS, ALLOWED_COMMANDS
@@ -108,7 +108,7 @@ class MessageHandler:
 
         return result
 
-    def _is_script_robot_supported(self, robot_type: str) -> tuple[bool, dict]:
+    def _is_script_robot_supported(self, robot_type: str) -> Tuple[bool, dict]:
         """Check if robot type is supported for script operations.
 
         Returns (True, {}) if supported, (False, error_response) otherwise.
