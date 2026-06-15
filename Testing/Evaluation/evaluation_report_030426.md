@@ -137,7 +137,7 @@ The upstream modules — `pipeline.py`, `ASR_module.py`, `parsing_module.py` —
 ---
 ## End-to-End Timing
  
-From the logging files, timing estimates can be extracted. Timing was measured from trial start ("New trial start") to execution complete ("Execution: Backend executed command successfully"). Three trials are excluded from these figures: the Franka MoveIt stack initialisation on the first trial (18 s, one-time), the UR cold-start activation on the first UR command (37 s, one-time), and the backend-rejected "Move to P99" trial (exec = 0 s; no motion executed). All 122 remaining trials are included. Timestamps are taken from the frontend log at one-second resolution.
+From the logging files, timing estimates can be extracted. Timing was measured from trial start ("New trial start") to execution complete ("Execution: Backend executed command successfully"). Three trials are excluded from these figures: the Franka MoveIt stack initialisation on the first trial (18 s, one-time), the UR cold-start activation on the first UR command (37 s, one-time), and the backend-rejected "Move to P99" trial (exec = 0 s; no motion executed). All 121 remaining trials are included. Timestamps are taken from the frontend log at one-second resolution.
  
 The pipeline portion — ASR transcription plus LLM parsing — took an average of 1.0 s and 3.7 s respectively, totalling approximately 4.6 s regardless of command type. Robot execution time is the main source of variation and depends on the number of motion steps and the platform.
  

@@ -137,7 +137,7 @@ Before starting each new test, return the robot to `HOME` to ensure a defined st
 **Objective:** Quantify the effort required to switch between vendor backends.
 
 **Procedure:** Perform the full backend swap from Franka to UR. Log all implementation activity in real time. Record the following metrics:
-- Total implementation time
+- Record total time to complete the backend swap
 - Number of modified files
 - Lines of code changed
 - Configuration steps required
